@@ -479,7 +479,9 @@ async function connectGong() {
   try {
     const creds = btoa(`${key}:${secret}`);
     const dateParams = from && to ? `&fromDateTime=${from}T00:00:00Z&toDateTime=${to}T23:59:59Z` : '';
-    const resp = await fetch(`https://api.gong.io/v2/calls?accountName=${encodeURIComponent(client)}${dateParams}`, {
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const gongUrl = `https://api.gong.io/v2/calls?accountName=${encodeURIComponent(client)}${dateParams}`;
+    const resp = await fetch(proxyUrl + gongUrl, {
       headers: { 'Authorization': `Basic ${creds}`, 'Content-Type': 'application/json' }
     });
 
@@ -494,7 +496,7 @@ async function connectGong() {
     // Fetch transcripts for each call
     const callsWithTranscripts = [];
     for (const call of (data.calls || []).slice(0, 10)) {
-      const tResp = await fetch(`https://api.gong.io/v2/calls/${call.id}/transcript`, {
+      const tResp = await fetch(proxyUrl + `https://api.gong.io/v2/calls/${call.id}/transcript`, {
         headers: { 'Authorization': `Basic ${creds}` }
       });
       const tData = tResp.ok ? await tResp.json() : {};
