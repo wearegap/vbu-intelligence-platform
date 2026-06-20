@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAP Velocity AI — Gong Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gap-blue: #006489;
+  --gap-dark: #453F3E;
+  --gap-gray: #777373;
+  --gap-light-gray: #D1D1D1;
+  --gap-lighter-gray: #E5E1E6;
+  --gap-yellow: #FEBD12;
+  --gap-steel: #5497AE;
+  --gap-soft: #A5CAD6;
+  --gap-sky: #B6DAE3;
+  --gap-cyan: #18C1E5;
+  --gap-green: #43B686;
+  --gap-red: #E54360;
+  --gap-bg: #F7F8FA;
+  --gap-white: #FFFFFF;
+  --font: 'Lato', Verdana, sans-serif;
+}
+body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--font); min-height: 100vh; }
+
+/* ── HEADER ── */
+.header { background: var(--gap-blue); position: relative; overflow: hidden; }
+.header-bar { height: 4px; background: linear-gradient(90deg, var(--gap-cyan) 0%, var(--gap-green) 50%, var(--gap-yellow) 100%); }
+.header-inner { max-width: 1000px; margin: 0 auto; padding: 28px 32px 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.header-logo-area { display: flex; align-items: center; gap: 14px; }
+.header-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.header-icon svg { fill: var(--gap-cyan); }
+.header-eyebrow { font-size: 10px; color: var(--gap-soft); letter-spacing: 0.25em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.header-title { font-size: 22px; font-weight: 900; color: var(--gap-white); letter-spacing: -0.01em; text-transform: uppercase; }
+.header-title .hl { color: var(--gap-yellow); }
+.header-sub { font-size: 12px; color: var(--gap-soft); margin-top: 4px; }
+.header-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--gap-cyan); letter-spacing: 0.08em; white-space: nowrap; }
+
+.main { max-width: 1000px; margin: 0 auto; padding: 28px 32px 60px; }
+
+/* ── STEPPER ── */
+.stepper { display: flex; align-items: center; gap: 0; margin-bottom: 28px; }
+.step { display: flex; align-items: center; gap: 10px; flex: 1; }
+.step-num { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gap-light-gray); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: var(--gap-light-gray); flex-shrink: 0; transition: all 0.3s; }
+.step.active .step-num { border-color: var(--gap-blue); color: var(--gap-white); background: var(--gap-blue); }
+.step.done .step-num { border-color: var(--gap-green); color: var(--gap-white); background: var(--gap-green); }
+.step-label { font-size: 11px; font-weight: 700; color: var(--gap-light-gray); text-transform: uppercase; letter-spacing: 0.08em; transition: color 0.3s; }
+.step.active .step-label { color: var(--gap-blue); }
+.step.done .step-label { color: var(--gap-green); }
+.step-line { flex: 1; height: 2px; background: var(--gap-light-gray); margin: 0 8px; transition: background 0.3s; }
+.step-line.done { background: var(--gap-green); }
+
+/* ── PANELS ── */
+.panel { background: var(--gap-white); border-radius: 10px; border: 1px solid #E8E8E8; box-shadow: 0 1px 4px rgba(0,0,0,0.04); padding: 28px; margin-bottom: 20px; }
+.panel-title { font-size: 11px; font-weight: 700; color: var(--gap-blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.panel-title svg { opacity: 0.7; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── STEP 1: GONG CONNECT ── */
+.gong-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 10px; font-weight: 700; color: var(--gap-blue); letter-spacing: 0.12em; text-transform: uppercase; }
+.field input, .field select {
+  padding: 10px 14px; border: 2px solid var(--gap-light-gray); border-radius: 7px;
+  font-size: 14px; font-family: var(--font); color: var(--gap-dark); outline: none;
+  transition: border-color 0.2s; background: var(--gap-white);
+}
+.field input:focus, .field select:focus { border-color: var(--gap-blue); }
+.field-full { grid-column: 1 / -1; }
+.field-hint { font-size: 11px; color: var(--gap-gray); margin-top: 2px; }
+.btn { padding: 11px 24px; border-radius: 7px; font-size: 13px; font-weight: 700; font-family: var(--font); cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em; border: 2px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: var(--gap-blue); color: var(--gap-white); border-color: var(--gap-blue); }
+.btn-primary:hover { background: #004f6e; border-color: #004f6e; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-outline { background: transparent; color: var(--gap-blue); border-color: var(--gap-blue); }
+.btn-outline:hover { background: var(--gap-blue); color: var(--gap-white); }
+.btn-green { background: var(--gap-green); color: var(--gap-white); border-color: var(--gap-green); }
+.btn-green:hover { background: #359e72; border-color: #359e72; }
+.btn-row { display: flex; gap: 12px; align-items: center; margin-top: 20px; }
+
+/* ── CALL LIST ── */
+.call-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.call-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border: 2px solid var(--gap-lighter-gray); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.call-item:hover { border-color: var(--gap-blue); background: #f0f7fb; }
+.call-item.selected { border-color: var(--gap-blue); background: #f0f7fb; }
+.call-item input[type="checkbox"] { accent-color: var(--gap-blue); width: 16px; height: 16px; flex-shrink: 0; }
+.call-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gap-green); flex-shrink: 0; }
+.call-info { flex: 1; min-width: 0; }
+.call-name { font-size: 13px; font-weight: 700; color: var(--gap-dark); }
+.call-meta { font-size: 11px; color: var(--gap-gray); margin-top: 2px; }
+.call-dur { font-size: 11px; font-weight: 700; color: var(--gap-steel); background: var(--gap-bg); padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+
+/* ── LOADING STATES ── */
+.loading-block { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 16px; }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--gap-lighter-gray); border-top-color: var(--gap-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-label { font-size: 13px; color: var(--gap-gray); font-weight: 700; }
+.loading-sub { font-size: 11px; color: var(--gap-light-gray); }
+
+/* ── STEP 2: EXTRACTION ── */
+.extract-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.extract-card { padding: 16px; border-radius: 8px; border: 2px solid var(--gap-lighter-gray); position: relative; transition: border-color 0.3s; }
+.extract-card.found { border-color: var(--gap-green); background: #f4fdf8; }
+.extract-card.missing { border-color: var(--gap-yellow); background: #fffbf0; }
+.extract-card.manual { border-color: var(--gap-blue); background: #f0f7fb; }
+.extract-label { font-size: 10px; font-weight: 700; color: var(--gap-gray); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+.extract-value { font-size: 18px; font-weight: 900; color: var(--gap-dark); }
+.extract-source { font-size: 10px; color: var(--gap-gray); margin-top: 4px; }
+.extract-badge { position: absolute; top: 10px; right: 10px; font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.06em; }
+.badge-found { background: var(--gap-green); color: white; }
+.badge-missing { background: var(--gap-yellow); color: var(--gap-dark); }
+.badge-manual { background: var(--gap-blue); color: white; }
+.extract-card.missing .manual-input, .extract-card.manual .manual-input { display: block; }
+.manual-input { display: none; margin-top: 10px; }
+.manual-input input, .manual-input select {
+  width: 100%; padding: 8px 12px; border: 1.5px solid var(--gap-light-gray); border-radius: 6px;
+  font-size: 13px; font-family: var(--font); color: var(--gap-dark); outline: none; background: white;
+}
+.manual-input input:focus, .manual-input select:focus { border-color: var(--gap-blue); }
+.transcript-snippet { margin-top: 8px; padding: 8px 12px; background: rgba(0,0,0,0.03); border-left: 3px solid var(--gap-steel); border-radius: 0 4px 4px 0; font-size: 11px; color: var(--gap-gray); font-style: italic; line-height: 1.5; }
+
+/* ── STEP 3: DASHBOARD ── */
+.dash-header-band { background: var(--gap-blue); border-radius: 10px 10px 0 0; padding: 24px 28px; margin: -28px -28px 24px; position: relative; overflow: hidden; }
+.dash-header-band::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); border-radius: 50%; }
+.dash-client { font-size: 11px; color: var(--gap-soft); letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.dash-headline { font-size: 22px; font-weight: 900; color: white; text-transform: uppercase; }
+.dash-headline .hl { color: var(--gap-yellow); }
+.dash-sub { font-size: 12px; color: var(--gap-soft); margin-top: 6px; }
+.dash-params { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.dash-param { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: white; }
+.dash-param span { color: var(--gap-cyan); }
+
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.metric-card { padding: 18px; background: var(--gap-white); border-radius: 10px; border: 1px solid #E8E8E8; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.metric-label { font-size: 9px; color: var(--gap-blue); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+.metric-value { font-size: 24px; font-weight: 900; color: var(--gap-dark); line-height: 1; }
+.metric-value.red { color: var(--gap-red); }
+.metric-value.green { color: var(--gap-green); }
+.metric-sub { font-size: 11px; color: var(--gap-gray); margin-top: 5px; }
+
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.diy-card { background: var(--gap-white); border-radius: 10px; border: 2px solid var(--gap-red); padding: 24px; position: relative; overflow: hidden; }
+.diy-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gap-red); }
+.velo-card { background: var(--gap-white); border-radius: 10px; border: 2px solid var(--gap-green); padding: 24px; position: relative; overflow: hidden; }
+.velo-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gap-green); }
+.card-badge-flag { position: absolute; top: 14px; right: 14px; font-size: 9px; padding: 3px 10px; border-radius: 4px; font-weight: 700; letter-spacing: 0.1em; }
+.flag-risk { background: var(--gap-red); color: white; }
+.flag-managed { background: var(--gap-green); color: white; }
+.card-type-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; margin-bottom: 12px; }
+.card-amount-big { font-size: 42px; font-weight: 900; line-height: 1; }
+.card-meta-small { font-size: 12px; color: var(--gap-gray); margin-top: 8px; }
+.savings-highlight { margin-top: 16px; padding: 12px 16px; background: #E8F8F0; border-radius: 8px; border: 1px solid #C6ECDB; }
+.savings-num { font-size: 20px; font-weight: 900; color: var(--gap-green); }
+.savings-detail { font-size: 11px; color: var(--gap-gray); margin-top: 2px; }
+
+.breakdown-section { background: var(--gap-white); border-radius: 10px; border: 1px solid #E8E8E8; padding: 24px; margin-bottom: 20px; }
+.breakdown-title { font-size: 11px; font-weight: 700; color: var(--gap-blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; }
+.breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F0F0F0; }
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-name { font-size: 13px; font-weight: 700; color: var(--gap-dark); }
+.breakdown-desc { font-size: 11px; color: var(--gap-gray); margin-top: 2px; }
+.breakdown-amount { font-size: 14px; font-weight: 900; color: var(--gap-dark); }
+.breakdown-bar-wrap { height: 5px; background: var(--gap-lighter-gray); border-radius: 3px; margin-top: 6px; width: 100%; }
+.breakdown-bar { height: 5px; border-radius: 3px; background: var(--gap-red); transition: width 0.6s; }
+
+.risk-grid { display: flex; flex-direction: column; gap: 8px; }
+.risk-item { padding: 12px 16px; background: var(--gap-bg); border-radius: 8px; border-left: 3px solid var(--gap-red); }
+.risk-top { display: flex; justify-content: space-between; align-items: center; }
+.risk-name { font-size: 13px; font-weight: 700; color: var(--gap-dark); }
+.risk-cost-tag { font-size: 13px; font-weight: 900; color: var(--gap-red); }
+.risk-desc { font-size: 11px; color: var(--gap-gray); margin-top: 5px; line-height: 1.5; }
+
+.summary-block { display: grid; grid-template-columns: 1fr 1fr; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+.sum-diy { padding: 24px 28px; background: var(--gap-dark); border-top: 4px solid var(--gap-red); }
+.sum-velo { padding: 24px 28px; background: var(--gap-blue); border-top: 4px solid var(--gap-cyan); position: relative; }
+.sum-velo::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: var(--gap-cyan); }
+.sum-tag { font-size: 9px; letter-spacing: 0.18em; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+.sum-diy .sum-tag { color: var(--gap-red); }
+.sum-velo .sum-tag { color: var(--gap-cyan); }
+.sum-text { font-size: 13px; line-height: 1.7; }
+.sum-diy .sum-text { color: #c9c4c3; }
+.sum-velo .sum-text { color: var(--gap-soft); }
+.sum-text strong { color: white; }
+.sum-text .red-hl { color: #ff7a92; }
+.sum-text .green-hl { color: #7cdbb5; }
+.sum-fn { margin-top: 14px; font-size: 11px; }
+.sum-diy .sum-fn { color: #7a7370; }
+.sum-velo .sum-fn { color: var(--gap-steel); }
+
+.footer-bar { height: 4px; background: linear-gradient(90deg, var(--gap-yellow) 0%, var(--gap-cyan) 50%, var(--gap-green) 100%); border-radius: 0 0 10px 10px; margin: -28px -28px 0; }
+.footer-note { text-align: center; margin-top: 20px; font-size: 11px; color: var(--gap-gray); font-style: italic; }
+.footer-note a { color: var(--gap-blue); font-style: normal; font-weight: 700; text-decoration: none; }
+
+/* ── TIMELINE VIZ ── */
+.timeline-wrap { display: flex; gap: 5px; flex-wrap: wrap; }
+.tl-block { width: 26px; height: 26px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; }
+.tl-block.active { background: var(--gap-red); color: white; }
+.tl-block.inactive { background: var(--gap-lighter-gray); color: var(--gap-light-gray); }
+
+/* ── SOURCE CHIPS ── */
+.source-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.chip { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; background: var(--gap-bg); border: 1px solid var(--gap-light-gray); color: var(--gap-gray); display: flex; align-items: center; gap: 5px; }
+.chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gap-green); }
+
+/* ── STATUS BAR ── */
+.status-bar { background: var(--gap-dark); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.status-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.status-icon.processing { background: rgba(24,193,229,0.2); }
+.status-icon.done { background: rgba(67,182,134,0.2); }
+.status-msg { font-size: 12px; font-weight: 700; color: white; flex: 1; }
+.status-sub { font-size: 10px; color: #7a7370; margin-top: 1px; }
+.progress-bar-wrap { width: 120px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; flex-shrink: 0; }
+.progress-bar { height: 4px; border-radius: 2px; background: var(--gap-cyan); transition: width 0.4s; }
+
+/* ── ERROR STATE ── */
+.error-box { background: #fff5f7; border: 1px solid #f9c3cc; border-radius: 8px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; }
+.error-icon { color: var(--gap-red); font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.error-msg { font-size: 12px; color: var(--gap-red); font-weight: 700; }
+.error-sub { font-size: 11px; color: var(--gap-gray); margin-top: 3px; }
+
+@media (max-width: 700px) {
+  .gong-form, .extract-grid, .metrics-grid, .compare-row, .summary-block { grid-template-columns: 1fr; }
+  .header-inner { flex-direction: column; align-items: flex-start; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-bar"></div>
+  <div class="header-inner">
+    <div class="header-logo-area">
+      <div class="header-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 17.93V18a1 1 0 0 0-2 0v1.93A8 8 0 0 1 4.07 13H6a1 1 0 0 0 0-2H4.07A8 8 0 0 1 11 4.07V6a1 1 0 0 0 2 0V4.07A8 8 0 0 1 19.93 11H18a1 1 0 0 0 0 2h1.93A8 8 0 0 1 13 19.93zM12 10a2 2 0 1 0 2 2 2 2 0 0 0-2-2z"/></svg>
+      </div>
+      <div>
+        <div class="header-eyebrow">GAP Velocity AI</div>
+        <div class="header-title">Gong <span class="hl">Intelligence</span> Platform</div>
+        <div class="header-sub">Extract modernization signals from client calls · Run cost model · Deliver GAP-branded insights</div>
+      </div>
+    </div>
+    <div class="header-badge">Powered by Claude AI</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Stepper -->
+  <div class="stepper" id="stepper">
+    <div class="step active" id="step-1"><div class="step-num">1</div><div class="step-label">Connect Gong</div></div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step" id="step-2"><div class="step-num">2</div><div class="step-label">Extract Signals</div></div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step" id="step-3"><div class="step-num">3</div><div class="step-label">Cost Dashboard</div></div>
+  </div>
+
+  <!-- PAGE 1: GONG CONNECTION -->
+  <div class="page active" id="page-1">
+    <div class="panel">
+      <div class="panel-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
+        Gong Connection
+      </div>
+      <div class="gong-form">
+        <div class="field">
+          <label>Gong API Access Key</label>
+          <input type="password" id="gong-key" placeholder="Enter your Gong access key">
+          <div class="field-hint">Found in Gong Settings → API</div>
+        </div>
+        <div class="field">
+          <label>Gong API Secret</label>
+          <input type="password" id="gong-secret" placeholder="Enter your Gong secret">
+          <div class="field-hint">Required for authenticated requests</div>
+        </div>
+        <div class="field field-full">
+          <label>Anthropic API Key</label>
+          <input type="password" id="anthropic-key" placeholder="sk-ant-...">
+          <div class="field-hint">Used to analyze call transcripts and extract modernization signals</div>
+        </div>
+        <div class="field field-full">
+          <label>Client / Account Name</label>
+          <input type="text" id="client-name" placeholder="e.g. Acme Corporation">
+          <div class="field-hint">Searches Gong calls where this account is mentioned</div>
+        </div>
+        <div class="field">
+          <label>Date Range — From</label>
+          <input type="date" id="date-from">
+        </div>
+        <div class="field">
+          <label>Date Range — To</label>
+          <input type="date" id="date-to">
+        </div>
+      </div>
+      <div id="step1-error"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="connectGong()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Fetch Calls from Gong
+        </button>
+        <span style="font-size:11px;color:var(--gap-gray)">or</span>
+        <button class="btn btn-outline" onclick="loadDemo()">Load Demo Data</button>
+      </div>
+    </div>
+
+    <div id="calls-panel" style="display:none">
+      <div class="panel">
+        <div class="panel-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Select Calls to Analyze
+        </div>
+        <div id="calls-status" class="status-bar" style="display:none"></div>
+        <div class="call-list" id="call-list"></div>
+        <div class="btn-row" style="margin-top:20px">
+          <button class="btn btn-primary" id="analyze-btn" onclick="analyzeSelected()" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Analyze Selected Calls
+          </button>
+          <span id="selected-count" style="font-size:12px;color:var(--gap-gray)">0 calls selected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: EXTRACTION -->
+  <div class="page" id="page-2">
+    <div class="panel">
+      <div class="panel-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        AI Signal Extraction
+      </div>
+      <div id="extract-status"></div>
+      <div id="extract-content"></div>
+      <div class="btn-row" id="extract-btns" style="display:none">
+        <button class="btn btn-green" onclick="runCalcAndDash()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Run Cost Model & Build Dashboard
+        </button>
+        <button class="btn btn-outline" onclick="goBack()">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: DASHBOARD -->
+  <div class="page" id="page-3">
+    <div class="panel" id="dashboard-panel">
+      <!-- Injected dynamically -->
+    </div>
+    <div class="btn-row" style="margin-top: 4px;">
+      <button class="btn btn-outline" onclick="startOver()">← New Analysis</button>
+      <button class="btn btn-primary" onclick="downloadDashboard()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Dashboard HTML
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+const state = {
+  gongKey: '', gongSecret: '', anthropicKey: '', clientName: '',
+  calls: [], selectedCalls: [],
+  extracted: { sourceTech: null, targetTech: null, linesOfCode: null, complexityLevel: null, customersDevCount: null },
+  extractedSnippets: {},
+  calcResult: null,
+  isDemo: false
+};
+
+// ── COST MODEL DATA ────────────────────────────────────────────────────────────
+const STACKS = {
+  vb6:         { label:"VB6",          hpk:12, risk:1.0, color:"#006489" },
+  vbnet:       { label:"VB.NET",       hpk:10, risk:0.8, color:"#18C1E5" },
+  access:      { label:"MS Access",    hpk:12, risk:1.0, color:"#5497AE" },
+  powerbuilder:{ label:"PowerBuilder", hpk:15, risk:1.2, color:"#18C1E5" },
+  webforms:    { label:"WebForms",     hpk:12, risk:1.0, color:"#006489" },
+  winforms:    { label:"WinForms",     hpk:10, risk:0.8, color:"#18C1E5" },
+  clarion:     { label:"Clarion",      hpk:20, risk:1.5, color:"#5497AE" },
+  silverlight: { label:"Silverlight",  hpk:10, risk:0.8, color:"#006489" },
+  aspclassic:  { label:"ASP Classic",  hpk:12, risk:1.0, color:"#18C1E5" },
+  informix:    { label:"Informix",     hpk:18, risk:1.3, color:"#5497AE" },
+  delphi:      { label:"Delphi",       hpk:16, risk:1.2, color:"#006489" },
+};
+const COMPLEXITY = [
+  { label:"Clean",        factor:1.0 },
+  { label:"Conventional", factor:1.3 },
+  { label:"Complex",      factor:1.5 },
+  { label:"Spaghetti",    factor:1.7 },
+];
+const RISKS = [
+  { id:"arch",  label:"Architectural Refactoring",             pct:0.10, desc:"AI translates code like-for-like. Manual engineers must break monolithic logic into microservices." },
+  { id:"int",   label:"Integration & Edge Cases",              pct:0.08, desc:"Legacy apps rely on hard-coded paths, DLLs, or COM controls AI can't find modern equivalents for." },
+  { id:"sec",   label:"Security & Identity",                   pct:0.05, desc:"Moving from Windows Authentication to OAuth2/OpenID and Zero Trust networking." },
+  { id:"data",  label:"Data Migration & State Management",     pct:0.04, desc:"Shifting to distributed caches (Redis) and migrating legacy SQL schemas to cloud-optimized databases." },
+  { id:"test",  label:"Testing & Validation",                  pct:0.03, desc:"Human oversight to ensure AI didn't hallucinate a business rule or skip an edge-case calculation." },
+];
+const VELO_DATA = {
+  vb6:         { tf:1.00, tiers:[{from:1,to:100000,cpl:0.55,t:1},{from:100001,to:250000,cpl:0.50,t:3},{from:250001,to:500000,cpl:0.45,t:5},{from:500001,to:1000000,cpl:0.40,t:7},{from:1000001,to:2000000,cpl:0.35,t:11}]},
+  vbnet:       { tf:0.74, tiers:[{from:1,to:100000,cpl:0.55,t:1},{from:100001,to:250000,cpl:0.50,t:3},{from:250001,to:500000,cpl:0.45,t:5},{from:500001,to:1000000,cpl:0.40,t:7},{from:1000001,to:2000000,cpl:0.35,t:11}]},
+  access:      { tf:1.00, tiers:[{from:1,to:100000,cpl:0.55,t:1},{from:100001,to:250000,cpl:0.50,t:3},{from:250001,to:500000,cpl:0.45,t:5},{from:500001,to:1000000,cpl:0.40,t:7},{from:1000001,to:2000000,cpl:0.35,t:11}]},
+  powerbuilder:{ tf:1.25, tiers:[{from:1,to:100000,cpl:0.70,t:1},{from:100001,to:250000,cpl:0.65,t:3},{from:250001,to:500000,cpl:0.60,t:5},{from:500001,to:1000000,cpl:0.55,t:7},{from:1000001,to:2000000,cpl:0.50,t:11}]},
+  webforms:    { tf:1.15, tiers:[{from:1,to:100000,cpl:0.55,t:1},{from:100001,to:250000,cpl:0.50,t:3},{from:250001,to:500000,cpl:0.45,t:5},{from:500001,to:1000000,cpl:0.40,t:7},{from:1000001,to:2000000,cpl:0.35,t:11}]},
+  winforms:    { tf:0.74, tiers:[{from:1,to:100000,cpl:0.55,t:1},{from:100001,to:250000,cpl:0.50,t:3},{from:250001,to:500000,cpl:0.45,t:5},{from:500001,to:1000000,cpl:0.40,t:7},{from:1000001,to:2000000,cpl:0.35,t:11}]},
+  clarion:     { tf:1.67, tiers:[{from:1,to:100000,cpl:0.85,t:1},{from:100001,to:250000,cpl:0.80,t:3},{from:250001,to:500000,cpl:0.75,t:5},{from:500001,to:1000000,cpl:0.70,t:7},{from:1000001,to:2000000,cpl:0.65,t:11}]},
+  silverlight: { tf:0.74, tiers:[{from:1,to:100000,cpl:0.55,t:1},{from:100001,to:250000,cpl:0.50,t:3},{from:250001,to:500000,cpl:0.45,t:5},{from:500001,to:1000000,cpl:0.40,t:7},{from:1000001,to:2000000,cpl:0.35,t:11}]},
+  aspclassic:  { tf:1.00, tiers:[{from:1,to:100000,cpl:0.55,t:1},{from:100001,to:250000,cpl:0.50,t:3},{from:250001,to:500000,cpl:0.45,t:5},{from:500001,to:1000000,cpl:0.40,t:7},{from:1000001,to:2000000,cpl:0.35,t:11}]},
+  informix:    { tf:1.50, tiers:[{from:1,to:100000,cpl:0.85,t:1},{from:100001,to:250000,cpl:0.80,t:3},{from:250001,to:500000,cpl:0.75,t:5},{from:500001,to:1000000,cpl:0.70,t:7},{from:1000001,to:2000000,cpl:0.65,t:11}]},
+  delphi:      { tf:1.33, tiers:[{from:1,to:100000,cpl:0.80,t:1},{from:100001,to:250000,cpl:0.75,t:3},{from:250001,to:500000,cpl:0.70,t:5},{from:500001,to:1000000,cpl:0.65,t:7},{from:1000001,to:2000000,cpl:0.60,t:11}]},
+};
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function fmt$(n) { return n>=1e6?`$${(n/1e6).toFixed(1)}M`:n>=1e3?`$${(n/1e3).toFixed(0)}K`:`$${Math.round(n)}`; }
+function fmtK(v) { return v>=1000?`${(v/1000).toFixed(v>=10000?0:1)}M`:`${v}K`; }
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    const s = document.getElementById(`step-${i}`);
+    s.className = 'step' + (i===n?' active':i<n?' done':'');
+    if (i < 3) document.getElementById(`line-${i}`).className = 'step-line' + (i<n?' done':'');
+  });
+  [1,2,3].forEach(i => {
+    const p = document.getElementById(`page-${i}`);
+    p.className = 'page' + (i===n?' active':'');
+  });
+}
+function showError(container, msg, sub='') {
+  document.getElementById(container).innerHTML = `
+    <div class="error-box">
+      <div class="error-icon">⚠</div>
+      <div><div class="error-msg">${msg}</div>${sub?`<div class="error-sub">${sub}</div>`:''}</div>
+    </div>`;
+}
+function clearError(container) { document.getElementById(container).innerHTML = ''; }
+
+// ── DEMO DATA ─────────────────────────────────────────────────────────────────
+const DEMO_CALLS = [
+  { id:'c1', title:'Discovery Call — Acme Corp', date:'2026-06-10', duration:'47 min', participants:'Sarah (AE), John (Technical)', transcript:`Sarah: "Tell me about your current tech stack." John: "We're running a large VB6 application that we built back in 2004. It's about 350,000 lines of code spread across multiple modules. Our team has about 8 developers working on it." Sarah: "And what's the target? Where do you want to be?" John: "We want to move to .NET 8, ideally cloud-hosted on Azure. The codebase is complex — we have tons of undocumented integrations, custom COM components, and the original developers are long gone. Documentation is basically nonexistent."` },
+  { id:'c2', title:'Technical Deep Dive — Acme Corp', date:'2026-06-14', duration:'62 min', participants:'Carlos (SA), Mike (CTO)', transcript:`Carlos: "Can you describe the architecture?" Mike: "It's classic VB6, about 350K lines. The complexity is off the charts — circular references everywhere, no separation of concerns, deeply embedded business logic we're still trying to reverse engineer. We have 8 developers on the modernization effort but honestly they're spending most of their time just trying to understand what the code does." Carlos: "Target platform?" Mike: "We need to get to .NET 8 on Azure. Modern, cloud-native. The sooner the better."` },
+  { id:'c3', title:'Stakeholder Alignment — Acme Corp', date:'2026-06-17', duration:'34 min', participants:'Lisa (VP Sales), Director', transcript:`Director: "We have roughly 350K lines of legacy VB6 code. The system touches everything — ERP, customer portal, reporting. We have 8 developers assigned but progress is slow. The codebase is a mess — spaghetti at its worst. We desperately need .NET 8 migration." Lisa: "What's your timeline expectation?" Director: "We needed it yesterday. The risk of not modernizing is existential."` },
+];
+
+function loadDemo() {
+  state.isDemo = true;
+  state.clientName = 'Acme Corporation';
+  state.anthropicKey = document.getElementById('anthropic-key').value;
+  state.calls = DEMO_CALLS;
+  showCallList();
+}
+
+// ── STEP 1: CONNECT GONG ──────────────────────────────────────────────────────
+async function connectGong() {
+  clearError('step1-error');
+  const key = document.getElementById('gong-key').value.trim();
+  const secret = document.getElementById('gong-secret').value.trim();
+  const apiKey = document.getElementById('anthropic-key').value.trim();
+  const client = document.getElementById('client-name').value.trim();
+  const from = document.getElementById('date-from').value;
+  const to = document.getElementById('date-to').value;
+
+  if (!key || !secret) return showError('step1-error','Gong credentials required','Enter your Gong API Access Key and Secret.');
+  if (!apiKey) return showError('step1-error','Anthropic API key required','Required to analyze transcripts with AI.');
+  if (!client) return showError('step1-error','Client name required','Enter the account name to search in Gong.');
+
+  state.gongKey = key; state.gongSecret = secret; state.anthropicKey = apiKey; state.clientName = client;
+
+  const panel = document.getElementById('calls-panel');
+  panel.style.display = 'block';
+  const statusEl = document.getElementById('calls-status');
+  statusEl.style.display = 'flex';
+  statusEl.innerHTML = `
+    <div class="status-icon processing"><div class="spinner" style="width:16px;height:16px;border-width:2px"></div></div>
+    <div><div class="status-msg">Connecting to Gong API…</div><div class="status-sub">Authenticating with provided credentials</div></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:30%"></div></div>`;
+
+  try {
+    const creds = btoa(`${key}:${secret}`);
+    const dateParams = from && to ? `&fromDateTime=${from}T00:00:00Z&toDateTime=${to}T23:59:59Z` : '';
+    const resp = await fetch(`https://api.gong.io/v2/calls?accountName=${encodeURIComponent(client)}${dateParams}`, {
+      headers: { 'Authorization': `Basic ${creds}`, 'Content-Type': 'application/json' }
+    });
+
+    if (!resp.ok) throw new Error(`Gong API error: ${resp.status} ${resp.statusText}`);
+    const data = await resp.json();
+
+    statusEl.innerHTML = `
+      <div class="status-icon done">✓</div>
+      <div><div class="status-msg">Connected — fetching transcripts…</div><div class="status-sub">${data.calls?.length || 0} calls found for "${client}"</div></div>
+      <div class="progress-bar-wrap"><div class="progress-bar" style="width:70%"></div></div>`;
+
+    // Fetch transcripts for each call
+    const callsWithTranscripts = [];
+    for (const call of (data.calls || []).slice(0, 10)) {
+      const tResp = await fetch(`https://api.gong.io/v2/calls/${call.id}/transcript`, {
+        headers: { 'Authorization': `Basic ${creds}` }
+      });
+      const tData = tResp.ok ? await tResp.json() : {};
+      callsWithTranscripts.push({
+        id: call.id,
+        title: call.title || 'Untitled Call',
+        date: call.started ? call.started.slice(0,10) : '—',
+        duration: call.duration ? `${Math.round(call.duration/60)} min` : '—',
+        participants: (call.parties||[]).map(p=>p.name).join(', ') || '—',
+        transcript: (tData.transcript||[]).map(s=>`${s.speakerName}: "${s.sentences?.map(x=>x.text).join(' ')}"`).join('\n') || ''
+      });
+    }
+    state.calls = callsWithTranscripts;
+
+    statusEl.innerHTML = `
+      <div class="status-icon done" style="background:rgba(67,182,134,0.2);color:var(--gap-green)">✓</div>
+      <div><div class="status-msg" style="color:var(--gap-green)">Gong connected — ${callsWithTranscripts.length} calls loaded</div><div class="status-sub">Select calls to analyze with AI</div></div>
+      <div class="progress-bar-wrap"><div class="progress-bar" style="width:100%;background:var(--gap-green)"></div></div>`;
+
+    showCallList();
+
+  } catch(err) {
+    statusEl.style.display = 'none';
+    showError('step1-error', 'Gong connection failed', err.message + ' — Check credentials or use "Load Demo Data" to try the platform.');
+  }
+}
+
+function showCallList() {
+  const panel = document.getElementById('calls-panel');
+  panel.style.display = 'block';
+  const list = document.getElementById('call-list');
+  list.innerHTML = state.calls.map(c => `
+    <div class="call-item" id="ci-${c.id}" onclick="toggleCall('${c.id}')">
+      <input type="checkbox" id="cb-${c.id}" onchange="toggleCall('${c.id}')" onclick="event.stopPropagation()">
+      <div class="call-dot"></div>
+      <div class="call-info">
+        <div class="call-name">${c.title}</div>
+        <div class="call-meta">${c.date} · ${c.participants}</div>
+      </div>
+      <div class="call-dur">${c.duration}</div>
+    </div>`).join('');
+  updateSelectedCount();
+}
+
+function toggleCall(id) {
+  const cb = document.getElementById(`cb-${id}`);
+  const item = document.getElementById(`ci-${id}`);
+  cb.checked = !cb.checked;
+  item.classList.toggle('selected', cb.checked);
+  state.selectedCalls = state.calls.filter(c => document.getElementById(`cb-${c.id}`)?.checked);
+  updateSelectedCount();
+}
+function updateSelectedCount() {
+  const n = state.selectedCalls.length;
+  document.getElementById('selected-count').textContent = `${n} call${n!==1?'s':''} selected`;
+  document.getElementById('analyze-btn').disabled = n === 0;
+}
+
+// ── STEP 2: AI EXTRACTION ─────────────────────────────────────────────────────
+async function analyzeSelected() {
+  if (!state.anthropicKey && !state.isDemo) {
+    state.anthropicKey = document.getElementById('anthropic-key').value.trim();
+  }
+  setStep(2);
+
+  const statusEl = document.getElementById('extract-status');
+  const contentEl = document.getElementById('extract-content');
+  const btnsEl = document.getElementById('extract-btns');
+  btnsEl.style.display = 'none';
+
+  const combined = state.selectedCalls.map((c,i) =>
+    `=== CALL ${i+1}: ${c.title} (${c.date}) ===\n${c.transcript}`
+  ).join('\n\n');
+
+  statusEl.innerHTML = `
+    <div class="status-bar" style="margin-bottom:16px">
+      <div class="status-icon processing"><div class="spinner" style="width:16px;height:16px;border-width:2px"></div></div>
+      <div><div class="status-msg">Claude is analyzing ${state.selectedCalls.length} call transcript${state.selectedCalls.length!==1?'s':''}…</div>
+      <div class="status-sub">Extracting modernization signals with AI</div></div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="extract-progress" style="width:20%"></div></div>
+    </div>`;
+  contentEl.innerHTML = '';
+
+  const pb = document.getElementById('extract-progress');
+  let prog = 20;
+  const tick = setInterval(() => { prog = Math.min(90, prog + 5); pb.style.width = prog + '%'; }, 600);
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: `You are a technical pre-sales analyst for GAP Velocity AI, a software modernization company. Analyze sales call transcripts and extract specific technical signals. Respond ONLY with a JSON object — no preamble, no markdown, no backticks. Extract these exact fields:
+- sourceTech: the legacy technology being modernized (must match one of: vb6, vbnet, access, powerbuilder, webforms, winforms, clarion, silverlight, aspclassic, informix, delphi, or "unknown")
+- targetTech: the desired target platform (free text, e.g. ".NET 8", "React", "Azure", etc., or null)
+- linesOfCode: total lines of code as an integer (extract from statements like "350,000 lines", "1.2 million LOC", etc., or null if not mentioned)
+- complexityLevel: integer 0-3 (0=Clean, 1=Conventional, 2=Complex, 3=Spaghetti — infer from descriptions of code quality, documentation state, team knowledge)
+- customersDevCount: number of developers the customer has assigned, as integer (or null)
+- sourceTechSnippet: brief quote (under 15 words) from transcript supporting sourceTech
+- linesSnippet: brief quote supporting linesOfCode
+- complexitySnippet: brief quote supporting complexityLevel
+- devCountSnippet: brief quote supporting customersDevCount
+- confidence: overall confidence 0-100`,
+        messages: [{ role: 'user', content: `Extract modernization signals from these call transcripts for client "${state.clientName}":\n\n${combined}` }]
+      })
+    });
+
+    clearInterval(tick);
+    pb.style.width = '100%';
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `API error ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const raw = data.content.find(b => b.type === 'text')?.text || '{}';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const ext = JSON.parse(clean);
+
+    state.extracted = {
+      sourceTech:       ext.sourceTech !== 'unknown' ? ext.sourceTech : null,
+      targetTech:       ext.targetTech || null,
+      linesOfCode:      ext.linesOfCode || null,
+      complexityLevel:  ext.complexityLevel !== undefined && ext.complexityLevel !== null ? ext.complexityLevel : null,
+      customersDevCount:ext.customersDevCount || null,
+    };
+    state.extractedSnippets = {
+      sourceTech:  ext.sourceTechSnippet || null,
+      linesOfCode: ext.linesSnippet || null,
+      complexityLevel: ext.complexitySnippet || null,
+      customersDevCount: ext.devCountSnippet || null,
+    };
+
+    statusEl.innerHTML = `
+      <div class="status-bar" style="margin-bottom:16px;background:var(--gap-dark)">
+        <div class="status-icon done" style="background:rgba(67,182,134,0.2);color:var(--gap-green)">✓</div>
+        <div><div class="status-msg" style="color:var(--gap-green)">Extraction complete — confidence ${ext.confidence || '—'}%</div>
+        <div class="status-sub">Review results below. Fill in any missing fields manually.</div></div>
+        <div class="progress-bar-wrap"><div class="progress-bar" style="width:100%;background:var(--gap-green)"></div></div>
+      </div>`;
+
+    renderExtraction();
+
+  } catch(err) {
+    clearInterval(tick);
+    statusEl.innerHTML = '';
+    showError('extract-status', 'AI extraction failed', err.message);
+    // Still show manual entry form
+    state.extracted = { sourceTech:null, targetTech:null, linesOfCode:null, complexityLevel:null, customersDevCount:null };
+    renderExtraction();
+  }
+}
+
+function renderExtraction() {
+  const e = state.extracted;
+  const sn = state.extractedSnippets;
+  const content = document.getElementById('extract-content');
+
+  const stackOptions = Object.entries(STACKS).map(([k,v]) => `<option value="${k}">${v.label}</option>`).join('');
+  const complexOptions = COMPLEXITY.map((c,i) => `<option value="${i}">${c.label} (${c.factor}x)</option>`).join('');
+
+  function card(field, label, display, snippet, manualHtml, isMissing) {
+    const cls = isMissing ? 'missing' : 'found';
+    const badge = isMissing ? `<div class="extract-badge badge-missing">NEEDS INPUT</div>` : `<div class="extract-badge badge-found">EXTRACTED</div>`;
+    const snip = snippet && !isMissing ? `<div class="transcript-snippet">"${snippet}"</div>` : '';
+    return `<div class="extract-card ${cls}" id="card-${field}">
+      ${badge}
+      <div class="extract-label">${label}</div>
+      <div class="extract-value">${isMissing ? '—' : display}</div>
+      ${snip}
+      <div class="manual-input" style="display:${isMissing?'block':'none'}">${manualHtml}</div>
+      ${!isMissing ? `<div style="margin-top:8px"><button class="btn btn-outline" style="padding:4px 12px;font-size:11px" onclick="toggleManual('${field}')">Edit</button></div>` : ''}
+    </div>`;
+  }
+
+  const sourceTechManual = `<select id="manual-sourceTech" onchange="updateManual('sourceTech',this.value)" style="width:100%"><option value="">— Select —</option>${stackOptions}</select>`;
+  const targetTechManual = `<input type="text" id="manual-targetTech" placeholder="e.g. .NET 8, React, Azure" oninput="updateManual('targetTech',this.value)" value="${e.targetTech||''}">`;
+  const locManual = `<input type="number" id="manual-linesOfCode" placeholder="e.g. 350000" oninput="updateManual('linesOfCode',+this.value)" value="${e.linesOfCode||''}">`;
+  const complexManual = `<select id="manual-complexityLevel" onchange="updateManual('complexityLevel',+this.value)" style="width:100%"><option value="">— Select —</option>${complexOptions}</select>`;
+  const devManual = `<input type="number" id="manual-customersDevCount" placeholder="e.g. 8" oninput="updateManual('customersDevCount',+this.value)" value="${e.customersDevCount||''}">`;
+
+  content.innerHTML = `
+    <div class="extract-grid">
+      ${card('sourceTech','Source Technology',
+        STACKS[e.sourceTech]?.label || e.sourceTech, sn.sourceTech, sourceTechManual, !e.sourceTech)}
+      ${card('targetTech','Target Platform',
+        e.targetTech, null, targetTechManual, !e.targetTech)}
+      ${card('linesOfCode','Lines of Code',
+        (e.linesOfCode||0).toLocaleString(), sn.linesOfCode, locManual, !e.linesOfCode)}
+      ${card('complexityLevel','Complexity Level',
+        COMPLEXITY[e.complexityLevel]?.label, sn.complexityLevel, complexManual, e.complexityLevel === null)}
+      ${card('customersDevCount','Customer Dev Count',
+        e.customersDevCount + ' developers', sn.customersDevCount, devManual, !e.customersDevCount)}
+    </div>
+    <div class="source-chips" style="margin-top:16px">
+      ${state.selectedCalls.map(c=>`<div class="chip"><div class="chip-dot"></div>${c.title}</div>`).join('')}
+    </div>`;
+
+  // Pre-fill selects
+  if (e.sourceTech) {
+    const sel = document.getElementById('manual-sourceTech');
+    if (sel) sel.value = e.sourceTech;
+  }
+  if (e.complexityLevel !== null) {
+    const sel = document.getElementById('manual-complexityLevel');
+    if (sel) sel.value = e.complexityLevel;
+  }
+
+  document.getElementById('extract-btns').style.display = 'flex';
+}
+
+function updateManual(field, val) {
+  state.extracted[field] = val === '' || val === 0 ? null : val;
+  const card = document.getElementById(`card-${field}`);
+  if (card) {
+    card.classList.remove('missing','found','manual');
+    card.classList.add(state.extracted[field] !== null ? 'manual' : 'missing');
+    const badge = card.querySelector('.extract-badge');
+    if (badge && state.extracted[field] !== null) {
+      badge.className = 'extract-badge badge-manual';
+      badge.textContent = 'MANUAL';
+    }
+  }
+}
+
+function toggleManual(field) {
+  const card = document.getElementById(`card-${field}`);
+  const mi = card.querySelector('.manual-input');
+  mi.style.display = mi.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── STEP 3: CALC + DASHBOARD ──────────────────────────────────────────────────
+function runCalcAndDash() {
+  const e = state.extracted;
+  const missing = [];
+  if (!e.sourceTech) missing.push('Source Technology');
+  if (!e.linesOfCode) missing.push('Lines of Code');
+  if (e.complexityLevel === null) missing.push('Complexity Level');
+  if (missing.length) {
+    showError('extract-status', 'Missing required fields', `Please fill in: ${missing.join(', ')}`);
+    return;
+  }
+  const r = calcAll(e);
+  state.calcResult = r;
+  renderDashboard(r, e);
+  setStep(3);
+}
+
+function calcAll(e) {
+  const stack = STACKS[e.sourceTech] || STACKS.vb6;
+  const complexity = COMPLEXITY[e.complexityLevel] || COMPLEXITY[1];
+  const vd = VELO_DATA[e.sourceTech] || VELO_DATA.vb6;
+  const loc = e.linesOfCode;
+  const kloc = loc / 1000;
+  const devCost = 150000; // default
+
+  const ehpk = stack.hpk * complexity.factor;
+  const hours = Math.round(kloc * ehpk);
+  const recommendedEng = Math.max(2, Math.ceil(hours / 1800));
+  const eng = e.customersDevCount || recommendedEng;
+  const months = Math.max(3, Math.ceil((hours / eng) / 140));
+  const baseCost = Math.round(eng * devCost * (months / 12));
+  const aiCost = Math.round(kloc * 15);
+  const risks = RISKS.map(r => ({ ...r, cost: Math.round(baseCost * r.pct) }));
+  const riskTotal = risks.reduce((s,r) => s + r.cost, 0);
+  const diy = baseCost + aiCost + riskTotal;
+
+  const tier = vd.tiers.find(t => loc >= t.from && loc <= t.to) || vd.tiers[vd.tiers.length-1];
+  const pro = parseFloat((loc * tier.cpl).toFixed(2));
+  const proAndRisk = Math.round(pro * complexity.factor);
+  const proMonths = Math.ceil(tier.t * vd.tf * complexity.factor);
+
+  const savings = diy - proAndRisk;
+  const savPct = Math.round((savings / diy) * 100);
+
+  return { stack, complexity, loc, kloc, ehpk, hours, eng, recommendedEng, months, baseCost, aiCost, risks, riskTotal, diy, pro, proAndRisk, proMonths, savings, savPct, cpl: (diy/loc).toFixed(2) };
+}
+
+function renderDashboard(r, e) {
+  const client = state.clientName || 'Client';
+  const sourceLbl = STACKS[e.sourceTech]?.label || e.sourceTech;
+  const targetLbl = e.targetTech || 'Modern Platform';
+  const complexLbl = COMPLEXITY[e.complexityLevel]?.label || 'Conventional';
+
+  // Timeline blocks
+  const blocks = Math.min(36, r.months);
+  let tl = '';
+  for (let m=1; m<=blocks; m++) {
+    tl += `<div class="tl-block ${m<=r.months?'active':'inactive'}">${m}</div>`;
+  }
+  const extra = r.months > 36 ? `<span style="font-size:11px;color:var(--gap-red);font-weight:700;align-self:center;margin-left:8px">+${r.months-36} more</span>` : '';
+
+  // Breakdown rows
+  const maxCost = Math.max(r.baseCost, r.aiCost, ...r.risks.map(x=>x.cost));
+  const bkRows = [
+    { name:'Base Engineering Cost', desc:`${r.eng} engineers × $150K/yr × ${r.months} months`, amt:r.baseCost },
+    { name:'GenAI Tooling & API Costs', desc:`~$15 per KLOC in token costs & licenses`, amt:r.aiCost },
+  ].map(row => `
+    <div class="breakdown-row">
+      <div><div class="breakdown-name">${row.name}</div><div class="breakdown-desc">${row.desc}</div>
+      <div class="breakdown-bar-wrap"><div class="breakdown-bar" style="width:${Math.round((row.amt/maxCost)*100)}%;background:var(--gap-steel)"></div></div></div>
+      <div class="breakdown-amount">${fmt$(row.amt)}</div>
+    </div>`).join('');
+
+  const riskRows = r.risks.map(ri => `
+    <div class="risk-item">
+      <div class="risk-top"><div class="risk-name">${ri.label}</div><div class="risk-cost-tag">${fmt$(ri.cost)}</div></div>
+      <div class="risk-desc">${ri.desc} <strong style="color:var(--gap-gray)">(${(ri.pct*100).toFixed(0)}% of base)</strong></div>
+    </div>`).join('');
+
+  document.getElementById('dashboard-panel').innerHTML = `
+    <div class="dash-header-band">
+      <div class="dash-client">${client} · Modernization Cost Analysis</div>
+      <div class="dash-headline">DIY Cost <span class="hl">Reality Check</span></div>
+      <div class="dash-sub">GAP Velocity AI — extracted from ${state.selectedCalls.length} Gong call${state.selectedCalls.length!==1?'s':''} · ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}</div>
+      <div class="dash-params">
+        <div class="dash-param"><span>${sourceLbl}</span> → <span>${targetLbl}</span></div>
+        <div class="dash-param"><span>${r.loc.toLocaleString()}</span> lines</div>
+        <div class="dash-param">Complexity: <span>${complexLbl}</span></div>
+        ${e.customersDevCount ? `<div class="dash-param"><span>${e.customersDevCount}</span> dev${e.customersDevCount!==1?'s':''} on team</div>` : ''}
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">Total Lines</div><div class="metric-value">${r.loc.toLocaleString()}</div><div class="metric-sub">${fmtK(r.kloc)} KLOC</div></div>
+      <div class="metric-card"><div class="metric-label">Eng. Hours</div><div class="metric-value">${r.hours.toLocaleString()}</div><div class="metric-sub">${r.ehpk.toFixed(0)} hrs/KLOC</div></div>
+      <div class="metric-card"><div class="metric-label">Team Size</div><div class="metric-value">${r.eng}</div><div class="metric-sub">${r.months} months DIY</div></div>
+      <div class="metric-card"><div class="metric-label">Cost / Line</div><div class="metric-value red">$${r.cpl}</div><div class="metric-sub">DIY all-in</div></div>
+    </div>
+
+    <div class="compare-row">
+      <div class="diy-card">
+        <div class="card-badge-flag flag-risk">HIGH RISK</div>
+        <div class="card-type-label" style="color:var(--gap-red)">DIY with GenAI</div>
+        <div class="card-amount-big" style="color:var(--gap-red)">${fmt$(r.diy)}</div>
+        <div class="card-meta-small">${r.months} months · ${r.eng} engineers · ${fmtK(r.kloc)} lines</div>
+        <div style="margin-top:16px">
+          <div style="font-size:10px;font-weight:700;color:var(--gap-gray);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Project Timeline</div>
+          <div class="timeline-wrap">${tl}${extra}</div>
+        </div>
+      </div>
+      <div class="velo-card">
+        <div class="card-badge-flag flag-managed">MANAGED RISK</div>
+        <div class="card-type-label" style="color:var(--gap-green)">VELO — GAP Velocity AI</div>
+        <div class="card-amount-big" style="color:var(--gap-green)">${fmt$(r.proAndRisk)}</div>
+        <div class="card-meta-small">${r.proMonths} months · proven methodology</div>
+        ${r.savings > 0 ? `
+        <div class="savings-highlight">
+          <div class="savings-num">Save ${fmt$(r.savings)}</div>
+          <div class="savings-detail">${r.savPct}% less · ${r.months - r.proMonths} months faster</div>
+        </div>` : ''}
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <div class="breakdown-title">DIY Cost Breakdown — ${fmtK(r.kloc)} lines of ${sourceLbl}</div>
+      ${bkRows}
+      <div class="breakdown-row" style="border-top:2px solid #E8E8E8;margin-top:4px;padding-top:16px">
+        <div><div class="breakdown-name" style="color:var(--gap-red)">Last Mile Risk Costs</div><div class="breakdown-desc">Adjusted for ${sourceLbl} (${r.stack.risk}x risk) + ${complexLbl} density (${r.complexity.factor}x effort)</div></div>
+        <div class="breakdown-amount" style="color:var(--gap-red)">${fmt$(r.riskTotal)}</div>
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <div class="breakdown-title">Last Mile Risk Breakdown</div>
+      <div class="risk-grid">${riskRows}</div>
+      <div class="breakdown-row" style="border-top:2px solid #E8E8E8;margin-top:12px;padding-top:14px">
+        <div class="breakdown-name">Total Last Mile Costs</div>
+        <div class="breakdown-amount" style="color:var(--gap-red)">${fmt$(r.riskTotal)}</div>
+      </div>
+    </div>
+
+    <div class="summary-block">
+      <div class="sum-diy">
+        <div class="sum-tag">⚠ DIY with GenAI</div>
+        <div class="sum-text">With <strong>${r.loc.toLocaleString()} lines of ${sourceLbl}</strong> at <strong>${complexLbl.toLowerCase()}</strong> density, ${client}'s team would need <strong>${r.eng} engineers</strong> working <strong>${r.months} months</strong>. That's <strong class="red-hl">$${r.cpl} per line</strong> all-in — and <strong class="red-hl">${fmt$(r.riskTotal)}</strong> is hidden risk from silent bugs, rework, and lost business logic that GenAI alone can't catch.</div>
+        <div class="sum-fn">Total DIY cost: <strong>${fmt$(r.diy)}</strong></div>
+      </div>
+      <div class="sum-velo">
+        <div class="sum-tag">✓ VELO — GAP Velocity AI</div>
+        <div class="sum-text">With VELO, the same <strong>${r.loc.toLocaleString()} lines of ${sourceLbl}</strong> migrate to <strong class="green-hl">${targetLbl}</strong> in <strong class="green-hl">${r.proMonths} months</strong>${r.months - r.proMonths > 0 ? ` — <strong class="green-hl">${r.months - r.proMonths} months faster</strong> than DIY` : ''}. Risk is managed, methodology is proven, and ${client}'s engineers stay focused on building value, not archaeology.</div>
+        <div class="sum-fn">VELO cost: <strong>${fmt$(r.proAndRisk)}</strong>${r.savings > 0 ? ` &nbsp;·&nbsp; Savings: <strong>${fmt$(r.savings)}</strong>` : ''}</div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Calibrated against 35+ years and billions of lines of legacy modernization data from ArtinSoft / Mobilize.Net and GAPVelocity AI<br>
+      <a href="https://www.gapvelocity.ai/" target="_blank">www.gapvelocity.ai</a>
+    </div>
+
+    <div class="footer-bar"></div>`;
+}
+
+function goBack() { setStep(1); }
+function startOver() { location.reload(); }
+
+function downloadDashboard() {
+  const panel = document.getElementById('dashboard-panel').innerHTML;
+  const client = state.clientName || 'client';
+  const e = state.extracted;
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAP Velocity AI — ${client} Cost Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gap-blue:#006489;--gap-dark:#453F3E;--gap-gray:#777373;--gap-light-gray:#D1D1D1;--gap-lighter-gray:#E5E1E6;--gap-yellow:#FEBD12;--gap-steel:#5497AE;--gap-soft:#A5CAD6;--gap-cyan:#18C1E5;--gap-green:#43B686;--gap-red:#E54360;--gap-bg:#F7F8FA;--gap-white:#FFFFFF;--font:'Lato',Verdana,sans-serif}
+body{background:var(--gap-bg);color:var(--gap-dark);font-family:var(--font);padding:40px 32px}
+.panel{background:white;border-radius:10px;border:1px solid #E8E8E8;box-shadow:0 1px 4px rgba(0,0,0,.04);padding:28px;max-width:900px;margin:0 auto}
+.dash-header-band{background:var(--gap-blue);border-radius:10px 10px 0 0;padding:24px 28px;margin:-28px -28px 24px;position:relative;overflow:hidden}
+.dash-header-band::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%);border-radius:50%}
+.dash-client{font-size:11px;color:var(--gap-soft);letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.dash-headline{font-size:22px;font-weight:900;color:white;text-transform:uppercase}
+.dash-headline .hl{color:var(--gap-yellow)}
+.dash-sub{font-size:12px;color:var(--gap-soft);margin-top:6px}
+.dash-params{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.dash-param{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:5px;padding:4px 12px;font-size:11px;font-weight:700;color:white}
+.dash-param span{color:var(--gap-cyan)}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.metric-card{padding:18px;background:white;border-radius:10px;border:1px solid #E8E8E8}
+.metric-label{font-size:9px;color:var(--gap-blue);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.metric-value{font-size:24px;font-weight:900;color:var(--gap-dark);line-height:1}
+.metric-value.red{color:var(--gap-red)}
+.metric-sub{font-size:11px;color:var(--gap-gray);margin-top:5px}
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.diy-card,.velo-card{border-radius:10px;padding:24px;position:relative;overflow:hidden}
+.diy-card{border:2px solid var(--gap-red);background:white}
+.diy-card::before,.velo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.diy-card::before{background:var(--gap-red)}
+.velo-card{border:2px solid var(--gap-green);background:white}
+.velo-card::before{background:var(--gap-green)}
+.card-badge-flag{position:absolute;top:14px;right:14px;font-size:9px;padding:3px 10px;border-radius:4px;font-weight:700;letter-spacing:.1em}
+.flag-risk{background:var(--gap-red);color:white}
+.flag-managed{background:var(--gap-green);color:white}
+.card-type-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+.card-amount-big{font-size:42px;font-weight:900;line-height:1}
+.card-meta-small{font-size:12px;color:var(--gap-gray);margin-top:8px}
+.savings-highlight{margin-top:16px;padding:12px 16px;background:#E8F8F0;border-radius:8px;border:1px solid #C6ECDB}
+.savings-num{font-size:20px;font-weight:900;color:var(--gap-green)}
+.savings-detail{font-size:11px;color:var(--gap-gray);margin-top:2px}
+.timeline-wrap{display:flex;gap:5px;flex-wrap:wrap}
+.tl-block{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
+.tl-block.active{background:var(--gap-red);color:white}
+.tl-block.inactive{background:var(--gap-lighter-gray);color:var(--gap-light-gray)}
+.breakdown-section{background:white;border-radius:10px;border:1px solid #E8E8E8;padding:24px;margin-bottom:20px}
+.breakdown-title{font-size:11px;font-weight:700;color:var(--gap-blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #F0F0F0}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-name{font-size:13px;font-weight:700;color:var(--gap-dark)}
+.breakdown-desc{font-size:11px;color:var(--gap-gray);margin-top:2px}
+.breakdown-amount{font-size:14px;font-weight:900;color:var(--gap-dark)}
+.breakdown-bar-wrap{height:5px;background:var(--gap-lighter-gray);border-radius:3px;margin-top:6px;width:100%}
+.breakdown-bar{height:5px;border-radius:3px;background:var(--gap-red)}
+.risk-grid{display:flex;flex-direction:column;gap:8px}
+.risk-item{padding:12px 16px;background:var(--gap-bg);border-radius:8px;border-left:3px solid var(--gap-red)}
+.risk-top{display:flex;justify-content:space-between;align-items:center}
+.risk-name{font-size:13px;font-weight:700;color:var(--gap-dark)}
+.risk-cost-tag{font-size:13px;font-weight:900;color:var(--gap-red)}
+.risk-desc{font-size:11px;color:var(--gap-gray);margin-top:5px;line-height:1.5}
+.summary-block{display:grid;grid-template-columns:1fr 1fr;border-radius:10px;overflow:hidden;margin-bottom:20px}
+.sum-diy{padding:24px 28px;background:var(--gap-dark);border-top:4px solid var(--gap-red)}
+.sum-velo{padding:24px 28px;background:var(--gap-blue);border-top:4px solid var(--gap-cyan);position:relative}
+.sum-velo::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--gap-cyan)}
+.sum-tag{font-size:9px;letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:10px}
+.sum-diy .sum-tag{color:var(--gap-red)}
+.sum-velo .sum-tag{color:var(--gap-cyan)}
+.sum-text{font-size:13px;line-height:1.7}
+.sum-diy .sum-text{color:#c9c4c3}
+.sum-velo .sum-text{color:var(--gap-soft)}
+.sum-text strong{color:white}
+.sum-text .red-hl{color:#ff7a92}
+.sum-text .green-hl{color:#7cdbb5}
+.sum-fn{margin-top:14px;font-size:11px}
+.sum-diy .sum-fn{color:#7a7370}
+.sum-velo .sum-fn{color:var(--gap-steel)}
+.footer-bar{height:4px;background:linear-gradient(90deg,var(--gap-yellow) 0%,var(--gap-cyan) 50%,var(--gap-green) 100%);border-radius:0 0 10px 10px;margin:-28px -28px 0}
+.footer-note{text-align:center;margin-top:20px;font-size:11px;color:var(--gap-gray);font-style:italic}
+.footer-note a{color:var(--gap-blue);font-style:normal;font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="panel">${panel}</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `gap-velo-${client.replace(/\s+/g,'-').toLowerCase()}-cost-analysis.html`;
+  a.click();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(function init() {
+  const today = new Date();
+  const month = new Date(today); month.setMonth(month.getMonth() - 3);
+  document.getElementById('date-from').value = month.toISOString().slice(0,10);
+  document.getElementById('date-to').value = today.toISOString().slice(0,10);
+})();
+</script>
+</body>
+</html>
