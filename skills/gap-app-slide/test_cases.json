@@ -1,0 +1,27 @@
+[
+  {
+    "id": "test_01_basic_trapeze",
+    "prompt": "Create a GAP-branded slide with this data:\nApplication: Trapeze Software\nLegacy Technologies: VB6 & C++\nTarget Technology: .NET / Angular\nProjects: 67\nCode Size:\n- C++: 4,226,869 LOC\n- VB6: 771,092 LOC",
+    "description": "Basic test case from the original request - full data set with multiple languages"
+  },
+  {
+    "id": "test_02_minimal_data",
+    "prompt": "Make a slide for Phoenix System modernization: Legacy Java 6, Target Java 17 / Spring Boot, 12 projects",
+    "description": "Minimal data - no LOC breakdown, casual phrasing"
+  },
+  {
+    "id": "test_03_cobol_migration",
+    "prompt": "Generate an application overview slide:\nApp: Atlas Platform\nLegacy: COBOL & Mainframe\nTarget: Python / Microservices  \nProjects: 156\nCOBOL: 12,450,892 LOC\nJCL: 1,234,567 LOC\nAssembler: 345,678 LOC",
+    "description": "Large codebase with 3 legacy languages"
+  },
+  {
+    "id": "test_04_single_language",
+    "prompt": "Turn this into a GAP slide: WebPortal App moving from PHP 5.6 to Laravel 9, 8 projects, 456,789 lines of PHP code",
+    "description": "Single language, casual request format"
+  },
+  {
+    "id": "test_05_no_loc_data",
+    "prompt": "Create a modernization slide for DataHub: moving from Oracle Forms to React/Node.js, 23 active projects",
+    "description": "No LOC data provided - test graceful handling"
+  }
+]

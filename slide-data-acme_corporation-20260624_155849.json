@@ -1,0 +1,13 @@
+{
+  "application": "Acme Corporation",
+  "legacy_technologies": "VB6",
+  "target_technologies": ".NET 8 on Azure",
+  "code_size_loc": 350000,
+  "metrics": {
+    "diy_cost": 915250,
+    "diy_timeline_days": 146,
+    "velo_cost": 267750,
+    "velo_timeline_days": 187,
+    "potential_savings": 647500
+  }
+}

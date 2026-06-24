@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GAP Velocity AI — Gong Intelligence Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -81,6 +82,7 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 .btn-green { background: var(--gap-green); color: var(--gap-white); border-color: var(--gap-green); }
 .btn-green:hover { background: #359e72; border-color: #359e72; }
 .btn-row { display: flex; gap: 12px; align-items: center; margin-top: 20px; }
+.btn-row-spacer { display: flex; gap: 12px; align-items: center; margin-left: auto; }
 
 /* ── CALL LIST ── */
 .call-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
@@ -216,6 +218,14 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 .progress-bar-wrap { width: 120px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; flex-shrink: 0; }
 .progress-bar { height: 4px; border-radius: 2px; background: var(--gap-cyan); transition: width 0.4s; }
 
+/* ── DASHBOARD CONTROLS ── */
+.dash-control-panel { padding: 18px 20px; margin-bottom: 12px; }
+.dash-control-title { font-size: 10px; font-weight: 700; color: var(--gap-blue); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+.dash-control-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.dash-control-value { font-size: 13px; font-weight: 700; color: var(--gap-dark); min-width: 180px; }
+.dash-control-row input[type="range"] { flex: 1; min-width: 220px; accent-color: var(--gap-blue); }
+.dash-control-meta { font-size: 11px; color: var(--gap-gray); margin-top: 8px; }
+
 /* ── ERROR STATE ── */
 .error-box { background: #fff5f7; border: 1px solid #f9c3cc; border-radius: 8px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; }
 .error-icon { color: var(--gap-red); font-size: 18px; flex-shrink: 0; margin-top: 1px; }
@@ -226,6 +236,59 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
   .gong-form, .extract-grid, .metrics-grid, .compare-row, .summary-block { grid-template-columns: 1fr; }
   .header-inner { flex-direction: column; align-items: flex-start; }
   .metrics-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── REPORT DIALOG ── */
+.report-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; animation: overlayIn 0.2s ease;
+}
+@keyframes overlayIn { from { opacity:0; } to { opacity:1; } }
+.report-dialog {
+  background: var(--gap-white); border-radius: 12px; width: 420px; max-width: 92vw;
+  overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+  animation: dialogIn 0.22s ease;
+}
+@keyframes dialogIn { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:none; } }
+.report-dialog-head {
+  background: var(--gap-blue); padding: 20px 24px 18px; position: relative;
+}
+.report-dialog-head::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--gap-cyan); }
+.report-dialog-head .rdh-logo { font-size: 9px; color: var(--gap-soft); letter-spacing: 0.2em; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+.report-dialog-head h3 { font-size: 17px; font-weight: 900; color: var(--gap-white); margin: 0; }
+.report-dialog-body { padding: 24px; }
+.report-field label { display: block; font-size: 10px; font-weight: 700; color: var(--gap-blue); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+.report-field input {
+  width: 100%; padding: 10px 14px; border: 2px solid var(--gap-light-gray);
+  border-radius: 7px; font-size: 14px; font-family: var(--font);
+  color: var(--gap-dark); outline: none; transition: border-color 0.2s;
+}
+.report-field input:focus { border-color: var(--gap-blue); }
+.report-note { font-size: 11px; color: var(--gap-gray); margin-top: 8px; line-height: 1.5; }
+.report-actions { display: flex; gap: 10px; margin-top: 20px; }
+.report-actions .btn-cancel {
+  flex: 1; padding: 10px; background: var(--gap-bg); border: 2px solid var(--gap-light-gray);
+  border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 700;
+  font-family: var(--font); color: var(--gap-gray); transition: all 0.2s;
+}
+.report-actions .btn-cancel:hover { border-color: var(--gap-gray); color: var(--gap-dark); }
+.report-actions .btn-download {
+  flex: 2; padding: 10px; background: var(--gap-blue); border: 2px solid var(--gap-blue);
+  border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 700;
+  font-family: var(--font); color: var(--gap-white); transition: all 0.2s;
+}
+.report-actions .btn-download:hover { background: #004f6e; border-color: #004f6e; }
+
+/* ── PRINT / PDF STYLES ── */
+@media print {
+  body { margin: 0; padding: 0; background: white; }
+  .panel { page-break-inside: avoid; break-inside: avoid; }
+  .dash-header-band { page-break-after: avoid; break-after: avoid; }
+  .metrics-grid { page-break-inside: avoid; break-inside: avoid; }
+  .compare-row { page-break-inside: avoid; break-inside: avoid; }
+  .breakdown-section { page-break-inside: avoid; break-inside: avoid; }
+  .summary-block { page-break-inside: avoid; break-inside: avoid; }
 }
 </style>
 </head>
@@ -267,21 +330,6 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
         Gong Connection
       </div>
       <div class="gong-form">
-        <div class="field">
-          <label>Gong API Access Key</label>
-          <input type="password" id="gong-key" placeholder="Enter your Gong access key">
-          <div class="field-hint">Found in Gong Settings → API</div>
-        </div>
-        <div class="field">
-          <label>Gong API Secret</label>
-          <input type="password" id="gong-secret" placeholder="Enter your Gong secret">
-          <div class="field-hint">Required for authenticated requests</div>
-        </div>
-        <div class="field field-full">
-          <label>Anthropic API Key</label>
-          <input type="password" id="anthropic-key" placeholder="sk-ant-...">
-          <div class="field-hint">Used to analyze call transcripts and extract modernization signals</div>
-        </div>
         <div class="field field-full">
           <label>Client / Account Name</label>
           <input type="text" id="client-name" placeholder="e.g. Acme Corporation">
@@ -336,11 +384,11 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
       <div id="extract-status"></div>
       <div id="extract-content"></div>
       <div class="btn-row" id="extract-btns" style="display:none">
+        <button class="btn btn-outline" onclick="goBack()">← Back</button>
         <button class="btn btn-green" onclick="runCalcAndDash()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           Run Cost Model & Build Dashboard
         </button>
-        <button class="btn btn-outline" onclick="goBack()">← Back</button>
       </div>
     </div>
   </div>
@@ -348,27 +396,53 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
   <!-- PAGE 3: DASHBOARD -->
   <div class="page" id="page-3">
     <div class="panel" id="dashboard-panel">
-      <!-- Injected dynamically -->
+      <div id="dashboard-top"></div>
+      <div id="dashboard-controls" style="display:none"></div>
+      <div id="dashboard-bottom"></div>
     </div>
-    <div class="btn-row" style="margin-top: 4px;">
-      <button class="btn btn-outline" onclick="startOver()">← New Analysis</button>
-      <button class="btn btn-primary" onclick="downloadDashboard()">
+    <div class="btn-row" style="margin-top: 4px; justify-content: space-between;">
+      <button class="btn btn-outline" onclick="goBack2()">← Back</button>
+      <button class="btn btn-primary" onclick="openReportDialog()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download Dashboard HTML
+        Download PDF Report
       </button>
+      <button class="btn btn-outline" onclick="startOver()">New Analysis</button>
     </div>
   </div>
 
 </div>
 
+<!-- Report dialog -->
+<div class="report-overlay" id="reportOverlay" style="display:none" onclick="closeReportDialog(event)">
+  <div class="report-dialog">
+    <div class="report-dialog-head">
+      <div class="rdh-logo">GAP Velocity AI</div>
+      <h3>Download PDF Report</h3>
+    </div>
+    <div class="report-dialog-body">
+      <div class="report-field">
+        <label for="reportFilename">File name</label>
+        <input type="text" id="reportFilename" placeholder="gap-velo-report" spellcheck="false">
+      </div>
+      <div class="report-note">Your browser will save the file to your default downloads folder. To choose a specific location, configure your browser to always ask where to save files.</div>
+      <div class="report-actions">
+        <button class="btn-cancel" onclick="closeReportDialog()">Cancel</button>
+        <button class="btn-download" onclick="confirmDownload()">&#8595; Download</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── STATE ──────────────────────────────────────────────────────────────────────
 const state = {
-  gongKey: '', gongSecret: '', anthropicKey: '', clientName: '',
+  clientName: '',
   calls: [], selectedCalls: [],
-  extracted: { sourceTech: null, targetTech: null, linesOfCode: null, complexityLevel: null, customersDevCount: null },
+  extracted: { sourceTech: null, targetTech: null, linesOfCode: null, complexityLevel: null, customersDevCount: null, summary: null },
   extractedSnippets: {},
   calcResult: null,
+  engineerCount: null,
+  engineerCost: null,
   isDemo: false
 };
 
@@ -446,26 +520,67 @@ const DEMO_CALLS = [
 function loadDemo() {
   state.isDemo = true;
   state.clientName = 'Acme Corporation';
-  state.anthropicKey = document.getElementById('anthropic-key').value;
   state.calls = DEMO_CALLS;
+  state.selectedCalls = [];
   showCallList();
+  updateSelectedCount();
+}
+
+function getDemoExtraction() {
+  return {
+    sourceTech: 'vb6',
+    targetTech: '.NET 8 on Azure',
+    linesOfCode: 350000,
+    complexityLevel: 3,
+    customersDevCount: 8,
+    sourceTechSnippet: 'We\'re running a large VB6 application',
+    linesSnippet: 'about 350,000 lines of code',
+    complexitySnippet: 'spaghetti at its worst',
+    devCountSnippet: 'Our team has about 8 developers',
+    summary: 'Large VB6 codebase with high complexity, weak documentation, and a target migration to .NET 8 on Azure.',
+    confidence: 98,
+  };
+}
+
+function buildFallbackSummary(ext) {
+  const sourceLabel = STACKS[ext.sourceTech]?.label || ext.sourceTech || 'legacy application';
+  const targetLabel = ext.targetTech || 'a modern target platform';
+  const locText = ext.linesOfCode ? `${Number(ext.linesOfCode).toLocaleString()} lines` : 'an undisclosed codebase size';
+  const complexityLabel = ext.complexityLevel !== undefined && ext.complexityLevel !== null
+    ? COMPLEXITY[ext.complexityLevel]?.label?.toLowerCase()
+    : 'undetermined';
+  const devText = ext.customersDevCount ? ` with ${ext.customersDevCount} assigned developers` : '';
+  return `${sourceLabel} modernization of ${locText} to ${targetLabel}, with ${complexityLabel} complexity${devText}.`;
+}
+
+function applyExtraction(ext) {
+  state.extracted = {
+    sourceTech:       ext.sourceTech !== 'unknown' ? ext.sourceTech : null,
+    targetTech:       ext.targetTech || null,
+    linesOfCode:      ext.linesOfCode || null,
+    complexityLevel:  ext.complexityLevel !== undefined && ext.complexityLevel !== null ? ext.complexityLevel : null,
+    customersDevCount:ext.customersDevCount || null,
+    summary:          ext.summary || buildFallbackSummary(ext),
+  };
+  state.extractedSnippets = {
+    sourceTech:  ext.sourceTechSnippet || null,
+    linesOfCode: ext.linesSnippet || null,
+    complexityLevel: ext.complexitySnippet || null,
+    customersDevCount: ext.devCountSnippet || null,
+  };
 }
 
 // ── STEP 1: CONNECT GONG ──────────────────────────────────────────────────────
 async function connectGong() {
   clearError('step1-error');
-  const key = document.getElementById('gong-key').value.trim();
-  const secret = document.getElementById('gong-secret').value.trim();
-  const apiKey = document.getElementById('anthropic-key').value.trim();
+  state.isDemo = false;
   const client = document.getElementById('client-name').value.trim();
   const from = document.getElementById('date-from').value;
   const to = document.getElementById('date-to').value;
 
-  if (!key || !secret) return showError('step1-error','Gong credentials required','Enter your Gong API Access Key and Secret.');
-  if (!apiKey) return showError('step1-error','Anthropic API key required','Required to analyze transcripts with AI.');
   if (!client) return showError('step1-error','Client name required','Enter the account name to search in Gong.');
 
-  state.gongKey = key; state.gongSecret = secret; state.anthropicKey = apiKey; state.clientName = client;
+  state.clientName = client;
 
   const panel = document.getElementById('calls-panel');
   panel.style.display = 'block';
@@ -473,42 +588,38 @@ async function connectGong() {
   statusEl.style.display = 'flex';
   statusEl.innerHTML = `
     <div class="status-icon processing"><div class="spinner" style="width:16px;height:16px;border-width:2px"></div></div>
-    <div><div class="status-msg">Connecting to Gong API…</div><div class="status-sub">Authenticating with provided credentials</div></div>
+    <div><div class="status-msg">Connecting to local Gong bridge…</div><div class="status-sub">Authenticating with provided credentials</div></div>
     <div class="progress-bar-wrap"><div class="progress-bar" style="width:30%"></div></div>`;
 
   try {
-    const creds = btoa(`${key}:${secret}`);
-    const dateParams = from && to ? `&fromDateTime=${from}T00:00:00Z&toDateTime=${to}T23:59:59Z` : '';
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const gongUrl = `https://api.gong.io/v2/calls?accountName=${encodeURIComponent(client)}${dateParams}`;
-    const resp = await fetch(proxyUrl + gongUrl, {
-      headers: { 'Authorization': `Basic ${creds}`, 'Content-Type': 'application/json' }
+    const resp = await fetch('http://127.0.0.1:8765/api/gong/calls-with-transcripts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        accountName: client,
+        fromDate: from || null,
+        toDate: to || null,
+        limit: 10
+      })
     });
 
-    if (!resp.ok) throw new Error(`Gong API error: ${resp.status} ${resp.statusText}`);
+    if (!resp.ok) {
+      let detail = '';
+      try {
+        const errBody = await resp.json();
+        detail = errBody.detail || errBody.error || '';
+      } catch (_) {}
+      throw new Error(`Bridge error: ${resp.status} ${resp.statusText}${detail ? ` — ${detail}` : ''}`);
+    }
+
     const data = await resp.json();
+    const callsWithTranscripts = data.calls || [];
 
     statusEl.innerHTML = `
       <div class="status-icon done">✓</div>
-      <div><div class="status-msg">Connected — fetching transcripts…</div><div class="status-sub">${data.calls?.length || 0} calls found for "${client}"</div></div>
+      <div><div class="status-msg">Connected — transcripts loaded</div><div class="status-sub">${callsWithTranscripts.length} calls found for "${client}"</div></div>
       <div class="progress-bar-wrap"><div class="progress-bar" style="width:70%"></div></div>`;
 
-    // Fetch transcripts for each call
-    const callsWithTranscripts = [];
-    for (const call of (data.calls || []).slice(0, 10)) {
-      const tResp = await fetch(proxyUrl + `https://api.gong.io/v2/calls/${call.id}/transcript`, {
-        headers: { 'Authorization': `Basic ${creds}` }
-      });
-      const tData = tResp.ok ? await tResp.json() : {};
-      callsWithTranscripts.push({
-        id: call.id,
-        title: call.title || 'Untitled Call',
-        date: call.started ? call.started.slice(0,10) : '—',
-        duration: call.duration ? `${Math.round(call.duration/60)} min` : '—',
-        participants: (call.parties||[]).map(p=>p.name).join(', ') || '—',
-        transcript: (tData.transcript||[]).map(s=>`${s.speakerName}: "${s.sentences?.map(x=>x.text).join(' ')}"`).join('\n') || ''
-      });
-    }
     state.calls = callsWithTranscripts;
 
     statusEl.innerHTML = `
@@ -544,7 +655,6 @@ function showCallList() {
 function toggleCall(id) {
   const cb = document.getElementById(`cb-${id}`);
   const item = document.getElementById(`ci-${id}`);
-  cb.checked = !cb.checked;
   item.classList.toggle('selected', cb.checked);
   state.selectedCalls = state.calls.filter(c => document.getElementById(`cb-${c.id}`)?.checked);
   updateSelectedCount();
@@ -557,9 +667,6 @@ function updateSelectedCount() {
 
 // ── STEP 2: AI EXTRACTION ─────────────────────────────────────────────────────
 async function analyzeSelected() {
-  if (!state.anthropicKey && !state.isDemo) {
-    state.anthropicKey = document.getElementById('anthropic-key').value.trim();
-  }
   setStep(2);
 
   const statusEl = document.getElementById('extract-status');
@@ -585,24 +692,31 @@ async function analyzeSelected() {
   const tick = setInterval(() => { prog = Math.min(90, prog + 5); pb.style.width = prog + '%'; }, 600);
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    if (state.isDemo) {
+      clearInterval(tick);
+      pb.style.width = '100%';
+
+      const ext = getDemoExtraction();
+      applyExtraction(ext);
+
+      statusEl.innerHTML = `
+        <div class="status-bar" style="margin-bottom:16px;background:var(--gap-dark)">
+          <div class="status-icon done" style="background:rgba(67,182,134,0.2);color:var(--gap-green)">✓</div>
+          <div><div class="status-msg" style="color:var(--gap-green)">Demo extraction loaded — confidence ${ext.confidence || '—'}%</div>
+          <div class="status-sub">Using mocked extraction data for the demo experience.</div></div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:100%;background:var(--gap-green)"></div></div>
+        </div>`;
+
+      renderExtraction();
+      return;
+    }
+
+    const resp = await fetch('http://127.0.0.1:8766/api/anthropic/extract-signals', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: `You are a technical pre-sales analyst for GAP Velocity AI, a software modernization company. Analyze sales call transcripts and extract specific technical signals. Respond ONLY with a JSON object — no preamble, no markdown, no backticks. Extract these exact fields:
-- sourceTech: the legacy technology being modernized (must match one of: vb6, vbnet, access, powerbuilder, webforms, winforms, clarion, silverlight, aspclassic, informix, delphi, or "unknown")
-- targetTech: the desired target platform (free text, e.g. ".NET 8", "React", "Azure", etc., or null)
-- linesOfCode: total lines of code as an integer (extract from statements like "350,000 lines", "1.2 million LOC", etc., or null if not mentioned)
-- complexityLevel: integer 0-3 (0=Clean, 1=Conventional, 2=Complex, 3=Spaghetti — infer from descriptions of code quality, documentation state, team knowledge)
-- customersDevCount: number of developers the customer has assigned, as integer (or null)
-- sourceTechSnippet: brief quote (under 15 words) from transcript supporting sourceTech
-- linesSnippet: brief quote supporting linesOfCode
-- complexitySnippet: brief quote supporting complexityLevel
-- devCountSnippet: brief quote supporting customersDevCount
-- confidence: overall confidence 0-100`,
-        messages: [{ role: 'user', content: `Extract modernization signals from these call transcripts for client "${state.clientName}":\n\n${combined}` }]
+        clientName: state.clientName,
+        transcript: combined
       })
     });
 
@@ -611,27 +725,14 @@ async function analyzeSelected() {
 
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({}));
-      throw new Error(err.error?.message || `API error ${resp.status}`);
+      throw new Error(err.detail || err.error || `API error ${resp.status}`);
     }
 
     const data = await resp.json();
-    const raw = data.content.find(b => b.type === 'text')?.text || '{}';
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const ext = JSON.parse(clean);
+    const ext = data.extraction || {};
 
-    state.extracted = {
-      sourceTech:       ext.sourceTech !== 'unknown' ? ext.sourceTech : null,
-      targetTech:       ext.targetTech || null,
-      linesOfCode:      ext.linesOfCode || null,
-      complexityLevel:  ext.complexityLevel !== undefined && ext.complexityLevel !== null ? ext.complexityLevel : null,
-      customersDevCount:ext.customersDevCount || null,
-    };
-    state.extractedSnippets = {
-      sourceTech:  ext.sourceTechSnippet || null,
-      linesOfCode: ext.linesSnippet || null,
-      complexityLevel: ext.complexitySnippet || null,
-      customersDevCount: ext.devCountSnippet || null,
-    };
+    console.log('Extraction result:', ext);
+    applyExtraction(ext);
 
     statusEl.innerHTML = `
       <div class="status-bar" style="margin-bottom:16px;background:var(--gap-dark)">
@@ -648,7 +749,7 @@ async function analyzeSelected() {
     statusEl.innerHTML = '';
     showError('extract-status', 'AI extraction failed', err.message);
     // Still show manual entry form
-    state.extracted = { sourceTech:null, targetTech:null, linesOfCode:null, complexityLevel:null, customersDevCount:null };
+    state.extracted = { sourceTech:null, targetTech:null, linesOfCode:null, complexityLevel:null, customersDevCount:null, summary:null };
     renderExtraction();
   }
 }
@@ -696,7 +797,12 @@ function renderExtraction() {
     </div>
     <div class="source-chips" style="margin-top:16px">
       ${state.selectedCalls.map(c=>`<div class="chip"><div class="chip-dot"></div>${c.title}</div>`).join('')}
-    </div>`;
+    </div>
+    ${e.summary ? `
+    <div class="breakdown-section" style="margin-top:16px;margin-bottom:0">
+      <div class="breakdown-title">AI Modernization Summary</div>
+      <div style="font-size:13px;color:var(--gap-dark);line-height:1.7">${e.summary}</div>
+    </div>` : ''}`;
 
   // Pre-fill selects
   if (e.sourceTech) {
@@ -742,24 +848,40 @@ function runCalcAndDash() {
     showError('extract-status', 'Missing required fields', `Please fill in: ${missing.join(', ')}`);
     return;
   }
-  const r = calcAll(e);
+  const baseline = calcAll(e);
+  state.engineerCount = clampEngineerCount(e.customersDevCount || baseline.recommendedEng);
+  state.engineerCost = clampEngineerCost(150000);
+  const r = calcAll(e, state.engineerCount, state.engineerCost);
   state.calcResult = r;
   renderDashboard(r, e);
+  renderDashboardControls(r);
   setStep(3);
 }
 
-function calcAll(e) {
+function clampEngineerCount(v) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return 1;
+  return Math.max(1, Math.min(10, Math.round(n)));
+}
+
+function clampEngineerCost(v) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return 1;
+  return Math.max(80000, Math.min(250000, Math.round(n / 1000) * 1000));
+}
+
+function calcAll(e, engineerCountOverride = null, engineerCostOverride = null) {
   const stack = STACKS[e.sourceTech] || STACKS.vb6;
   const complexity = COMPLEXITY[e.complexityLevel] || COMPLEXITY[1];
   const vd = VELO_DATA[e.sourceTech] || VELO_DATA.vb6;
   const loc = e.linesOfCode;
   const kloc = loc / 1000;
-  const devCost = 150000; // default
+  const devCost = engineerCostOverride !== null ? clampEngineerCost(engineerCostOverride) : 150000;
 
   const ehpk = stack.hpk * complexity.factor;
   const hours = Math.round(kloc * ehpk);
   const recommendedEng = Math.max(2, Math.ceil(hours / 1800));
-  const eng = e.customersDevCount || recommendedEng;
+  const eng = engineerCountOverride !== null ? clampEngineerCount(engineerCountOverride) : (e.customersDevCount || recommendedEng);
   const months = Math.max(3, Math.ceil((hours / eng) / 140));
   const baseCost = Math.round(eng * devCost * (months / 12));
   const aiCost = Math.round(kloc * 15);
@@ -778,11 +900,162 @@ function calcAll(e) {
   return { stack, complexity, loc, kloc, ehpk, hours, eng, recommendedEng, months, baseCost, aiCost, risks, riskTotal, diy, pro, proAndRisk, proMonths, savings, savPct, cpl: (diy/loc).toFixed(2) };
 }
 
+function updateEngineerCount(value) {
+  state.engineerCount = clampEngineerCount(value);
+  const r = calcAll(state.extracted, state.engineerCount, state.engineerCost);
+  state.calcResult = r;
+  renderDashboard(r, state.extracted);
+  updateDashboardControls(r);
+}
+
+function updateEngineerCost(value) {
+  state.engineerCost = clampEngineerCost(value);
+  const r = calcAll(state.extracted, state.engineerCount, state.engineerCost);
+  state.calcResult = r;
+  renderDashboard(r, state.extracted);
+  updateDashboardControls(r);
+}
+
+function renderDashboardControls(r) {
+  const controls = document.getElementById('dashboard-controls');
+  if (!controls) return;
+  controls.style.display = 'block';
+  if (!document.getElementById('engineer-count-slider')) {
+    controls.innerHTML = `
+      <div class="panel dash-control-panel">
+        <div class="dash-control-title">DIY Team Size & Cost Simulator</div>
+        <div class="dash-control-row">
+          <div class="dash-control-value" id="engineer-count-value"></div>
+          <input type="range" id="engineer-count-slider" min="1" max="10" step="1" oninput="updateEngineerCount(this.value)">
+        </div>
+        <div class="dash-control-row" style="margin-top:10px">
+          <div class="dash-control-value" id="engineer-cost-value"></div>
+          <input type="range" id="engineer-cost-slider" min="80000" max="250000" step="10000" oninput="updateEngineerCost(this.value)">
+        </div>
+        <div class="dash-control-meta" id="dashboard-control-meta"></div>
+      </div>`;
+  }
+  updateDashboardControls(r);
+}
+
+function updateDashboardControls(r) {
+  const countValue = document.getElementById('engineer-count-value');
+  const costValue = document.getElementById('engineer-cost-value');
+  const meta = document.getElementById('dashboard-control-meta');
+  const countSlider = document.getElementById('engineer-count-slider');
+  const costSlider = document.getElementById('engineer-cost-slider');
+  if (!countValue || !costValue || !meta || !countSlider || !costSlider) return;
+
+  countValue.innerHTML = `Engineers: <strong>${state.engineerCount}</strong> (1 to 10)`;
+  costValue.innerHTML = `Annual cost per engineer: <strong>${fmt$(state.engineerCost)}</strong>`;
+  meta.textContent = `At ${state.engineerCount} engineers and ${fmt$(state.engineerCost)} per engineer: ${r.months} months DIY · ${fmt$(r.diy)} total DIY cost`;
+
+  if (countSlider.value !== String(state.engineerCount)) countSlider.value = String(state.engineerCount);
+  if (costSlider.value !== String(state.engineerCost)) costSlider.value = String(state.engineerCost);
+}
+
+function ensureDashboardShell() {
+  const top = document.getElementById('dashboard-top');
+  const bottom = document.getElementById('dashboard-bottom');
+  if (!top || !bottom) return false;
+  if (document.getElementById('dash-client')) return true;
+
+  top.innerHTML = `
+    <div class="dash-header-band">
+      <div class="dash-client" id="dash-client"></div>
+      <div class="dash-headline">DIY Cost <span class="hl">Reality Check</span></div>
+      <div class="dash-sub" id="dash-sub"></div>
+      <div class="dash-params">
+        <div class="dash-param" id="dash-param-stack"></div>
+        <div class="dash-param" id="dash-param-lines"></div>
+        <div class="dash-param" id="dash-param-complexity"></div>
+        <div class="dash-param" id="dash-param-sim"></div>
+      </div>
+    </div>
+
+    <div class="breakdown-section" id="dashboard-ai-summary-section">
+      <div class="breakdown-title">AI Modernization Summary</div>
+      <div id="dashboard-ai-summary" style="font-size:13px;color:var(--gap-dark);line-height:1.7"></div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card"><div class="metric-label">Total Lines</div><div class="metric-value" id="metric-lines"></div><div class="metric-sub" id="metric-kloc"></div></div>
+      <div class="metric-card"><div class="metric-label">Eng. Hours</div><div class="metric-value" id="metric-hours"></div><div class="metric-sub" id="metric-ehpk"></div></div>
+      <div class="metric-card"><div class="metric-label">Team Size</div><div class="metric-value" id="metric-team"></div><div class="metric-sub" id="metric-months"></div></div>
+      <div class="metric-card"><div class="metric-label">Cost / Line</div><div class="metric-value red" id="metric-cpl"></div><div class="metric-sub">DIY all-in</div></div>
+    </div>`;
+
+  bottom.innerHTML = `
+    <div class="compare-row">
+      <div class="diy-card">
+        <div class="card-badge-flag flag-risk">HIGH RISK</div>
+        <div class="card-type-label" style="color:var(--gap-red)">DIY with GenAI</div>
+        <div class="card-amount-big" style="color:var(--gap-red)" id="diy-amount"></div>
+        <div class="card-meta-small" id="diy-meta"></div>
+        <div style="margin-top:16px">
+          <div style="font-size:10px;font-weight:700;color:var(--gap-gray);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Project Timeline</div>
+          <div class="timeline-wrap" id="diy-timeline"></div>
+        </div>
+      </div>
+      <div class="velo-card">
+        <div class="card-badge-flag flag-managed">MANAGED RISK</div>
+        <div class="card-type-label" style="color:var(--gap-green)">VELO — GAP Velocity AI</div>
+        <div class="card-amount-big" style="color:var(--gap-green)" id="velo-amount"></div>
+        <div class="card-meta-small" id="velo-meta"></div>
+        <div class="savings-highlight" id="savings-highlight">
+          <div class="savings-num" id="savings-num"></div>
+          <div class="savings-detail" id="savings-detail"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <div class="breakdown-title" id="breakdown-title"></div>
+      <div id="breakdown-rows"></div>
+      <div class="breakdown-row" style="border-top:2px solid #E8E8E8;margin-top:4px;padding-top:16px">
+        <div><div class="breakdown-name" style="color:var(--gap-red)">Last Mile Risk Costs</div><div class="breakdown-desc" id="risk-summary-desc"></div></div>
+        <div class="breakdown-amount" style="color:var(--gap-red)" id="risk-summary-amount"></div>
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <div class="breakdown-title">Last Mile Risk Breakdown</div>
+      <div class="risk-grid" id="risk-rows"></div>
+      <div class="breakdown-row" style="border-top:2px solid #E8E8E8;margin-top:12px;padding-top:14px">
+        <div class="breakdown-name">Total Last Mile Costs</div>
+        <div class="breakdown-amount" style="color:var(--gap-red)" id="risk-total-amount"></div>
+      </div>
+    </div>
+
+    <div class="summary-block">
+      <div class="sum-diy">
+        <div class="sum-tag">⚠ DIY with GenAI</div>
+        <div class="sum-text" id="sum-diy-text"></div>
+        <div class="sum-fn" id="sum-diy-fn"></div>
+      </div>
+      <div class="sum-velo">
+        <div class="sum-tag">✓ VELO — GAP Velocity AI</div>
+        <div class="sum-text" id="sum-velo-text"></div>
+        <div class="sum-fn" id="sum-velo-fn"></div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Calibrated against 35+ years and billions of lines of legacy modernization data from ArtinSoft / Mobilize.Net and GAPVelocity AI<br>
+      <a href="https://www.gapvelocity.ai/" target="_blank">www.gapvelocity.ai</a>
+    </div>
+
+    <div class="footer-bar"></div>`;
+
+  return true;
+}
+
 function renderDashboard(r, e) {
   const client = state.clientName || 'Client';
   const sourceLbl = STACKS[e.sourceTech]?.label || e.sourceTech;
   const targetLbl = e.targetTech || 'Modern Platform';
   const complexLbl = COMPLEXITY[e.complexityLevel]?.label || 'Conventional';
+  if (!ensureDashboardShell()) return;
 
   // Timeline blocks
   const blocks = Math.min(36, r.months);
@@ -810,189 +1083,377 @@ function renderDashboard(r, e) {
       <div class="risk-desc">${ri.desc} <strong style="color:var(--gap-gray)">(${(ri.pct*100).toFixed(0)}% of base)</strong></div>
     </div>`).join('');
 
-  document.getElementById('dashboard-panel').innerHTML = `
-    <div class="dash-header-band">
-      <div class="dash-client">${client} · Modernization Cost Analysis</div>
-      <div class="dash-headline">DIY Cost <span class="hl">Reality Check</span></div>
-      <div class="dash-sub">GAP Velocity AI — extracted from ${state.selectedCalls.length} Gong call${state.selectedCalls.length!==1?'s':''} · ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}</div>
-      <div class="dash-params">
-        <div class="dash-param"><span>${sourceLbl}</span> → <span>${targetLbl}</span></div>
-        <div class="dash-param"><span>${r.loc.toLocaleString()}</span> lines</div>
-        <div class="dash-param">Complexity: <span>${complexLbl}</span></div>
-        ${e.customersDevCount ? `<div class="dash-param"><span>${e.customersDevCount}</span> dev${e.customersDevCount!==1?'s':''} on team</div>` : ''}
-      </div>
-    </div>
+  document.getElementById('dash-client').textContent = `${client} · Modernization Cost Analysis`;
+  document.getElementById('dash-sub').textContent = `GAP Velocity AI — extracted from ${state.selectedCalls.length} Gong call${state.selectedCalls.length!==1?'s':''} · ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}`;
+  document.getElementById('dash-param-stack').innerHTML = `<span>${sourceLbl}</span> → <span>${targetLbl}</span>`;
+  document.getElementById('dash-param-lines').innerHTML = `<span>${r.loc.toLocaleString()}</span> lines`;
+  document.getElementById('dash-param-complexity').innerHTML = `Complexity: <span>${complexLbl}</span>`;
+  document.getElementById('dash-param-sim').innerHTML = `DIY simulation: <span>${r.eng}</span> dev${r.eng!==1?'s':''}`;
 
-    <div class="metrics-grid">
-      <div class="metric-card"><div class="metric-label">Total Lines</div><div class="metric-value">${r.loc.toLocaleString()}</div><div class="metric-sub">${fmtK(r.kloc)} KLOC</div></div>
-      <div class="metric-card"><div class="metric-label">Eng. Hours</div><div class="metric-value">${r.hours.toLocaleString()}</div><div class="metric-sub">${r.ehpk.toFixed(0)} hrs/KLOC</div></div>
-      <div class="metric-card"><div class="metric-label">Team Size</div><div class="metric-value">${r.eng}</div><div class="metric-sub">${r.months} months DIY</div></div>
-      <div class="metric-card"><div class="metric-label">Cost / Line</div><div class="metric-value red">$${r.cpl}</div><div class="metric-sub">DIY all-in</div></div>
-    </div>
+  document.getElementById('metric-lines').textContent = r.loc.toLocaleString();
+  document.getElementById('metric-kloc').textContent = `${fmtK(r.kloc)} KLOC`;
+  document.getElementById('metric-hours').textContent = r.hours.toLocaleString();
+  document.getElementById('metric-ehpk').textContent = `${r.ehpk.toFixed(0)} hrs/KLOC`;
+  document.getElementById('metric-team').textContent = r.eng;
+  document.getElementById('metric-months').textContent = `${r.months} months DIY`;
+  document.getElementById('metric-cpl').textContent = `$${r.cpl}`;
 
-    <div class="compare-row">
-      <div class="diy-card">
-        <div class="card-badge-flag flag-risk">HIGH RISK</div>
-        <div class="card-type-label" style="color:var(--gap-red)">DIY with GenAI</div>
-        <div class="card-amount-big" style="color:var(--gap-red)">${fmt$(r.diy)}</div>
-        <div class="card-meta-small">${r.months} months · ${r.eng} engineers · ${fmtK(r.kloc)} lines</div>
-        <div style="margin-top:16px">
-          <div style="font-size:10px;font-weight:700;color:var(--gap-gray);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Project Timeline</div>
-          <div class="timeline-wrap">${tl}${extra}</div>
-        </div>
-      </div>
-      <div class="velo-card">
-        <div class="card-badge-flag flag-managed">MANAGED RISK</div>
-        <div class="card-type-label" style="color:var(--gap-green)">VELO — GAP Velocity AI</div>
-        <div class="card-amount-big" style="color:var(--gap-green)">${fmt$(r.proAndRisk)}</div>
-        <div class="card-meta-small">${r.proMonths} months · proven methodology</div>
-        ${r.savings > 0 ? `
-        <div class="savings-highlight">
-          <div class="savings-num">Save ${fmt$(r.savings)}</div>
-          <div class="savings-detail">${r.savPct}% less · ${r.months - r.proMonths} months faster</div>
-        </div>` : ''}
-      </div>
-    </div>
+  document.getElementById('diy-amount').textContent = fmt$(r.diy);
+  document.getElementById('diy-meta').textContent = `${r.months} months · ${r.eng} engineers · ${fmtK(r.kloc)} lines`;
+  document.getElementById('diy-timeline').innerHTML = `${tl}${extra}`;
+  document.getElementById('velo-amount').textContent = fmt$(r.proAndRisk);
+  document.getElementById('velo-meta').textContent = `${r.proMonths} months · proven methodology`;
 
-    <div class="breakdown-section">
-      <div class="breakdown-title">DIY Cost Breakdown — ${fmtK(r.kloc)} lines of ${sourceLbl}</div>
-      ${bkRows}
-      <div class="breakdown-row" style="border-top:2px solid #E8E8E8;margin-top:4px;padding-top:16px">
-        <div><div class="breakdown-name" style="color:var(--gap-red)">Last Mile Risk Costs</div><div class="breakdown-desc">Adjusted for ${sourceLbl} (${r.stack.risk}x risk) + ${complexLbl} density (${r.complexity.factor}x effort)</div></div>
-        <div class="breakdown-amount" style="color:var(--gap-red)">${fmt$(r.riskTotal)}</div>
-      </div>
-    </div>
+  const savingsHighlight = document.getElementById('savings-highlight');
+  if (r.savings > 0) {
+    savingsHighlight.style.display = 'block';
+    document.getElementById('savings-num').textContent = `Save ${fmt$(r.savings)}`;
+    document.getElementById('savings-detail').textContent = `${r.savPct}% less · ${r.months - r.proMonths} months faster`;
+  } else {
+    savingsHighlight.style.display = 'none';
+  }
 
-    <div class="breakdown-section">
-      <div class="breakdown-title">Last Mile Risk Breakdown</div>
-      <div class="risk-grid">${riskRows}</div>
-      <div class="breakdown-row" style="border-top:2px solid #E8E8E8;margin-top:12px;padding-top:14px">
-        <div class="breakdown-name">Total Last Mile Costs</div>
-        <div class="breakdown-amount" style="color:var(--gap-red)">${fmt$(r.riskTotal)}</div>
-      </div>
-    </div>
+  const dashboardSummarySection = document.getElementById('dashboard-ai-summary-section');
+  const dashboardSummary = document.getElementById('dashboard-ai-summary');
+  if (dashboardSummarySection && dashboardSummary) {
+    if (e.summary) {
+      dashboardSummarySection.style.display = 'block';
+      dashboardSummary.textContent = e.summary;
+    } else {
+      dashboardSummarySection.style.display = 'none';
+      dashboardSummary.textContent = '';
+    }
+  }
 
-    <div class="summary-block">
-      <div class="sum-diy">
-        <div class="sum-tag">⚠ DIY with GenAI</div>
-        <div class="sum-text">With <strong>${r.loc.toLocaleString()} lines of ${sourceLbl}</strong> at <strong>${complexLbl.toLowerCase()}</strong> density, ${client}'s team would need <strong>${r.eng} engineers</strong> working <strong>${r.months} months</strong>. That's <strong class="red-hl">$${r.cpl} per line</strong> all-in — and <strong class="red-hl">${fmt$(r.riskTotal)}</strong> is hidden risk from silent bugs, rework, and lost business logic that GenAI alone can't catch.</div>
-        <div class="sum-fn">Total DIY cost: <strong>${fmt$(r.diy)}</strong></div>
-      </div>
-      <div class="sum-velo">
-        <div class="sum-tag">✓ VELO — GAP Velocity AI</div>
-        <div class="sum-text">With VELO, the same <strong>${r.loc.toLocaleString()} lines of ${sourceLbl}</strong> migrate to <strong class="green-hl">${targetLbl}</strong> in <strong class="green-hl">${r.proMonths} months</strong>${r.months - r.proMonths > 0 ? ` — <strong class="green-hl">${r.months - r.proMonths} months faster</strong> than DIY` : ''}. Risk is managed, methodology is proven, and ${client}'s engineers stay focused on building value, not archaeology.</div>
-        <div class="sum-fn">VELO cost: <strong>${fmt$(r.proAndRisk)}</strong>${r.savings > 0 ? ` &nbsp;·&nbsp; Savings: <strong>${fmt$(r.savings)}</strong>` : ''}</div>
-      </div>
-    </div>
+  document.getElementById('breakdown-title').textContent = `DIY Cost Breakdown — ${fmtK(r.kloc)} lines of ${sourceLbl}`;
+  document.getElementById('breakdown-rows').innerHTML = bkRows;
+  document.getElementById('risk-summary-desc').textContent = `Adjusted for ${sourceLbl} (${r.stack.risk}x risk) + ${complexLbl} density (${r.complexity.factor}x effort)`;
+  document.getElementById('risk-summary-amount').textContent = fmt$(r.riskTotal);
+  document.getElementById('risk-rows').innerHTML = riskRows;
+  document.getElementById('risk-total-amount').textContent = fmt$(r.riskTotal);
 
-    <div class="footer-note">
-      Calibrated against 35+ years and billions of lines of legacy modernization data from ArtinSoft / Mobilize.Net and GAPVelocity AI<br>
-      <a href="https://www.gapvelocity.ai/" target="_blank">www.gapvelocity.ai</a>
-    </div>
-
-    <div class="footer-bar"></div>`;
+  document.getElementById('sum-diy-text').innerHTML = `With <strong>${r.loc.toLocaleString()} lines of ${sourceLbl}</strong> at <strong>${complexLbl.toLowerCase()}</strong> density, ${client}'s team would need <strong>${r.eng} engineers</strong> working <strong>${r.months} months</strong>. That's <strong class="red-hl">$${r.cpl} per line</strong> all-in — and <strong class="red-hl">${fmt$(r.riskTotal)}</strong> is hidden risk from silent bugs, rework, and lost business logic that GenAI alone can't catch.`;
+  document.getElementById('sum-diy-fn').innerHTML = `Total DIY cost: <strong>${fmt$(r.diy)}</strong>`;
+  document.getElementById('sum-velo-text').innerHTML = `With VELO, the same <strong>${r.loc.toLocaleString()} lines of ${sourceLbl}</strong> migrate to <strong class="green-hl">${targetLbl}</strong> in <strong class="green-hl">${r.proMonths} months</strong>${r.months - r.proMonths > 0 ? ` — <strong class="green-hl">${r.months - r.proMonths} months faster</strong> than DIY` : ''}. Risk is managed, methodology is proven, and ${client}'s engineers stay focused on building value, not archaeology.`;
+  document.getElementById('sum-velo-fn').innerHTML = `VELO cost: <strong>${fmt$(r.proAndRisk)}</strong>${r.savings > 0 ? ` &nbsp;·&nbsp; Savings: <strong>${fmt$(r.savings)}</strong>` : ''}`;
 }
 
 function goBack() { setStep(1); }
+function goBack2() { setStep(2); }
 function startOver() { location.reload(); }
 
-function downloadDashboard() {
-  const panel = document.getElementById('dashboard-panel').innerHTML;
-  const client = state.clientName || 'client';
-  const e = state.extracted;
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAP Velocity AI — ${client} Cost Analysis</title>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--gap-blue:#006489;--gap-dark:#453F3E;--gap-gray:#777373;--gap-light-gray:#D1D1D1;--gap-lighter-gray:#E5E1E6;--gap-yellow:#FEBD12;--gap-steel:#5497AE;--gap-soft:#A5CAD6;--gap-cyan:#18C1E5;--gap-green:#43B686;--gap-red:#E54360;--gap-bg:#F7F8FA;--gap-white:#FFFFFF;--font:'Lato',Verdana,sans-serif}
-body{background:var(--gap-bg);color:var(--gap-dark);font-family:var(--font);padding:40px 32px}
-.panel{background:white;border-radius:10px;border:1px solid #E8E8E8;box-shadow:0 1px 4px rgba(0,0,0,.04);padding:28px;max-width:900px;margin:0 auto}
-.dash-header-band{background:var(--gap-blue);border-radius:10px 10px 0 0;padding:24px 28px;margin:-28px -28px 24px;position:relative;overflow:hidden}
-.dash-header-band::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%);border-radius:50%}
-.dash-client{font-size:11px;color:var(--gap-soft);letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
-.dash-headline{font-size:22px;font-weight:900;color:white;text-transform:uppercase}
-.dash-headline .hl{color:var(--gap-yellow)}
-.dash-sub{font-size:12px;color:var(--gap-soft);margin-top:6px}
-.dash-params{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-.dash-param{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:5px;padding:4px 12px;font-size:11px;font-weight:700;color:white}
-.dash-param span{color:var(--gap-cyan)}
-.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.metric-card{padding:18px;background:white;border-radius:10px;border:1px solid #E8E8E8}
-.metric-label{font-size:9px;color:var(--gap-blue);letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:6px}
-.metric-value{font-size:24px;font-weight:900;color:var(--gap-dark);line-height:1}
-.metric-value.red{color:var(--gap-red)}
-.metric-sub{font-size:11px;color:var(--gap-gray);margin-top:5px}
-.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
-.diy-card,.velo-card{border-radius:10px;padding:24px;position:relative;overflow:hidden}
-.diy-card{border:2px solid var(--gap-red);background:white}
-.diy-card::before,.velo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
-.diy-card::before{background:var(--gap-red)}
-.velo-card{border:2px solid var(--gap-green);background:white}
-.velo-card::before{background:var(--gap-green)}
-.card-badge-flag{position:absolute;top:14px;right:14px;font-size:9px;padding:3px 10px;border-radius:4px;font-weight:700;letter-spacing:.1em}
-.flag-risk{background:var(--gap-red);color:white}
-.flag-managed{background:var(--gap-green);color:white}
-.card-type-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:12px}
-.card-amount-big{font-size:42px;font-weight:900;line-height:1}
-.card-meta-small{font-size:12px;color:var(--gap-gray);margin-top:8px}
-.savings-highlight{margin-top:16px;padding:12px 16px;background:#E8F8F0;border-radius:8px;border:1px solid #C6ECDB}
-.savings-num{font-size:20px;font-weight:900;color:var(--gap-green)}
-.savings-detail{font-size:11px;color:var(--gap-gray);margin-top:2px}
-.timeline-wrap{display:flex;gap:5px;flex-wrap:wrap}
-.tl-block{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
-.tl-block.active{background:var(--gap-red);color:white}
-.tl-block.inactive{background:var(--gap-lighter-gray);color:var(--gap-light-gray)}
-.breakdown-section{background:white;border-radius:10px;border:1px solid #E8E8E8;padding:24px;margin-bottom:20px}
-.breakdown-title{font-size:11px;font-weight:700;color:var(--gap-blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px}
-.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #F0F0F0}
-.breakdown-row:last-child{border-bottom:none}
-.breakdown-name{font-size:13px;font-weight:700;color:var(--gap-dark)}
-.breakdown-desc{font-size:11px;color:var(--gap-gray);margin-top:2px}
-.breakdown-amount{font-size:14px;font-weight:900;color:var(--gap-dark)}
-.breakdown-bar-wrap{height:5px;background:var(--gap-lighter-gray);border-radius:3px;margin-top:6px;width:100%}
-.breakdown-bar{height:5px;border-radius:3px;background:var(--gap-red)}
-.risk-grid{display:flex;flex-direction:column;gap:8px}
-.risk-item{padding:12px 16px;background:var(--gap-bg);border-radius:8px;border-left:3px solid var(--gap-red)}
-.risk-top{display:flex;justify-content:space-between;align-items:center}
-.risk-name{font-size:13px;font-weight:700;color:var(--gap-dark)}
-.risk-cost-tag{font-size:13px;font-weight:900;color:var(--gap-red)}
-.risk-desc{font-size:11px;color:var(--gap-gray);margin-top:5px;line-height:1.5}
-.summary-block{display:grid;grid-template-columns:1fr 1fr;border-radius:10px;overflow:hidden;margin-bottom:20px}
-.sum-diy{padding:24px 28px;background:var(--gap-dark);border-top:4px solid var(--gap-red)}
-.sum-velo{padding:24px 28px;background:var(--gap-blue);border-top:4px solid var(--gap-cyan);position:relative}
-.sum-velo::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--gap-cyan)}
-.sum-tag{font-size:9px;letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:10px}
-.sum-diy .sum-tag{color:var(--gap-red)}
-.sum-velo .sum-tag{color:var(--gap-cyan)}
-.sum-text{font-size:13px;line-height:1.7}
-.sum-diy .sum-text{color:#c9c4c3}
-.sum-velo .sum-text{color:var(--gap-soft)}
-.sum-text strong{color:white}
-.sum-text .red-hl{color:#ff7a92}
-.sum-text .green-hl{color:#7cdbb5}
-.sum-fn{margin-top:14px;font-size:11px}
-.sum-diy .sum-fn{color:#7a7370}
-.sum-velo .sum-fn{color:var(--gap-steel)}
-.footer-bar{height:4px;background:linear-gradient(90deg,var(--gap-yellow) 0%,var(--gap-cyan) 50%,var(--gap-green) 100%);border-radius:0 0 10px 10px;margin:-28px -28px 0}
-.footer-note{text-align:center;margin-top:20px;font-size:11px;color:var(--gap-gray);font-style:italic}
-.footer-note a{color:var(--gap-blue);font-style:normal;font-weight:700;text-decoration:none}
-</style>
-</head>
-<body>
-<div class="panel">${panel}</div>
-</body>
-</html>`;
+function openReportDialog() {
+  if (!window.jspdf) { alert('PDF library is still loading — please try again in a moment.'); return; }
+  if (!state.calcResult) { alert('Run the cost model first before downloading a report.'); return; }
+  const client = (state.clientName || 'client').replace(/\s+/g,'-').toLowerCase();
+  const r = state.calcResult;
+  document.getElementById('reportFilename').value = `gap-velo-${client}-${Math.round(r.kloc)}kloc`;
+  document.getElementById('reportOverlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('reportFilename').select(), 50);
+}
 
-  const blob = new Blob([html], { type: 'text/html' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `gap-velo-${client.replace(/\s+/g,'-').toLowerCase()}-cost-analysis.html`;
-  a.click();
+function closeReportDialog(e) {
+  if (e && e.target !== document.getElementById('reportOverlay')) return;
+  document.getElementById('reportOverlay').style.display = 'none';
+}
+
+function confirmDownload() {
+  const name = (document.getElementById('reportFilename').value.trim() || 'gap-velo-report').replace(/\.pdf$/i, '');
+  document.getElementById('reportOverlay').style.display = 'none';
+  generateReport(name);
+}
+
+function generateReport(filename) {
+  if (!window.jspdf) { alert('PDF library is still loading — please try again in a moment.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const r = state.calcResult;
+  const e = state.extracted;
+  const s = STACKS[e.sourceTech] || STACKS.vb6;
+  const d = COMPLEXITY[e.complexityLevel] || COMPLEXITY[1];
+  const client = state.clientName || 'Client';
+  const targetLbl = e.targetTech || 'Modern Platform';
+  const savings = r.diy - r.proAndRisk;
+  const savPct = Math.max(0, Math.round((savings / r.diy) * 100));
+
+  const PW = 210, PH = 297, M = 14, CW = 182;
+
+  function h2r(h) { return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; }
+  function f(h) { const [a,b,c]=h2r(h); doc.setFillColor(a,b,c); }
+  function k(h) { const [a,b,c]=h2r(h); doc.setDrawColor(a,b,c); }
+  function tx(h) { const [a,b,c]=h2r(h); doc.setTextColor(a,b,c); }
+
+  const B='#006489', DK='#453F3E', GR='#777373', LG='#D1D1D1', LLG='#E5E1E6',
+        YL='#FEBD12', BA1='#5497AE', BA2='#A5CAD6', CY='#18C1E5', GN='#43B686',
+        RD='#E54360', BG='#F7F8FA', WH='#FFFFFF', BD='#E8E8E8',
+        SV='#E8F8F0', SVB='#C6ECDB';
+
+  let y = 0;
+
+  function sectionLbl(txt) {
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); tx(B);
+    doc.text(txt.toUpperCase(), M, y+4);
+    f(B); doc.rect(M, y+5.5, CW, 0.4, 'F');
+    y += 8;
+  }
+
+  // ── PAGE 1: HEADER ─────────────────────────────────────────────────────────
+  f(CY); doc.rect(0, 0, PW, 2, 'F');
+  f(B);  doc.rect(0, 2, PW, 44, 'F');
+
+  doc.setFontSize(7); doc.setFont('helvetica','bold'); tx(BA2);
+  doc.text('GAP VELOCITY AI', M, 12);
+
+  doc.setFontSize(20); doc.setFont('helvetica','bold'); tx(WH);
+  doc.text('DIY COST ', M, 24);
+  const pw0 = doc.getTextWidth('DIY COST ');
+  tx(YL); doc.text('REALITY CHECK', M + pw0, 24);
+
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); tx(BA2);
+  doc.text(`${client}  ·  Stack: ${s.label}  ·  ${fmtK(r.kloc)} lines  ·  ${d.label} complexity  ·  ${fmt$(state.engineerCost)}/eng/yr`, M, 32);
+
+  doc.setFontSize(7); tx(BA1);
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}`, M, 38);
+
+  f(CY); doc.rect(0, 44, PW, 2, 'F');
+  y = 50;
+
+  // ── AI MODERNIZATION SUMMARY ────────────────────────────────────────────────
+  if (e.summary) {
+    sectionLbl('AI Modernization Summary');
+    const summaryLines = doc.splitTextToSize(e.summary, CW - 12);
+    const summaryH = summaryLines.length * 5 + 14;
+    f(WH); doc.rect(M, y, CW, summaryH, 'F');
+    k(B); doc.setLineWidth(0.4); doc.rect(M, y, 3, summaryH, 'F');
+    k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, summaryH, 'S');
+    doc.setFontSize(8); doc.setFont('helvetica','normal'); tx(DK);
+    doc.text(summaryLines, M + 8, y + 8);
+    y += summaryH + 6;
+  }
+
+  // ── PARAMETERS ─────────────────────────────────────────────────────────────
+  sectionLbl('Parameters');
+  f(BG); doc.rect(M, y, CW, 22, 'F');
+  k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, 22, 'S');
+
+  [
+    {lbl:'STACK',         val:s.label,               sub:`${s.risk}x risk factor`},
+    {lbl:'TARGET',        val:targetLbl,             sub:'migration destination'},
+    {lbl:'LINES OF CODE', val:fmtK(r.kloc),           sub:`${r.loc.toLocaleString()} lines`},
+    {lbl:'ENGINEER COST', val:fmt$(state.engineerCost),sub:'fully loaded / yr'},
+    {lbl:'COMPLEXITY',    val:d.label,                sub:`${d.factor}x effort`},
+  ].forEach((p, i) => {
+    const px = M + i * (CW/5) + 4;
+    if (i > 0) { k(BD); doc.setLineWidth(0.2); doc.line(M + i*(CW/5), y+3, M + i*(CW/5), y+19); }
+    doc.setFontSize(6);  doc.setFont('helvetica','bold');   tx(B);  doc.text(p.lbl, px, y+6);
+    doc.setFontSize(11); doc.setFont('helvetica','bold');   tx(DK); doc.text(p.val, px, y+14);
+    doc.setFontSize(6);  doc.setFont('helvetica','normal'); tx(GR); doc.text(p.sub, px, y+19);
+  });
+  y += 26;
+
+  // ── KEY METRICS ─────────────────────────────────────────────────────────────
+  sectionLbl('Key Metrics');
+  const sw = (CW - 9) / 4;
+  [
+    {lbl:'TOTAL LINES', val:r.loc.toLocaleString(),   sub:`${fmtK(r.kloc)} KLOC`,           accent:false},
+    {lbl:'ENG. HOURS',  val:r.hours.toLocaleString(), sub:`${r.ehpk.toFixed(0)} hrs/KLOC`,  accent:false},
+    {lbl:'TEAM SIZE',   val:`${r.eng}`,               sub:`${r.months} months`,             accent:false},
+    {lbl:'COST / LINE', val:`$${r.cpl}`,              sub:'DIY all-in',                     accent:true},
+  ].forEach((st, i) => {
+    const sx = M + i * (sw + 3);
+    f(WH); doc.rect(sx, y, sw, 20, 'F');
+    k(BD); doc.setLineWidth(0.3); doc.rect(sx, y, sw, 20, 'S');
+    if (st.accent) { f(RD); doc.rect(sx, y, 1.5, 20, 'F'); }
+    const tx2 = sx + (st.accent ? 4 : 3);
+    doc.setFontSize(6);  doc.setFont('helvetica','bold');   tx(B);                   doc.text(st.lbl, tx2, y+5);
+    doc.setFontSize(13); doc.setFont('helvetica','bold');   tx(st.accent ? RD : DK); doc.text(st.val, tx2, y+13);
+    doc.setFontSize(6);  doc.setFont('helvetica','normal'); tx(GR);                  doc.text(st.sub, tx2, y+17.5);
+  });
+  y += 24;
+
+  // ── TEAM & TIMELINE ─────────────────────────────────────────────────────────
+  sectionLbl('Team & Timeline Estimate');
+  f(WH); doc.rect(M, y, CW, 28, 'F');
+  k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, 28, 'S');
+
+  doc.setFontSize(6); doc.setFont('helvetica','bold'); tx(B);
+  doc.text('ENGINEERS REQUIRED', M+4, y+5);
+  doc.setFontSize(22); doc.setFont('helvetica','bold'); tx(DK);
+  doc.text(`${r.eng}`, M+4, y+17);
+  doc.setFontSize(6); doc.setFont('helvetica','normal'); tx(GR);
+  doc.text(`${fmt$(state.engineerCost)}/yr  ·  ${r.hours.toLocaleString()} total hrs`, M+4, y+22);
+
+  k(BD); doc.setLineWidth(0.2); doc.line(M+38, y+4, M+38, y+24);
+
+  doc.setFontSize(6); doc.setFont('helvetica','bold'); tx(B);
+  doc.text('DURATION', M+42, y+5);
+  doc.setFontSize(22); doc.setFont('helvetica','bold'); tx(DK);
+  doc.text(`${r.months}`, M+42, y+17);
+  const mw = doc.getTextWidth(`${r.months}`);
+  doc.setFontSize(9); doc.setFont('helvetica','bold'); tx(GR);
+  doc.text('months', M+42+mw+1, y+17);
+  doc.setFontSize(6); doc.setFont('helvetica','normal'); tx(GR);
+  doc.text(`Approx. ${(r.months/12).toFixed(1)} yrs  ·  ${r.ehpk.toFixed(0)} hrs/KLOC`, M+42, y+22);
+
+  y += 32;
+
+  // ── COST COMPARISON ─────────────────────────────────────────────────────────
+  sectionLbl('Cost Comparison');
+  const cH = 60, hW = (CW-4)/2;
+
+  // DIY card
+  f(WH); doc.rect(M, y, hW, cH, 'F');
+  k(RD); doc.setLineWidth(0.5); doc.rect(M, y, hW, cH, 'S');
+  f(RD); doc.rect(M, y, hW, 2, 'F');
+  f(RD); doc.roundedRect(M+hW-22, y+3.5, 20, 5, 1, 1, 'F');
+  doc.setFontSize(5); doc.setFont('helvetica','bold'); tx(WH);
+  doc.text('HIGH RISK', M+hW-12, y+7, {align:'center'});
+  doc.setFontSize(7); doc.setFont('helvetica','bold'); tx(RD);
+  doc.text('DIY WITH GENAI', M+4, y+11);
+  doc.setFontSize(20); doc.setFont('helvetica','bold'); tx(RD);
+  doc.text(fmt$(r.diy), M+4, y+22);
+  doc.setFontSize(6.5); doc.setFont('helvetica','normal'); tx(GR);
+  doc.text(`${r.months} months  ·  ${r.eng} engineers  ·  ${fmtK(r.kloc)} lines`, M+4, y+27);
+  k(BD); doc.setLineWidth(0.2); doc.line(M+3, y+30, M+hW-3, y+30);
+  [
+    ['Base engineering cost', fmt$(r.baseCost)],
+    ['GenAI tooling & APIs',  fmt$(r.aiCost)],
+    ['Last Mile / Risk costs',fmt$(r.riskTotal)],
+  ].forEach(([lbl,val], i) => {
+    const iy = y+36+i*5.5;
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal'); tx(DK); doc.text(lbl, M+4, iy);
+    doc.setFont('helvetica','bold'); doc.text(val, M+hW-3, iy, {align:'right'});
+  });
+  k(LG); doc.setLineWidth(0.3); doc.line(M+3, y+53, M+hW-3, y+53);
+  doc.setFontSize(7); doc.setFont('helvetica','bold'); tx(RD);
+  doc.text('TOTAL', M+4, y+58); doc.text(fmt$(r.diy), M+hW-3, y+58, {align:'right'});
+
+  // VELO card
+  const vx = M+hW+4;
+  f(WH); doc.rect(vx, y, hW, cH, 'F');
+  k(GN); doc.setLineWidth(0.5); doc.rect(vx, y, hW, cH, 'S');
+  f(GN); doc.rect(vx, y, hW, 2, 'F');
+  f(GN); doc.roundedRect(vx+hW-28, y+3.5, 26, 5, 1, 1, 'F');
+  doc.setFontSize(5); doc.setFont('helvetica','bold'); tx(WH);
+  doc.text('MANAGED RISK', vx+hW-15, y+7, {align:'center'});
+  doc.setFontSize(7); doc.setFont('helvetica','bold'); tx(GN);
+  doc.text('VELO — GAP VELOCITY AI', vx+4, y+11);
+  doc.setFontSize(20); doc.setFont('helvetica','bold'); tx(GN);
+  doc.text(fmt$(r.proAndRisk), vx+4, y+22);
+  doc.setFontSize(6.5); doc.setFont('helvetica','normal'); tx(GR);
+  doc.text(`${r.proMonths} months  ·  proven methodology`, vx+4, y+28);
+  if (savings > 0) {
+    f(SV); doc.rect(vx+3, y+35, hW-6, 9, 'F');
+    k(SVB); doc.setLineWidth(0.3); doc.rect(vx+3, y+35, hW-6, 9, 'S');
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); tx(GN);
+    doc.text(`Save ${fmt$(savings)}`, vx+6, y+40.5);
+    doc.setFontSize(6); doc.setFont('helvetica','normal'); tx(GR);
+    doc.text(`${savPct}% less  ·  ${r.months - r.proMonths} months faster`, vx+6, y+43.5);
+  }
+
+  y += cH + 4;
+
+  // ── PAGE 2 ──────────────────────────────────────────────────────────────────
+  doc.addPage();
+  f(CY); doc.rect(0, 0, PW, 1.5, 'F');
+  f(B);  doc.rect(0, 1.5, PW, 6, 'F');
+  doc.setFontSize(6); doc.setFont('helvetica','bold'); tx(BA2);
+  doc.text(`GAP VELOCITY AI  ·  DIY COST REALITY CHECK  ·  ${client.toUpperCase()}`, M, 5.5);
+  tx(BA1);
+  doc.text(`${s.label}  ·  ${fmtK(r.kloc)} lines  ·  ${d.label}  ·  ${fmt$(state.engineerCost)}/yr`, PW-M, 5.5, {align:'right'});
+  y = 13;
+
+  // ── LAST MILE RISK BREAKDOWN ─────────────────────────────────────────────────
+  sectionLbl('Last Mile Risk Breakdown');
+  const rRH = 17, rBodyH = r.risks.length * rRH + 10, rBlockH = rBodyH + 9;
+  f(WH); doc.rect(M, y, CW, rBlockH, 'F');
+  k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, rBlockH, 'S');
+  doc.setFontSize(7); doc.setFont('helvetica','normal'); tx(GR);
+  doc.text(`Adjusted for ${s.label} (${s.risk}x risk factor) + ${d.label} density (${d.factor}x effort)`, M+3, y+6);
+
+  const maxRC = Math.max(...r.risks.map(x=>x.cost));
+  let ry = y + 10;
+  r.risks.forEach((ri, i) => {
+    if (i>0) { k(BD); doc.setLineWidth(0.2); doc.line(M+3, ry, M+CW-3, ry); }
+    doc.setFontSize(8); doc.setFont('helvetica','bold'); tx(DK);
+    doc.text(ri.label, M+4, ry+5);
+    doc.setFontSize(6); doc.setFont('helvetica','normal'); tx(GR);
+    const dLines = doc.splitTextToSize(ri.desc, CW-52);
+    doc.text(dLines.slice(0,2), M+4, ry+10);
+    const bW = Math.max(2, (ri.cost/maxRC)*28);
+    const bC = ri.cost>200000 ? RD : ri.cost>100000 ? YL : GN;
+    f(bC); doc.rect(M+CW-40, ry+3, bW, 3.5, 'F');
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); tx(DK);
+    doc.text(fmt$(ri.cost), M+CW-3, ry+6, {align:'right'});
+    doc.setFontSize(5.5); doc.setFont('helvetica','normal'); tx(LG);
+    doc.text(`${(ri.pct*100).toFixed(0)}% of base cost`, M+CW-3, ry+11, {align:'right'});
+    ry += rRH;
+  });
+  f(BG); doc.rect(M, ry, CW, 9, 'F');
+  k(BD); doc.setLineWidth(0.2); doc.rect(M, ry, CW, 9, 'S');
+  doc.setFontSize(7.5); doc.setFont('helvetica','bold'); tx(DK);
+  doc.text('TOTAL LAST MILE COSTS', M+4, ry+6);
+  tx(RD); doc.text(fmt$(r.riskTotal), M+CW-3, ry+6, {align:'right'});
+  y += rBlockH + 8;
+
+  // ── SUMMARY ─────────────────────────────────────────────────────────────────
+  sectionLbl('Summary');
+  const hS = (CW - 3) / 2;
+  const diyTxt = `With ${r.loc.toLocaleString()} lines of ${s.label} at ${d.label.toLowerCase()} density, ${client}'s team would need ${r.eng} engineers working ${r.months} months. That's $${r.cpl} per line all-in — and ${fmt$(r.riskTotal)} of that is hidden risk from silent bugs, rework, and lost business logic that GenAI alone can't catch.`;
+  const veloTxt = `With VELO, the same ${r.loc.toLocaleString()} lines of ${s.label} migrate to ${targetLbl} in ${r.proMonths} months${r.months - r.proMonths > 0 ? ` — ${r.months - r.proMonths} months faster than DIY` : ''}. Risk is managed, methodology is proven, and ${client}'s engineers stay focused on building value, not archaeology.`;
+  doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+  const diyLines = doc.splitTextToSize(diyTxt, hS - 8);
+  const veloLines = doc.splitTextToSize(veloTxt, hS - 8);
+  const sH = Math.max(44, Math.max(diyLines.length, veloLines.length) * 4.8 + 24);
+
+  f(DK); doc.rect(M, y, hS, sH, 'F');
+  f(RD); doc.rect(M, y, hS, 2, 'F');
+  doc.setFontSize(6); doc.setFont('helvetica','bold'); tx(RD);
+  doc.text('DIY WITH GENAI', M+4, y+8);
+  doc.setFontSize(7.5); doc.setFont('helvetica','normal'); tx(BA2);
+  doc.text(diyLines, M+4, y+14);
+  doc.setFontSize(6.5); doc.setFont('helvetica','bold'); tx(WH);
+  doc.text(`Total DIY cost: ${fmt$(r.diy)}`, M+4, y+sH-5);
+
+  const vsx = M + hS + 3;
+  f(B); doc.rect(vsx, y, hS, sH, 'F');
+  f(CY); doc.rect(vsx, y, hS, 2, 'F');
+  f(CY); doc.rect(vsx, y+sH-2, hS, 2, 'F');
+  doc.setFontSize(6); doc.setFont('helvetica','bold'); tx(CY);
+  doc.text('VELO — GAP VELOCITY AI', vsx+4, y+8);
+  doc.setFontSize(7.5); doc.setFont('helvetica','normal'); tx(BA2);
+  doc.text(veloLines, vsx+4, y+14);
+  doc.setFontSize(6.5); doc.setFont('helvetica','bold'); tx(WH);
+  doc.text(`VELO cost: ${fmt$(r.proAndRisk)}${savings > 0 ? `  ·  You save: ${fmt$(savings)}` : ''}`, vsx+4, y+sH-5);
+
+  // ── CALIBRATION NOTE ─────────────────────────────────────────────────────────
+  y += sH + 10;
+  doc.setFontSize(6.5); doc.setFont('helvetica','italic'); tx(GR);
+  doc.text(
+    'Calibrated against 35+ years and billions of lines of legacy modernization data from ArtinSoft / Mobilize.Net and GAPVelocity AI',
+    PW/2, y, {align:'center'}
+  );
+  y += 5;
+  doc.setFontSize(6.5); doc.setFont('helvetica','bold'); tx(B);
+  doc.textWithLink('www.gapvelocity.ai', PW/2, y, {align:'center', url:'https://www.gapvelocity.ai/'});
+
+  // ── FOOTER on all pages ───────────────────────────────────────────────────────
+  const np = doc.getNumberOfPages();
+  for (let i=1; i<=np; i++) {
+    doc.setPage(i);
+    f(LLG); doc.rect(0, PH-8, PW, 8, 'F');
+    f(CY);  doc.rect(0, PH-8, PW, 0.8, 'F');
+    doc.setFontSize(6); doc.setFont('helvetica','normal'); tx(GR);
+    doc.text(`GAP Velocity AI  ·  ${client}  ·  DIY Cost Reality Check`, M, PH-3);
+    tx(LG);
+    doc.text(
+      `Page ${i} of ${np}  ·  ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}`,
+      PW-M, PH-3, {align:'right'}
+    );
+  }
+
+  doc.save(`${filename || 'gap-velo-report'}.pdf`);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
