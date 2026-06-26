@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Cost Estimator — Blazor Server | GAP Velocity AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gap-blue: #006489;
+  --gap-charcoal: #453F3E;
+  --gap-warm-gray: #777373;
+  --gap-light-gray: #D1D1D1;
+  --gap-yellow: #FEBD12;
+  --gap-steel-blue: #5497AE;
+  --gap-soft-blue: #A5CAD6;
+  --gap-light-sky: #B6DAE3;
+  --gap-cyan: #18C1E5;
+  --gap-green: #43B686;
+  --gap-white: #FFFFFF;
+  --font: 'Lato', Verdana, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: #f5f6f8;
+  color: var(--gap-charcoal);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--gap-blue);
+  padding: 0;
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 32px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.logo-area { display: flex; align-items: center; gap: 14px; padding-bottom: 20px; }
+.logo-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+}
+.logo-text { color: white; }
+.logo-text .wordmark {
+  font-size: 13px; font-weight: 900; letter-spacing: .12em;
+  text-transform: uppercase; line-height: 1.1; color: white;
+}
+.logo-text .tagline {
+  font-size: 10px; font-weight: 300; letter-spacing: .1em;
+  color: var(--gap-soft-blue); text-transform: uppercase; margin-top: 2px;
+}
+.header-title-area { text-align: right; padding-bottom: 20px; }
+.header-title-area .eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--gap-cyan); margin-bottom: 4px;
+}
+.header-title-area h1 {
+  font-size: 22px; font-weight: 900; color: white; line-height: 1.2;
+}
+.header-title-area h1 span { color: var(--gap-yellow); }
+.header-stripe {
+  height: 4px;
+  background: linear-gradient(to right, var(--gap-yellow) 33.3%, var(--gap-cyan) 33.3% 66.6%, var(--gap-green) 66.6%);
+}
+
+/* ── MAIN ── */
+.main { max-width: 1100px; margin: 0 auto; padding: 32px 32px 48px; }
+
+/* ── DB TOGGLE ── */
+.db-toggle-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gap-warm-gray); margin-bottom: 10px;
+}
+.db-toggle {
+  display: inline-flex; border: 1.5px solid var(--gap-light-gray);
+  border-radius: 6px; overflow: hidden; margin-bottom: 20px;
+}
+.db-btn {
+  padding: 10px 22px; font-size: 13px; font-weight: 700;
+  font-family: var(--font); cursor: pointer; border: none;
+  background: white; color: var(--gap-warm-gray);
+  display: flex; align-items: center; gap: 7px;
+  transition: background .15s, color .15s;
+}
+.db-btn.active { background: var(--gap-blue); color: white; }
+.db-btn:not(.active):hover { background: var(--gap-light-gray); color: var(--gap-charcoal); }
+
+/* ── ARCH FLOW ── */
+.arch-flow {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  margin-bottom: 28px; background: white; border: 1px solid var(--gap-light-gray);
+  border-radius: 8px; padding: 12px 16px;
+}
+.arch-node {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700; padding: 4px 12px;
+  border-radius: 99px; border: 1.5px solid var(--gap-light-gray);
+  color: var(--gap-warm-gray); background: #f5f6f8;
+}
+.arch-node.highlight {
+  border-color: var(--gap-blue); color: var(--gap-blue); background: #e8f3f8;
+}
+.arch-arrow { color: var(--gap-light-gray); font-size: 16px; font-weight: 700; }
+
+/* ── GRID ── */
+.estimator-grid {
+  display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start;
+}
+@media (max-width: 860px) { .estimator-grid { grid-template-columns: 1fr; } }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-size: 10px; font-weight: 900; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--gap-blue);
+  border-left: 3px solid var(--gap-yellow);
+  padding-left: 8px; margin: 0 0 12px;
+}
+
+/* ── SERVICE CARD ── */
+.svc-card {
+  background: white; border: 1px solid var(--gap-light-gray);
+  border-radius: 8px; padding: 18px 20px; margin-bottom: 16px;
+}
+.svc-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.svc-icon {
+  width: 36px; height: 36px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 18px;
+}
+.svc-name { font-size: 14px; font-weight: 900; color: var(--gap-charcoal); margin: 0; }
+.svc-sub  { font-size: 11px; color: var(--gap-warm-gray); margin: 2px 0 0; }
+.svc-price { margin-left: auto; text-align: right; flex-shrink: 0; }
+.svc-price .amount { font-size: 15px; font-weight: 900; color: var(--gap-blue); }
+.svc-price .unit   { font-size: 10px; color: var(--gap-warm-gray); }
+
+/* ── TIER GRID ── */
+.tier-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px; margin-bottom: 12px;
+}
+.tier-card {
+  border: 1.5px solid var(--gap-light-gray); border-radius: 6px;
+  padding: 10px; cursor: pointer; background: #f5f6f8;
+  transition: border-color .15s, background .15s;
+}
+.tier-card:hover { border-color: var(--gap-steel-blue); background: #eef6fa; }
+.tier-card.selected { border: 2px solid var(--gap-blue); background: #e8f3f8; }
+.tier-badge {
+  display: inline-block; font-size: 9px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 99px; margin-bottom: 5px;
+}
+.b-dev  { background: var(--gap-light-gray); color: var(--gap-warm-gray); }
+.b-rec  { background: #d4f0e4; color: #2a7a58; }
+.b-ha   { background: #dceef7; color: var(--gap-blue); }
+.b-warn { background: #fff3cd; color: #9a6f00; }
+.tier-name  { font-size: 12px; font-weight: 900; color: var(--gap-charcoal); margin-bottom: 3px; }
+.tier-price { font-size: 13px; font-weight: 700; color: var(--gap-blue); margin-bottom: 5px; }
+.tier-spec  { font-size: 10px; color: var(--gap-warm-gray); line-height: 1.5; }
+.tier-card.selected .tier-name  { color: var(--gap-blue); }
+.tier-card.selected .tier-price { color: var(--gap-charcoal); }
+.tier-card.selected .tier-spec  { color: var(--gap-steel-blue); }
+
+/* ── CONTROLS ── */
+.ctrl-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.ctrl-row label { font-size: 12px; color: var(--gap-charcoal); font-weight: 700; min-width: 185px; }
+.ctrl-row input[type=range] {
+  flex: 1; height: 4px; accent-color: var(--gap-blue); cursor: pointer;
+}
+.ctrl-row select {
+  flex: 1; font-family: var(--font); font-size: 12px; padding: 6px 8px;
+  border: 1px solid var(--gap-light-gray); border-radius: 4px;
+  color: var(--gap-charcoal); background: white; cursor: pointer;
+}
+.ctrl-row select:focus { outline: 2px solid var(--gap-blue); }
+.ctrl-val { font-size: 12px; font-weight: 700; color: var(--gap-charcoal); min-width: 90px; text-align: right; }
+.ctrl-note { font-size: 11px; color: var(--gap-warm-gray); font-style: italic; margin-top: 4px; }
+.free-label { font-size: 15px; font-weight: 900; color: var(--gap-green); }
+
+/* ── SUMMARY PANEL ── */
+.summary-panel {
+  background: var(--gap-blue); border-radius: 8px;
+  padding: 24px 22px; position: sticky; top: 24px;
+}
+.summary-panel h2 {
+  font-size: 11px; font-weight: 900; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--gap-soft-blue); margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,.15); padding-bottom: 12px;
+}
+.sum-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.08);
+  gap: 10px;
+}
+.sum-row:last-child { border: none; }
+.sum-label { font-size: 12px; color: var(--gap-soft-blue); flex: 1; line-height: 1.4; }
+.sum-label .sub { font-size: 10px; color: rgba(255,255,255,.4); display: block; }
+.sum-amount { font-size: 13px; font-weight: 700; color: white; text-align: right; white-space: nowrap; }
+.sum-free { font-size: 13px; font-weight: 700; color: var(--gap-cyan); }
+.sum-total-row {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1.5px solid var(--gap-yellow);
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.sum-total-label { font-size: 13px; font-weight: 900; color: white; }
+.sum-total-amount { font-size: 28px; font-weight: 900; color: var(--gap-yellow); }
+.sum-disclaimer {
+  font-size: 10px; color: rgba(255,255,255,.4); margin-top: 14px;
+  line-height: 1.5; border-top: 1px solid rgba(255,255,255,.1); padding-top: 12px;
+}
+.sum-disclaimer a { color: var(--gap-soft-blue); }
+
+.info-banner {
+  border-radius: 6px; padding: 10px 14px; font-size: 11px;
+  margin-top: 14px; line-height: 1.5;
+}
+.info-banner.info { background: rgba(165,202,214,.15); color: var(--gap-soft-blue); border: 1px solid rgba(165,202,214,.3); }
+.info-banner.warn { background: rgba(254,189,18,.1); color: #c9a200; border: 1px solid rgba(254,189,18,.3); }
+
+/* ── FOOTER ── */
+.footer { background: var(--gap-charcoal); color: rgba(255,255,255,.5); }
+.footer-stripe {
+  height: 4px;
+  background: linear-gradient(to right, var(--gap-yellow) 33.3%, var(--gap-cyan) 33.3% 66.6%, var(--gap-green) 66.6%);
+}
+.footer-inner {
+  max-width: 1100px; margin: 0 auto; padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; gap: 16px; flex-wrap: wrap;
+}
+.footer-inner span { color: rgba(255,255,255,.4); }
+.footer-inner a { color: var(--gap-soft-blue); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-text">
+        <div class="wordmark">GAP Velocity AI</div>
+      </div>
+    </div>
+    <div class="header-title-area">
+      <div class="eyebrow">Azure Cloud Services</div>
+      <h1>Blazor Server <span>Cost Estimator</span></h1>
+    </div>
+  </div>
+  <div class="header-stripe"></div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- DB MODE TOGGLE -->
+  <div class="db-toggle-label">Database location</div>
+  <div class="db-toggle">
+    <button class="db-btn active" id="btn-azure" onclick="setDbMode('azure')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Azure SQL Database
+    </button>
+    <button class="db-btn" id="btn-onprem" onclick="setDbMode('onprem')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      On-premises database
+    </button>
+  </div>
+
+  <!-- ARCH FLOW -->
+  <div class="arch-flow" id="arch-flow"></div>
+
+  <div class="estimator-grid">
+    <div class="services-col">
+
+      <!-- APP SERVICE -->
+      <div class="sec-label">1 — App Service plan</div>
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#e8f3f8;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006489" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div>
+            <p class="svc-name">Azure App Service</p>
+            <p class="svc-sub">Blazor Server host · East US</p>
+          </div>
+          <div class="svc-price">
+            <div class="amount" id="p-app">—</div>
+            <div class="unit">plan subtotal</div>
+          </div>
+        </div>
+        <div class="tier-grid" id="app-tiers"></div>
+        <div class="ctrl-row">
+          <label>Instances (scale-out)</label>
+          <input type="range" min="1" max="5" step="1" value="2" id="inst" oninput="calc()">
+          <span class="ctrl-val" id="v-inst">2 instances</span>
+        </div>
+        <p class="ctrl-note">Blazor Server holds a persistent SignalR circuit per user — P-tier is required for production. Linux saves ~50% over Windows for the same SKU.</p>
+      </div>
+
+      <!-- SIGNALR -->
+      <div class="sec-label">2 — Azure SignalR Service</div>
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#d4f0e4;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#43B686" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.07" y2="19.07"/><line x1="4.93" y1="19.07" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="19.07" y2="4.93"/></svg>
+          </div>
+          <div>
+            <p class="svc-name">Azure SignalR Service</p>
+            <p class="svc-sub">Manages persistent WebSocket circuits at scale</p>
+          </div>
+          <div class="svc-price">
+            <div class="amount" id="p-sr">—</div>
+            <div class="unit">service charge</div>
+          </div>
+        </div>
+        <div class="tier-grid" id="sr-tiers"></div>
+        <div class="ctrl-row">
+          <label>Units</label>
+          <input type="range" min="1" max="10" step="1" value="1" id="sr-units" oninput="calc()">
+          <span class="ctrl-val" id="v-sru">1 unit · 1,000 conns</span>
+        </div>
+        <p class="ctrl-note">1 unit = 1,000 concurrent connections + 1M messages/day. Premium adds managed autoscale and Availability Zone support.</p>
+      </div>
+
+      <!-- DATABASE SECTION: AZURE SQL -->
+      <div id="azure-db-section">
+        <div class="sec-label">3 — Azure SQL Database</div>
+        <div class="svc-card">
+          <div class="svc-header">
+            <div class="svc-icon" style="background:#fff3cd;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a6f00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div>
+              <p class="svc-name">Azure SQL Database</p>
+              <p class="svc-sub">General Purpose, vCore model · East US</p>
+            </div>
+            <div class="svc-price">
+              <div class="amount" id="p-sql">—</div>
+              <div class="unit">compute + storage</div>
+            </div>
+          </div>
+          <div class="tier-grid" id="sql-tiers"></div>
+          <div class="ctrl-row">
+            <label>Storage (GB)</label>
+            <input type="range" min="10" max="500" step="10" value="50" id="sql-stor" oninput="calc()">
+            <span class="ctrl-val" id="v-stor">50 GB</span>
+          </div>
+          <div class="ctrl-row">
+            <label>Compute model</label>
+            <select id="sql-model" onchange="calc()">
+              <option value="provisioned">Provisioned — always-on</option>
+              <option value="serverless">Serverless — auto-pause (~35% utilization)</option>
+            </select>
+          </div>
+          <p class="ctrl-note" id="sql-note">Storage at $0.115/GB/month. Provisioned billed at the vCore hourly rate continuously.</p>
+        </div>
+      </div>
+
+      <!-- DATABASE SECTION: ON-PREM -->
+      <div id="onprem-db-section" style="display:none;">
+        <div class="sec-label">3 — Hybrid connectivity (on-premises DB)</div>
+
+        <div class="svc-card">
+          <div class="svc-header">
+            <div class="svc-icon" style="background:#d4f0e4;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#43B686" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div>
+              <p class="svc-name">Azure Virtual Network</p>
+              <p class="svc-sub">Required for VPN Gateway integration</p>
+            </div>
+            <div class="svc-price">
+              <div class="free-label">Free</div>
+              <div class="unit">VNet itself</div>
+            </div>
+          </div>
+          <p class="ctrl-note">VNet creation is free. VNet Integration is included in Standard tier and above — no surcharge on P-tier App Service plans.</p>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-header">
+            <div class="svc-icon" style="background:#fff3cd;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a6f00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <p class="svc-name">Azure VPN Gateway</p>
+              <p class="svc-sub">Site-to-Site IPsec/IKE tunnel to on-premises</p>
+            </div>
+            <div class="svc-price">
+              <div class="amount" id="p-vpn">—</div>
+              <div class="unit">gateway + egress</div>
+            </div>
+          </div>
+          <div class="tier-grid" id="vpn-tiers"></div>
+          <div class="ctrl-row">
+            <label>Outbound egress to on-prem (GB/mo)</label>
+            <input type="range" min="1" max="500" step="5" value="50" id="vpn-egress" oninput="calc()">
+            <span class="ctrl-val" id="v-egress">50 GB</span>
+          </div>
+          <p class="ctrl-note">Inbound traffic (on-prem → Azure) is free. Outbound egress charged at ~$0.087/GB (Zone 1). Basic SKU has no SLA — avoid for production.</p>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-header">
+            <div class="svc-icon" style="background:#ede8f5;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#80468C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+            </div>
+            <div>
+              <p class="svc-name">Azure Key Vault</p>
+              <p class="svc-sub">Secures DB credentials and connection strings</p>
+            </div>
+            <div class="svc-price">
+              <div class="amount" id="p-kv">—</div>
+              <div class="unit">per operations</div>
+            </div>
+          </div>
+          <div class="tier-grid" id="kv-tiers"></div>
+          <div class="ctrl-row">
+            <label>Secret operations/month (000s)</label>
+            <input type="range" min="10" max="2000" step="10" value="100" id="kv-ops" oninput="calc()">
+            <span class="ctrl-val" id="v-kv">100k ops</span>
+          </div>
+          <p class="ctrl-note">Standard: $0.03/10k ops. Cache secrets on startup and this stays under $1/month. Premium adds HSM-backed keys for compliance.</p>
+        </div>
+      </div>
+
+      <!-- MONITOR -->
+      <div class="sec-label">4 — Azure Monitor + App Insights</div>
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#fde8ec;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E54360" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <p class="svc-name">Azure Monitor + App Insights</p>
+            <p class="svc-sub">Logs, traces, and performance monitoring</p>
+          </div>
+          <div class="svc-price">
+            <div class="amount" id="p-mon">—</div>
+            <div class="unit">data ingestion</div>
+          </div>
+        </div>
+        <div class="tier-grid" id="mon-tiers"></div>
+        <div class="ctrl-row">
+          <label>Log ingestion (GB/mo)</label>
+          <input type="range" min="1" max="100" step="1" value="5" id="mon-gb" oninput="calc()">
+          <span class="ctrl-val" id="v-mon">5 GB</span>
+        </div>
+        <p class="ctrl-note">First 5 GB/month always free. Basic logs $0.50/GB. Analytics logs $2.30/GB with full KQL query support and 31-day retention.</p>
+      </div>
+
+    </div><!-- /services-col -->
+
+    <!-- SUMMARY PANEL -->
+    <div class="summary-panel">
+      <h2>Monthly estimate</h2>
+
+      <div class="sum-row">
+        <div class="sum-label">App Service<span class="sub" id="s-app-sub">—</span></div>
+        <div class="sum-amount" id="s-app">—</div>
+      </div>
+      <div class="sum-row">
+        <div class="sum-label">SignalR Service<span class="sub" id="s-sr-sub">—</span></div>
+        <div class="sum-amount" id="s-sr">—</div>
+      </div>
+      <div class="sum-row" id="row-sql">
+        <div class="sum-label">Azure SQL Database<span class="sub" id="s-sql-sub">—</span></div>
+        <div class="sum-amount" id="s-sql">—</div>
+      </div>
+      <div class="sum-row" id="row-vnet" style="display:none;">
+        <div class="sum-label">Azure Virtual Network<span class="sub">included with P-tier</span></div>
+        <div class="sum-free">Free</div>
+      </div>
+      <div class="sum-row" id="row-vpn" style="display:none;">
+        <div class="sum-label">VPN Gateway<span class="sub" id="s-vpn-sub">—</span></div>
+        <div class="sum-amount" id="s-vpn">—</div>
+      </div>
+      <div class="sum-row" id="row-kv" style="display:none;">
+        <div class="sum-label">Key Vault<span class="sub" id="s-kv-sub">—</span></div>
+        <div class="sum-amount" id="s-kv">—</div>
+      </div>
+      <div class="sum-row">
+        <div class="sum-label">Azure Monitor<span class="sub" id="s-mon-sub">—</span></div>
+        <div class="sum-amount" id="s-mon">—</div>
+      </div>
+
+      <div class="sum-total-row">
+        <div class="sum-total-label">Est. monthly total</div>
+        <div class="sum-total-amount" id="s-total">—</div>
+      </div>
+
+      <div class="info-banner" id="warn-banner" style="display:none;"></div>
+
+      <div class="sum-disclaimer">
+        All prices USD · East US · pay-as-you-go retail rates.<br>
+        Source: <a href="https://prices.azure.com/api/retail/prices" target="_blank">prices.azure.com</a> · June 2026.<br>
+        Actual costs may vary by agreement and usage patterns.
+      </div>
+    </div>
+
+  </div><!-- /estimator-grid -->
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-stripe"></div>
+  <div class="footer-inner">
+    <span>© 2026 GAP Velocity AI. Internal use only.</span>
+    <span>Azure Cost Estimator · Blazor Server · East US</span>
+  </div>
+</footer>
+
+<script>
+let TIERS = {};
+
+async function fetchPricingData() {
+  const baseUrl = 'https://prices.azure.com/api/retail/prices';
+  const location = 'East US';
+
+  try {
+    const [appRes, srRes, sqlRes, vpnRes, kvRes, monRes] = await Promise.all([
+      fetch(`${baseUrl}?$filter=serviceName eq 'App Service' and location eq '${location}' and priceType eq 'Consumption'`),
+      fetch(`${baseUrl}?$filter=serviceName eq 'SignalR Service' and location eq '${location}'`),
+      fetch(`${baseUrl}?$filter=serviceName eq 'SQL Database' and location eq '${location}' and contains(skuName, 'vCore')`),
+      fetch(`${baseUrl}?$filter=serviceName eq 'VPN Gateway' and location eq '${location}'`),
+      fetch(`${baseUrl}?$filter=serviceName eq 'Key Vault' and location eq '${location}'`),
+      fetch(`${baseUrl}?$filter=serviceName eq 'Application Insights' and location eq '${location}'`)
+    ]);
+
+    const [appData, srData, sqlData, vpnData, kvData, monData] = await Promise.all([
+      appRes.json(), srRes.json(), sqlRes.json(), vpnRes.json(), kvRes.json(), monRes.json()
+    ]);
+
+    TIERS = buildTiersFromApi(appData, srData, sqlData, vpnData, kvData, monData);
+    initUI();
+  } catch (err) {
+    console.error('Failed to fetch pricing:', err);
+    useFallbackTiers();
+  }
+}
+
+function buildTiersFromApi(appData, srData, sqlData, vpnData, kvData, monData) {
+  return {
+    app: parseAppServiceTiers(appData.Items || []),
+    sr: parseSignalRTiers(srData.Items || []),
+    sql: parseSqlTiers(sqlData.Items || []),
+    vpn: parseVpnTiers(vpnData.Items || []),
+    kv: [
+      { id:'standard', name:'Standard', badge:'b-rec', badgeTxt:'recommended', specs:['Software keys','$0.03 / 10k ops','Secrets + certs'] },
+      { id:'premium',  name:'Premium',  badge:'b-ha',  badgeTxt:'compliance',  specs:['HSM-backed keys','$1/key/month (HSM)','FIPS 140-2 L2'] },
+    ],
+    mon: [
+      { id:'basic',     name:'Basic logs',     badge:'b-dev', badgeTxt:'minimal',       rateGB:0.50, specs:['$0.50/GB ingestion','8-day retention','Limited queries'] },
+      { id:'analytics', name:'Analytics logs', badge:'b-rec', badgeTxt:'recommended',   rateGB:2.30, specs:['$2.30/GB ingestion','31-day retention','Full KQL queries'] },
+    ],
+  };
+}
+
+function parseAppServiceTiers(items) {
+  const tiers = [];
+  const skus = new Map();
+
+  items.forEach(item => {
+    if (!item.skuName || item.unitOfMeasure !== '1 Hour') return;
+    const key = item.skuName;
+    if (!skus.has(key)) {
+      let badge = 'b-dev', txt = 'basic';
+      if (item.skuName.includes('P2')) { badge = 'b-rec'; txt = 'recommended'; }
+      else if (item.skuName.includes('P3')) { badge = 'b-ha'; txt = 'high load'; }
+      if (item.skuName.includes('Windows')) { badge = 'b-warn'; txt = '+ OS license'; }
+
+      skus.set(key, {
+        id: item.skuName.toLowerCase().replace(/\s+/g, '_'),
+        name: item.skuName,
+        badge: badge,
+        badgeTxt: txt,
+        rateHr: parseFloat(item.retailPrice),
+        specs: ['From Azure pricing API', 'East US · Pay-as-you-go', 'Real-time rates']
+      });
+    }
+  });
+
+  return skus.size > 0 ? Array.from(skus.values()).slice(0, 5) : getDefaultAppTiers();
+}
+
+function parseSignalRTiers(items) {
+  const tiers = [];
+  const skus = new Map();
+
+  items.forEach(item => {
+    if (item.unitOfMeasure !== '1 Day' || !item.meterName) return;
+    const key = item.skuName;
+    if (!skus.has(key)) {
+      skus.set(key, {
+        id: item.skuName.toLowerCase(),
+        name: item.skuName,
+        badge: item.skuName.includes('Standard') ? 'b-rec' : (item.skuName.includes('Premium') ? 'b-ha' : 'b-dev'),
+        badgeTxt: item.skuName.includes('Standard') ? 'recommended' : (item.skuName.includes('Premium') ? 'HA + autoscale' : 'dev/test'),
+        ppud: parseFloat(item.retailPrice),
+        specs: ['Real-time pricing', '1,000 conns per unit', 'From Azure API']
+      });
+    }
+  });
+
+  return skus.size > 0 ? Array.from(skus.values()) : getDefaultSignalRTiers();
+}
+
+function parseSqlTiers(items) {
+  const tiers = [];
+  const cores = new Map();
+
+  items.forEach(item => {
+    if (item.unitOfMeasure !== '1 Hour' || !item.skuName.includes('General Purpose')) return;
+    const match = item.skuName.match(/(\d+)\s*vCore/);
+    if (!match) return;
+
+    const coreCount = match[1];
+    if (!cores.has(coreCount)) {
+      cores.set(coreCount, {
+        id: coreCount + 'vc',
+        name: coreCount + ' vCores',
+        badge: coreCount <= 2 ? 'b-dev' : (coreCount <= 4 ? 'b-rec' : 'b-ha'),
+        badgeTxt: coreCount <= 2 ? 'light load' : (coreCount <= 4 ? 'recommended' : 'high throughput'),
+        rateHr: parseFloat(item.retailPrice),
+        specs: [`${coreCount} vCores`, `~$${(parseFloat(item.retailPrice) * 730).toFixed(0)}/mo compute`, 'General Purpose']
+      });
+    }
+  });
+
+  return cores.size > 0 ? Array.from(cores.values()) : getDefaultSqlTiers();
+}
+
+function parseVpnTiers(items) {
+  const tiers = [];
+  const gws = new Map();
+
+  items.forEach(item => {
+    if (!item.meterName || !item.meterName.includes('Gateway Hour')) return;
+    const key = item.skuName;
+    if (!gws.has(key)) {
+      gws.set(key, {
+        id: item.skuName.toLowerCase(),
+        name: item.skuName,
+        badge: item.skuName.includes('Basic') ? 'b-dev' : (item.skuName.includes('AZ') ? 'b-warn' : 'b-rec'),
+        badgeTxt: item.skuName.includes('Basic') ? 'dev/test only' : (item.skuName.includes('AZ') ? 'zone redundant' : 'recommended'),
+        base: Math.round(parseFloat(item.retailPrice) * 730),
+        specs: [item.skuName, 'Gateway pricing', 'Plus egress charges']
+      });
+    }
+  });
+
+  return gws.size > 0 ? Array.from(gws.values()) : getDefaultVpnTiers();
+}
+
+function getDefaultAppTiers() {
+  return [
+    { id:'lin_B2',   name:'Linux B2',    badge:'b-dev',  badgeTxt:'dev/test',     rateHr:0.036, specs:['2 vCPU · 3.5 GB','No autoscale','No VNet'] },
+    { id:'lin_S2',   name:'Linux S2',    badge:'b-dev',  badgeTxt:'staging',      rateHr:0.10,  specs:['2 vCPU · 3.5 GB','Manual autoscale','5 slots'] },
+    { id:'lin_P2v3', name:'Linux P2v3',  badge:'b-rec',  badgeTxt:'recommended',  rateHr:0.20,  specs:['2 vCPU · 8 GB','Autoscale','VNet integration'] },
+    { id:'win_P2v3', name:'Win P2v3',    badge:'b-warn', badgeTxt:'+ OS license', rateHr:0.40,  specs:['2 vCPU · 8 GB','Autoscale','VNet integration'] },
+    { id:'lin_P3v3', name:'Linux P3v3',  badge:'b-ha',   badgeTxt:'high load',    rateHr:0.40,  specs:['4 vCPU · 16 GB','Autoscale','VNet integration'] },
+  ];
+}
+
+function getDefaultSignalRTiers() {
+  return [
+    { id:'free',     name:'Free',        badge:'b-dev',  badgeTxt:'dev/test',     ppud:0,    specs:['20 concurrent conns','1k messages/day','No SLA'] },
+    { id:'standard', name:'Standard',    badge:'b-rec',  badgeTxt:'recommended',  ppud:1.61, specs:['1,000 conns/unit','1M msgs/day/unit','99.9% SLA'] },
+    { id:'premium',  name:'Premium',     badge:'b-ha',   badgeTxt:'HA + autoscale', ppud:2.00, specs:['1,000 conns/unit','Managed autoscale','Avail. Zones'] },
+  ];
+}
+
+function getDefaultSqlTiers() {
+  return [
+    { id:'2vc', name:'2 vCores', badge:'b-dev',  badgeTxt:'light load',      rateHr:0.5044, specs:['10.2 GB RAM','~$368/mo compute','Baseline workloads'] },
+    { id:'4vc', name:'4 vCores', badge:'b-rec',  badgeTxt:'recommended',     rateHr:1.009,  specs:['20.4 GB RAM','~$737/mo compute','Production workloads'] },
+    { id:'8vc', name:'8 vCores', badge:'b-ha',   badgeTxt:'high throughput', rateHr:1.592,  specs:['40.8 GB RAM','~$1,163/mo compute','High concurrency'] },
+  ];
+}
+
+function getDefaultVpnTiers() {
+  return [
+    { id:'basic',     name:'Basic',      badge:'b-dev',  badgeTxt:'dev/test only',    base:26,  specs:['100 Mbps','10 S2S tunnels','No SLA · no HA'] },
+    { id:'vpngw1',    name:'VpnGw1',     badge:'b-rec',  badgeTxt:'recommended',      base:139, specs:['650 Mbps','30 S2S tunnels','99.9% SLA'] },
+    { id:'vpngw2',    name:'VpnGw2',     badge:'b-ha',   badgeTxt:'high bandwidth',   base:358, specs:['1 Gbps','30 S2S tunnels','99.9% SLA'] },
+    { id:'vpngw1az',  name:'VpnGw1AZ',   badge:'b-warn', badgeTxt:'zone redundant',   base:196, specs:['650 Mbps','Avail. Zones','99.99% SLA'] },
+  ];
+}
+
+function useFallbackTiers() {
+  TIERS = {
+    app: getDefaultAppTiers(),
+    sr: getDefaultSignalRTiers(),
+    sql: getDefaultSqlTiers(),
+    vpn: getDefaultVpnTiers(),
+    kv: [
+      { id:'standard', name:'Standard', badge:'b-rec', badgeTxt:'recommended', specs:['Software keys','$0.03 / 10k ops','Secrets + certs'] },
+      { id:'premium',  name:'Premium',  badge:'b-ha',  badgeTxt:'compliance',  specs:['HSM-backed keys','$1/key/month (HSM)','FIPS 140-2 L2'] },
+    ],
+    mon: [
+      { id:'basic',     name:'Basic logs',     badge:'b-dev', badgeTxt:'minimal',       rateGB:0.50, specs:['$0.50/GB ingestion','8-day retention','Limited queries'] },
+      { id:'analytics', name:'Analytics logs', badge:'b-rec', badgeTxt:'recommended',   rateGB:2.30, specs:['$2.30/GB ingestion','31-day retention','Full KQL queries'] },
+    ],
+  };
+  initUI();
+}
+
+function initUI() {
+  const MAP = { app:'app-tiers', sr:'sr-tiers', sql:'sql-tiers', vpn:'vpn-tiers', kv:'kv-tiers', mon:'mon-tiers' };
+  Object.keys(MAP).forEach(k => renderTiers(k, MAP[k]));
+  setDbMode('azure');
+}
+
+const sel = { app:'lin_P2v3', sr:'standard', sql:'4vc', vpn:'vpngw1', kv:'standard', mon:'analytics' };
+let dbMode = 'azure';
+
+function priceStr(key, t) {
+  if (key==='app')  return '$'+(t.rateHr*730).toFixed(0)+'/mo/inst';
+  if (key==='sr')   return t.ppud===0 ? 'Free' : '$'+t.ppud.toFixed(2)+'/unit/day';
+  if (key==='sql')  return '$'+t.rateHr+'/hr';
+  if (key==='vpn')  return '$'+t.base+'/mo';
+  if (key==='kv')   return t.id==='standard' ? '$0.03/10k ops' : 'ops + $1/key';
+  if (key==='mon')  return '$'+t.rateGB+'/GB';
+  return '';
+}
+
+function renderTiers(key, cid) {
+  const c = document.getElementById(cid);
+  if (!c) return;
+  c.innerHTML = '';
+  TIERS[key].forEach(t => {
+    const d = document.createElement('div');
+    d.className = 'tier-card' + (sel[key]===t.id ? ' selected' : '');
+    d.onclick = () => { sel[key]=t.id; renderTiers(key,cid); calc(); };
+    d.innerHTML = `<div class="tier-badge ${t.badge}">${t.badgeTxt}</div><div class="tier-name">${t.name}</div><div class="tier-price">${priceStr(key,t)}</div>${t.specs.map(s=>`<div class="tier-spec">${s}</div>`).join('')}`;
+    c.appendChild(d);
+  });
+}
+
+function setDbMode(m) {
+  dbMode = m;
+  document.getElementById('btn-azure').classList.toggle('active', m==='azure');
+  document.getElementById('btn-onprem').classList.toggle('active', m==='onprem');
+  document.getElementById('azure-db-section').style.display  = m==='azure'  ? '' : 'none';
+  document.getElementById('onprem-db-section').style.display = m==='onprem' ? '' : 'none';
+  document.getElementById('row-sql').style.display  = m==='azure'  ? '' : 'none';
+  document.getElementById('row-vnet').style.display = m==='onprem' ? '' : 'none';
+  document.getElementById('row-vpn').style.display  = m==='onprem' ? '' : 'none';
+  document.getElementById('row-kv').style.display   = m==='onprem' ? '' : 'none';
+  updateArch(); calc();
+}
+
+function updateArch() {
+  const dbPart = dbMode==='azure'
+    ? `<span class="arch-node highlight">Azure SQL DB</span>`
+    : `<span class="arch-node highlight">VPN Gateway</span><span class="arch-arrow">→</span><span class="arch-node highlight">On-prem DB</span>`;
+  document.getElementById('arch-flow').innerHTML =
+    `<span class="arch-node">Users</span><span class="arch-arrow">→</span><span class="arch-node">App Service</span><span class="arch-arrow">→</span><span class="arch-node">SignalR</span><span class="arch-arrow">→</span>${dbPart}`;
+}
+
+const fmt = v => '$' + Math.round(v).toLocaleString('en-US') + '/mo';
+
+function calc() {
+  const inst  = parseInt(document.getElementById('inst').value);
+  const srU   = parseInt(document.getElementById('sr-units').value);
+  const monGB = parseInt(document.getElementById('mon-gb').value);
+
+  document.getElementById('v-inst').textContent = inst + ' instance' + (inst>1?'s':'');
+  document.getElementById('v-sru').textContent  = srU + ' unit' + (srU>1?'s':'') + ' · ' + (srU*1000).toLocaleString() + ' conns';
+  document.getElementById('v-mon').textContent  = monGB + ' GB';
+
+  const appT = TIERS.app.find(t=>t.id===sel.app);
+  const appCost = Math.round(appT.rateHr * 730 * inst);
+
+  const srT  = TIERS.sr.find(t=>t.id===sel.sr);
+  const srCost = Math.round(srT.ppud * 30.5 * srU);
+
+  const monT = TIERS.mon.find(t=>t.id===sel.mon);
+  const monCost = monGB <= 5 ? 0 : Math.round((monGB - 5) * monT.rateGB);
+
+  let dbCost = 0, warnHtml = '', showWarn = false;
+
+  if (dbMode === 'azure') {
+    const stor = parseInt(document.getElementById('sql-stor').value);
+    const mdl  = document.getElementById('sql-model').value;
+    document.getElementById('v-stor').textContent = stor + ' GB';
+    const sqlT = TIERS.sql.find(t=>t.id===sel.sql);
+    const compute = mdl==='provisioned'
+      ? Math.round(sqlT.rateHr * 730)
+      : Math.round(sqlT.rateHr * 730 * 0.35);
+    dbCost = compute + Math.round(stor * 0.115);
+    document.getElementById('p-sql').textContent = fmt(dbCost);
+    document.getElementById('sql-note').textContent = mdl==='serverless'
+      ? 'Serverless estimated at ~35% utilization. Auto-pauses when idle. Storage at $0.115/GB/month.'
+      : 'Provisioned billed at the vCore hourly rate continuously. Storage at $0.115/GB/month.';
+    document.getElementById('s-sql-sub').textContent = sqlT.name + ' · ' + stor + ' GB · ' + mdl;
+    document.getElementById('s-sql').textContent = fmt(dbCost);
+    warnHtml = 'SQL backup storage, long-term retention, and outbound bandwidth are billed separately.';
+    showWarn = true;
+  } else {
+    const egress = parseInt(document.getElementById('vpn-egress').value);
+    const kvOps  = parseInt(document.getElementById('kv-ops').value);
+    document.getElementById('v-egress').textContent = egress + ' GB';
+    document.getElementById('v-kv').textContent = kvOps + 'k ops';
+    const vpnT   = TIERS.vpn.find(t=>t.id===sel.vpn);
+    const vpnCost = vpnT.base + Math.round(egress * 0.087);
+    const kvT    = TIERS.kv.find(t=>t.id===sel.kv);
+    const kvCost  = kvT.id==='premium'
+      ? Math.round((kvOps/10)*0.03) + 5
+      : Math.round((kvOps/10)*0.03);
+    dbCost = vpnCost + kvCost;
+    document.getElementById('p-vpn').textContent = fmt(vpnCost);
+    document.getElementById('p-kv').textContent  = kvCost < 1 ? '<$1/mo' : fmt(kvCost);
+    document.getElementById('s-vpn-sub').textContent = vpnT.name + ' · ' + egress + ' GB egress';
+    document.getElementById('s-kv-sub').textContent  = kvT.name + ' · ' + kvOps + 'k ops';
+    document.getElementById('s-vpn').textContent = fmt(vpnCost);
+    document.getElementById('s-kv').textContent  = kvCost < 1 ? '<$1' : fmt(kvCost);
+    warnHtml = 'Not included: ExpressRoute (dedicated private line), Azure Firewall, Entra ID, and client on-premises network provider costs.';
+    showWarn = true;
+  }
+
+  const total = appCost + srCost + dbCost + monCost;
+
+  document.getElementById('p-app').textContent = fmt(appCost);
+  document.getElementById('p-sr').textContent  = srCost===0 ? 'Free' : fmt(srCost);
+  document.getElementById('p-mon').textContent = monCost===0 ? 'Free' : fmt(monCost);
+
+  document.getElementById('s-app-sub').textContent = appT.name + ' × ' + inst + ' inst.';
+  document.getElementById('s-app').textContent     = fmt(appCost);
+  document.getElementById('s-sr-sub').textContent  = srT.name + ' · ' + srU + ' unit' + (srU>1?'s':'');
+  document.getElementById('s-sr').textContent      = srCost===0 ? 'Free' : fmt(srCost);
+  document.getElementById('s-mon-sub').textContent = monT.name + ' · ' + monGB + ' GB';
+  document.getElementById('s-mon').textContent     = monCost===0 ? 'Free (<5 GB)' : fmt(monCost);
+  document.getElementById('s-total').textContent   = fmt(total);
+
+  const wb = document.getElementById('warn-banner');
+  wb.style.display = showWarn ? '' : 'none';
+  wb.className = 'info-banner ' + (dbMode==='azure' ? 'info' : 'warn');
+  wb.textContent = warnHtml;
+}
+
+fetchPricingData();
+</script>
+</body>
+</html>
