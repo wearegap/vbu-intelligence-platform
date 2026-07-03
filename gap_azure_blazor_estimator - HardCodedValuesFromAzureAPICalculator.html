@@ -25,7 +25,7 @@
 
 body {
   font-family: var(--font);
-  background: transparent;
+  background: #f5f6f8;
   color: var(--gap-charcoal);
   font-size: 15px;
   line-height: 1.6;
@@ -74,7 +74,7 @@ body {
 }
 
 /* ── MAIN ── */
-.main { max-width: 1100px; margin: 0 auto; padding: 0 0 48px; }
+.main { max-width: 1100px; margin: 0 auto; padding: 32px 32px 48px; }
 
 /* ── DB TOGGLE ── */
 .db-toggle-label {
@@ -244,8 +244,8 @@ body {
 </head>
 <body>
 
-<!-- HEADER (hidden when embedded) -->
-<header class="header" style="display:none">
+<!-- HEADER -->
+<header class="header">
   <div class="header-inner">
     <div class="logo-area">
       <div class="logo-text">
@@ -511,8 +511,8 @@ body {
   </div><!-- /estimator-grid -->
 </main>
 
-<!-- FOOTER (hidden when embedded) -->
-<footer class="footer" style="display:none">
+<!-- FOOTER -->
+<footer class="footer">
   <div class="footer-stripe"></div>
   <div class="footer-inner">
     <span>© 2026 GAP Velocity AI. Internal use only.</span>
@@ -521,291 +521,39 @@ body {
 </footer>
 
 <script>
-let TIERS = {};
-const TIER_MAP = { app:'app-tiers', sr:'sr-tiers', sql:'sql-tiers', vpn:'vpn-tiers', kv:'kv-tiers', mon:'mon-tiers' };
-let prefillApplied = false;
-
-async function fetchPricingData() {
-  const baseUrl = 'https://prices.azure.com/api/retail/prices';
-  const location = 'East US';
-
-  try {
-    const [appRes, srRes, sqlRes, vpnRes, kvRes, monRes] = await Promise.all([
-      fetch(`${baseUrl}?$filter=serviceName eq 'App Service' and location eq '${location}' and priceType eq 'Consumption'`),
-      fetch(`${baseUrl}?$filter=serviceName eq 'SignalR Service' and location eq '${location}'`),
-      fetch(`${baseUrl}?$filter=serviceName eq 'SQL Database' and location eq '${location}' and contains(skuName, 'vCore')`),
-      fetch(`${baseUrl}?$filter=serviceName eq 'VPN Gateway' and location eq '${location}'`),
-      fetch(`${baseUrl}?$filter=serviceName eq 'Key Vault' and location eq '${location}'`),
-      fetch(`${baseUrl}?$filter=serviceName eq 'Application Insights' and location eq '${location}'`)
-    ]);
-
-    const [appData, srData, sqlData, vpnData, kvData, monData] = await Promise.all([
-      appRes.json(), srRes.json(), sqlRes.json(), vpnRes.json(), kvRes.json(), monRes.json()
-    ]);
-
-    TIERS = buildTiersFromApi(appData, srData, sqlData, vpnData, kvData, monData);
-    initUI();
-  } catch (err) {
-    console.error('Failed to fetch pricing:', err);
-    useFallbackTiers();
-  }
-}
-
-function buildTiersFromApi(appData, srData, sqlData, vpnData, kvData, monData) {
-  return {
-    app: parseAppServiceTiers(appData.Items || []),
-    sr: parseSignalRTiers(srData.Items || []),
-    sql: parseSqlTiers(sqlData.Items || []),
-    vpn: parseVpnTiers(vpnData.Items || []),
-    kv: [
-      { id:'standard', name:'Standard', badge:'b-rec', badgeTxt:'recommended', specs:['Software keys','$0.03 / 10k ops','Secrets + certs'] },
-      { id:'premium',  name:'Premium',  badge:'b-ha',  badgeTxt:'compliance',  specs:['HSM-backed keys','$1/key/month (HSM)','FIPS 140-2 L2'] },
-    ],
-    mon: [
-      { id:'basic',     name:'Basic logs',     badge:'b-dev', badgeTxt:'minimal',       rateGB:0.50, specs:['$0.50/GB ingestion','8-day retention','Limited queries'] },
-      { id:'analytics', name:'Analytics logs', badge:'b-rec', badgeTxt:'recommended',   rateGB:2.30, specs:['$2.30/GB ingestion','31-day retention','Full KQL queries'] },
-    ],
-  };
-}
-
-function parseAppServiceTiers(items) {
-  const tiers = [];
-  const skus = new Map();
-
-  items.forEach(item => {
-    if (!item.skuName || item.unitOfMeasure !== '1 Hour') return;
-    const key = item.skuName;
-    if (!skus.has(key)) {
-      let badge = 'b-dev', txt = 'basic';
-      if (item.skuName.includes('P2')) { badge = 'b-rec'; txt = 'recommended'; }
-      else if (item.skuName.includes('P3')) { badge = 'b-ha'; txt = 'high load'; }
-      if (item.skuName.includes('Windows')) { badge = 'b-warn'; txt = '+ OS license'; }
-
-      skus.set(key, {
-        id: item.skuName.toLowerCase().replace(/\s+/g, '_'),
-        name: item.skuName,
-        badge: badge,
-        badgeTxt: txt,
-        rateHr: parseFloat(item.retailPrice),
-        specs: ['From Azure pricing API', 'East US · Pay-as-you-go', 'Real-time rates']
-      });
-    }
-  });
-
-  return skus.size > 0 ? Array.from(skus.values()).slice(0, 5) : getDefaultAppTiers();
-}
-
-function parseSignalRTiers(items) {
-  const tiers = [];
-  const skus = new Map();
-
-  items.forEach(item => {
-    if (item.unitOfMeasure !== '1 Day' || !item.meterName) return;
-    const key = item.skuName;
-    if (!skus.has(key)) {
-      skus.set(key, {
-        id: item.skuName.toLowerCase(),
-        name: item.skuName,
-        badge: item.skuName.includes('Standard') ? 'b-rec' : (item.skuName.includes('Premium') ? 'b-ha' : 'b-dev'),
-        badgeTxt: item.skuName.includes('Standard') ? 'recommended' : (item.skuName.includes('Premium') ? 'HA + autoscale' : 'dev/test'),
-        ppud: parseFloat(item.retailPrice),
-        specs: ['Real-time pricing', '1,000 conns per unit', 'From Azure API']
-      });
-    }
-  });
-
-  return skus.size > 0 ? Array.from(skus.values()) : getDefaultSignalRTiers();
-}
-
-function parseSqlTiers(items) {
-  const tiers = [];
-  const cores = new Map();
-
-  items.forEach(item => {
-    if (item.unitOfMeasure !== '1 Hour' || !item.skuName.includes('General Purpose')) return;
-    const match = item.skuName.match(/(\d+)\s*vCore/);
-    if (!match) return;
-
-    const coreCount = match[1];
-    if (!cores.has(coreCount)) {
-      cores.set(coreCount, {
-        id: coreCount + 'vc',
-        name: coreCount + ' vCores',
-        badge: coreCount <= 2 ? 'b-dev' : (coreCount <= 4 ? 'b-rec' : 'b-ha'),
-        badgeTxt: coreCount <= 2 ? 'light load' : (coreCount <= 4 ? 'recommended' : 'high throughput'),
-        rateHr: parseFloat(item.retailPrice),
-        specs: [`${coreCount} vCores`, `~$${(parseFloat(item.retailPrice) * 730).toFixed(0)}/mo compute`, 'General Purpose']
-      });
-    }
-  });
-
-  return cores.size > 0 ? Array.from(cores.values()) : getDefaultSqlTiers();
-}
-
-function parseVpnTiers(items) {
-  const tiers = [];
-  const gws = new Map();
-
-  items.forEach(item => {
-    if (!item.meterName || !item.meterName.includes('Gateway Hour')) return;
-    const key = item.skuName;
-    if (!gws.has(key)) {
-      gws.set(key, {
-        id: item.skuName.toLowerCase(),
-        name: item.skuName,
-        badge: item.skuName.includes('Basic') ? 'b-dev' : (item.skuName.includes('AZ') ? 'b-warn' : 'b-rec'),
-        badgeTxt: item.skuName.includes('Basic') ? 'dev/test only' : (item.skuName.includes('AZ') ? 'zone redundant' : 'recommended'),
-        base: Math.round(parseFloat(item.retailPrice) * 730),
-        specs: [item.skuName, 'Gateway pricing', 'Plus egress charges']
-      });
-    }
-  });
-
-  return gws.size > 0 ? Array.from(gws.values()) : getDefaultVpnTiers();
-}
-
-function getDefaultAppTiers() {
-  return [
+const TIERS = {
+  app: [
     { id:'lin_B2',   name:'Linux B2',    badge:'b-dev',  badgeTxt:'dev/test',     rateHr:0.036, specs:['2 vCPU · 3.5 GB','No autoscale','No VNet'] },
     { id:'lin_S2',   name:'Linux S2',    badge:'b-dev',  badgeTxt:'staging',      rateHr:0.10,  specs:['2 vCPU · 3.5 GB','Manual autoscale','5 slots'] },
     { id:'lin_P2v3', name:'Linux P2v3',  badge:'b-rec',  badgeTxt:'recommended',  rateHr:0.20,  specs:['2 vCPU · 8 GB','Autoscale','VNet integration'] },
     { id:'win_P2v3', name:'Win P2v3',    badge:'b-warn', badgeTxt:'+ OS license', rateHr:0.40,  specs:['2 vCPU · 8 GB','Autoscale','VNet integration'] },
     { id:'lin_P3v3', name:'Linux P3v3',  badge:'b-ha',   badgeTxt:'high load',    rateHr:0.40,  specs:['4 vCPU · 16 GB','Autoscale','VNet integration'] },
-  ];
-}
-
-function getDefaultSignalRTiers() {
-  return [
+  ],
+  sr: [
     { id:'free',     name:'Free',        badge:'b-dev',  badgeTxt:'dev/test',     ppud:0,    specs:['20 concurrent conns','1k messages/day','No SLA'] },
     { id:'standard', name:'Standard',    badge:'b-rec',  badgeTxt:'recommended',  ppud:1.61, specs:['1,000 conns/unit','1M msgs/day/unit','99.9% SLA'] },
     { id:'premium',  name:'Premium',     badge:'b-ha',   badgeTxt:'HA + autoscale', ppud:2.00, specs:['1,000 conns/unit','Managed autoscale','Avail. Zones'] },
-  ];
-}
-
-function getDefaultSqlTiers() {
-  return [
+  ],
+  sql: [
     { id:'2vc', name:'2 vCores', badge:'b-dev',  badgeTxt:'light load',      rateHr:0.5044, specs:['10.2 GB RAM','~$368/mo compute','Baseline workloads'] },
     { id:'4vc', name:'4 vCores', badge:'b-rec',  badgeTxt:'recommended',     rateHr:1.009,  specs:['20.4 GB RAM','~$737/mo compute','Production workloads'] },
     { id:'8vc', name:'8 vCores', badge:'b-ha',   badgeTxt:'high throughput', rateHr:1.592,  specs:['40.8 GB RAM','~$1,163/mo compute','High concurrency'] },
-  ];
-}
-
-function getDefaultVpnTiers() {
-  return [
+  ],
+  vpn: [
     { id:'basic',     name:'Basic',      badge:'b-dev',  badgeTxt:'dev/test only',    base:26,  specs:['100 Mbps','10 S2S tunnels','No SLA · no HA'] },
     { id:'vpngw1',    name:'VpnGw1',     badge:'b-rec',  badgeTxt:'recommended',      base:139, specs:['650 Mbps','30 S2S tunnels','99.9% SLA'] },
     { id:'vpngw2',    name:'VpnGw2',     badge:'b-ha',   badgeTxt:'high bandwidth',   base:358, specs:['1 Gbps','30 S2S tunnels','99.9% SLA'] },
     { id:'vpngw1az',  name:'VpnGw1AZ',   badge:'b-warn', badgeTxt:'zone redundant',   base:196, specs:['650 Mbps','Avail. Zones','99.99% SLA'] },
-  ];
-}
-
-function useFallbackTiers() {
-  TIERS = {
-    app: getDefaultAppTiers(),
-    sr: getDefaultSignalRTiers(),
-    sql: getDefaultSqlTiers(),
-    vpn: getDefaultVpnTiers(),
-    kv: [
-      { id:'standard', name:'Standard', badge:'b-rec', badgeTxt:'recommended', specs:['Software keys','$0.03 / 10k ops','Secrets + certs'] },
-      { id:'premium',  name:'Premium',  badge:'b-ha',  badgeTxt:'compliance',  specs:['HSM-backed keys','$1/key/month (HSM)','FIPS 140-2 L2'] },
-    ],
-    mon: [
-      { id:'basic',     name:'Basic logs',     badge:'b-dev', badgeTxt:'minimal',       rateGB:0.50, specs:['$0.50/GB ingestion','8-day retention','Limited queries'] },
-      { id:'analytics', name:'Analytics logs', badge:'b-rec', badgeTxt:'recommended',   rateGB:2.30, specs:['$2.30/GB ingestion','31-day retention','Full KQL queries'] },
-    ],
-  };
-  initUI();
-}
-
-function parsePrefillFromQuery() {
-  const p = new URLSearchParams(window.location.search);
-  const raw = p.get('prefill');
-  if (!raw) return null;
-  try {
-    const decoded = decodeURIComponent(raw);
-    const json = decodeURIComponent(escape(atob(decoded)));
-    return JSON.parse(json);
-  } catch (err) {
-    console.warn('Invalid prefill payload:', err);
-    return null;
-  }
-}
-
-function clampToInput(inputEl, value) {
-  if (!inputEl || value === undefined || value === null || value === '') return;
-  const n = Number(value);
-  if (!Number.isFinite(n)) return;
-  const min = Number(inputEl.min || n);
-  const max = Number(inputEl.max || n);
-  inputEl.value = String(Math.max(min, Math.min(max, Math.round(n))));
-}
-
-function resolveTierId(key, wanted) {
-  if (!wanted) return null;
-  const tiers = TIERS[key] || [];
-  if (!tiers.length) return null;
-  const target = String(wanted).toLowerCase();
-  const compact = target.replace(/[^a-z0-9]/g, '');
-
-  const exact = tiers.find(t => String(t.id).toLowerCase() === target || String(t.name).toLowerCase() === target);
-  if (exact) return exact.id;
-
-  const fuzzy = tiers.find(t => {
-    const id = String(t.id).toLowerCase().replace(/[^a-z0-9]/g, '');
-    const name = String(t.name).toLowerCase().replace(/[^a-z0-9]/g, '');
-    return id.includes(compact) || name.includes(compact) || compact.includes(id);
-  });
-  return fuzzy ? fuzzy.id : null;
-}
-
-function applyPrefill(prefill) {
-  if (!prefill || typeof prefill !== 'object') return;
-
-  const dbModePrefill = prefill.dbMode === 'onprem' ? 'onprem' : 'azure';
-
-  const appId = resolveTierId('app', prefill.app?.sku);
-  const srId = resolveTierId('sr', prefill.signalr?.tier);
-  const sqlId = resolveTierId('sql', prefill.azureSql?.tier);
-  const vpnId = resolveTierId('vpn', prefill.onPrem?.vpn?.tier);
-  const kvId = resolveTierId('kv', prefill.onPrem?.keyVault?.tier);
-  const monId = resolveTierId('mon', prefill.monitor?.tier);
-
-  if (appId) sel.app = appId;
-  if (srId) sel.sr = srId;
-  if (sqlId) sel.sql = sqlId;
-  if (vpnId) sel.vpn = vpnId;
-  if (kvId) sel.kv = kvId;
-  if (monId) sel.mon = monId;
-
-  Object.keys(TIER_MAP).forEach(k => renderTiers(k, TIER_MAP[k]));
-
-  clampToInput(document.getElementById('inst'), prefill.app?.instances);
-  clampToInput(document.getElementById('sr-units'), prefill.signalr?.units);
-  clampToInput(document.getElementById('mon-gb'), prefill.monitor?.logIngestionGBMonth);
-  clampToInput(document.getElementById('sql-stor'), prefill.azureSql?.storageGB);
-  clampToInput(document.getElementById('vpn-egress'), prefill.onPrem?.vpn?.egressGBMonth);
-  clampToInput(document.getElementById('kv-ops'), prefill.onPrem?.keyVault?.secretOpsKMonth);
-
-  const sqlModel = document.getElementById('sql-model');
-  if (sqlModel && (prefill.azureSql?.computeModel === 'provisioned' || prefill.azureSql?.computeModel === 'serverless')) {
-    sqlModel.value = prefill.azureSql.computeModel;
-  }
-
-  setDbMode(dbModePrefill);
-  calc();
-  prefillApplied = true;
-}
-
-function initUI() {
-  Object.keys(TIER_MAP).forEach(k => renderTiers(k, TIER_MAP[k]));
-  const prefill = parsePrefillFromQuery();
-  if (prefill) {
-    applyPrefill(prefill);
-  }
-  if (!prefillApplied) {
-    setDbMode('azure');
-  }
-}
+  ],
+  kv: [
+    { id:'standard', name:'Standard', badge:'b-rec', badgeTxt:'recommended', specs:['Software keys','$0.03 / 10k ops','Secrets + certs'] },
+    { id:'premium',  name:'Premium',  badge:'b-ha',  badgeTxt:'compliance',  specs:['HSM-backed keys','$1/key/month (HSM)','FIPS 140-2 L2'] },
+  ],
+  mon: [
+    { id:'basic',     name:'Basic logs',     badge:'b-dev', badgeTxt:'minimal',       rateGB:0.50, specs:['$0.50/GB ingestion','8-day retention','Limited queries'] },
+    { id:'analytics', name:'Analytics logs', badge:'b-rec', badgeTxt:'recommended',   rateGB:2.30, specs:['$2.30/GB ingestion','31-day retention','Full KQL queries'] },
+  ],
+};
 
 const sel = { app:'lin_P2v3', sr:'standard', sql:'4vc', vpn:'vpngw1', kv:'standard', mon:'analytics' };
 let dbMode = 'azure';
@@ -933,24 +681,11 @@ function calc() {
   wb.style.display = showWarn ? '' : 'none';
   wb.className = 'info-banner ' + (dbMode==='azure' ? 'info' : 'warn');
   wb.textContent = warnHtml;
-
-  // Notify parent page with the calculated cost breakdown
-  if (window.parent && window.parent !== window) {
-    window.parent.postMessage({
-      type: 'blazor-estimate',
-      data: {
-        total, appCost, srCost, dbCost, monCost,
-        dbMode,
-        appTier: appT.name, appInstances: inst,
-        srTier: srT.name, srUnits: srU,
-        monTier: monT.name, monGB,
-        sel: Object.assign({}, sel)
-      }
-    }, '*');
-  }
 }
 
-fetchPricingData();
+const MAP = { app:'app-tiers', sr:'sr-tiers', sql:'sql-tiers', vpn:'vpn-tiers', kv:'kv-tiers', mon:'mon-tiers' };
+Object.keys(MAP).forEach(k => renderTiers(k, MAP[k]));
+setDbMode('azure');
 </script>
 </body>
 </html>

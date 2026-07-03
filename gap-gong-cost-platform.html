@@ -128,13 +128,13 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 /* ── STEP 3: DASHBOARD ── */
 .dash-header-band { background: var(--gap-blue); border-radius: 10px 10px 0 0; padding: 24px 28px; margin: -28px -28px 24px; position: relative; overflow: hidden; }
 .dash-header-band::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); border-radius: 50%; }
-.dash-client { font-size: 11px; color: var(--gap-soft); letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.dash-client { font-size: 11px; color: var(--gap-gray); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
 .dash-headline { font-size: 22px; font-weight: 900; color: white; text-transform: uppercase; }
 .dash-headline .hl { color: var(--gap-yellow); }
 .dash-sub { font-size: 12px; color: var(--gap-soft); margin-top: 6px; }
-.dash-params { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-.dash-param { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: white; }
-.dash-param span { color: var(--gap-cyan); }
+.dash-params { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.dash-param { background: var(--gap-bg); border: 1px solid var(--gap-light-gray); border-radius: 5px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: var(--gap-dark); }
+.dash-param span { color: var(--gap-blue); }
 
 .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
 .metric-card { padding: 18px; background: var(--gap-white); border-radius: 10px; border: 1px solid #E8E8E8; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
@@ -197,6 +197,43 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 .footer-note { text-align: center; margin-top: 20px; font-size: 11px; color: var(--gap-gray); font-style: italic; }
 .footer-note a { color: var(--gap-blue); font-style: normal; font-weight: 700; text-decoration: none; }
 
+/* ── STEP 5: SALES STRATEGY ── */
+.strategy-header-band { background: var(--gap-blue); border-radius: 10px 10px 0 0; padding: 24px 28px; margin: -28px -28px 24px; position: relative; overflow: hidden; }
+.strategy-header-band::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); border-radius: 50%; }
+.strategy-client { font-size: 11px; color: var(--gap-soft); letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.strategy-headline { font-size: 22px; font-weight: 900; color: white; text-transform: uppercase; }
+.strategy-headline .hl { color: var(--gap-yellow); }
+.strategy-sub { font-size: 12px; color: var(--gap-soft); margin-top: 6px; line-height: 1.6; }
+.strategy-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.strategy-tag { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: white; }
+.strategy-tag span { color: var(--gap-cyan); }
+.strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.strategy-section { background: var(--gap-white); border-radius: 10px; border: 1px solid #E8E8E8; box-shadow: 0 1px 4px rgba(0,0,0,0.04); padding: 20px; }
+.strategy-section-full { grid-column: 1 / -1; }
+.strategy-section-title { font-size: 10px; font-weight: 700; color: var(--gap-blue); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.strategy-section-title svg { opacity: 0.7; }
+.action-list { display: flex; flex-direction: column; gap: 10px; }
+.action-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; background: var(--gap-bg); border-radius: 8px; border-left: 3px solid var(--gap-blue); }
+.action-num { width: 22px; height: 22px; border-radius: 50%; background: var(--gap-blue); color: white; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.action-text { font-size: 13px; color: var(--gap-dark); line-height: 1.5; }
+.question-list { display: flex; flex-direction: column; gap: 8px; }
+.question-item { padding: 10px 14px; background: var(--gap-bg); border-radius: 7px; border-left: 3px solid var(--gap-steel); font-size: 13px; color: var(--gap-dark); line-height: 1.5; }
+.objection-list { display: flex; flex-direction: column; gap: 8px; }
+.objection-item { padding: 12px 14px; background: var(--gap-bg); border-radius: 7px; border-left: 3px solid var(--gap-yellow); font-size: 13px; color: var(--gap-dark); line-height: 1.5; }
+.roi-narrative { padding: 18px 20px; background: linear-gradient(135deg, #E8F4F8 0%, #F0F7FB 100%); border-radius: 10px; border: 1px solid #C6DCE8; font-size: 14px; color: var(--gap-dark); line-height: 1.7; font-style: italic; }
+.close-plan { padding: 18px 20px; background: linear-gradient(135deg, #E8F8F0 0%, #F0FBF6 100%); border-radius: 10px; border: 1px solid #C6ECDB; font-size: 14px; color: var(--gap-dark); line-height: 1.7; }
+.urgency-high { color: var(--gap-red); }
+.urgency-medium { color: var(--gap-yellow); }
+.urgency-low { color: var(--gap-green); }
+.confidence-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-left: 8px; }
+.confidence-high { background: rgba(67,182,134,0.15); color: var(--gap-green); }
+.confidence-medium { background: rgba(254,189,18,0.15); color: #b88600; }
+.confidence-low { background: rgba(229,67,96,0.15); color: var(--gap-red); }
+.deal-motion-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: white; letter-spacing: 0.04em; margin-top: 10px; }
+.deal-motion-badge svg { opacity: 0.8; }
+.strategy-empty { text-align: center; padding: 40px 20px; color: var(--gap-gray); font-size: 13px; }
+.strategy-empty strong { display: block; font-size: 15px; color: var(--gap-dark); margin-bottom: 6px; }
+
 /* ── TIMELINE VIZ ── */
 .timeline-wrap { display: flex; gap: 5px; flex-wrap: wrap; }
 .tl-block { width: 26px; height: 26px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; }
@@ -225,6 +262,26 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 .dash-control-value { font-size: 13px; font-weight: 700; color: var(--gap-dark); min-width: 180px; }
 .dash-control-row input[type="range"] { flex: 1; min-width: 220px; accent-color: var(--gap-blue); }
 .dash-control-meta { font-size: 11px; color: var(--gap-gray); margin-top: 8px; }
+
+/* ── STEP 3: EMBEDDED ESTIMATOR ── */
+.estimator-frame-wrap {
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  background: transparent;
+  margin: 0 -28px;
+}
+.estimator-frame {
+  width: 100%;
+  height: 860px;
+  border: 0;
+  background: transparent;
+}
+.estimator-note {
+  font-size: 12px;
+  color: var(--gap-gray);
+  margin-top: 12px;
+}
 
 /* ── ERROR STATE ── */
 .error-box { background: #fff5f7; border: 1px solid #f9c3cc; border-radius: 8px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; }
@@ -319,7 +376,11 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
     <div class="step-line" id="line-1"></div>
     <div class="step" id="step-2"><div class="step-num">2</div><div class="step-label">Extract Signals</div></div>
     <div class="step-line" id="line-2"></div>
-    <div class="step" id="step-3"><div class="step-num">3</div><div class="step-label">Cost Dashboard</div></div>
+    <div class="step" id="step-3"><div class="step-num">3</div><div class="step-label">Blazor Estimator</div></div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step" id="step-4"><div class="step-num">4</div><div class="step-label">Cost Dashboard</div></div>
+    <div class="step-line" id="line-4"></div>
+    <div class="step" id="step-5"><div class="step-num">5</div><div class="step-label">Sales Strategy</div></div>
   </div>
 
   <!-- PAGE 1: GONG CONNECTION -->
@@ -385,28 +446,71 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
       <div id="extract-content"></div>
       <div class="btn-row" id="extract-btns" style="display:none">
         <button class="btn btn-outline" onclick="goBack()">← Back</button>
-        <button class="btn btn-green" onclick="runCalcAndDash()">
+        <button class="btn btn-green" onclick="openEstimatorStep()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          Run Cost Model & Build Dashboard
+          Review Blazor Estimator
         </button>
       </div>
     </div>
   </div>
 
-  <!-- PAGE 3: DASHBOARD -->
+  <!-- PAGE 3: BLAZOR ESTIMATOR -->
   <div class="page" id="page-3">
+    <div class="panel">
+      <div class="panel-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Azure Blazor Estimator (Step 3)
+      </div>
+      <div class="estimator-frame-wrap">
+        <iframe id="blazor-estimator-frame" class="estimator-frame" title="Azure Blazor Estimator"></iframe>
+      </div>
+      <div class="estimator-note" id="estimator-note">Prefilling from inferred AI extraction. Review and adjust before continuing.</div>
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-outline" onclick="goBackFromEstimator()">← Back</button>
+        <button class="btn btn-green" onclick="runCalcAndDash()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Continue to Cost Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: DASHBOARD -->
+  <div class="page" id="page-4">
     <div class="panel" id="dashboard-panel">
+      <div class="panel-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Cost Dashboard
+      </div>
       <div id="dashboard-top"></div>
       <div id="dashboard-controls" style="display:none"></div>
       <div id="dashboard-bottom"></div>
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn btn-outline" onclick="goBack2()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button>
+        <button class="btn btn-green" onclick="goToSalesStrategy()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Sales Strategy
+        </button>
+      </div>
     </div>
-    <div class="btn-row" style="margin-top: 4px; justify-content: space-between;">
-      <button class="btn btn-outline" onclick="goBack2()">← Back</button>
-      <button class="btn btn-primary" onclick="openReportDialog()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download PDF Report
-      </button>
-      <button class="btn btn-outline" onclick="startOver()">New Analysis</button>
+  </div>
+
+  <!-- PAGE 5: SALES STRATEGY -->
+  <div class="page" id="page-5">
+    <div class="panel" id="strategy-panel">
+      <div class="panel-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Sales Strategy
+      </div>
+      <div id="strategy-content"></div>
+      <div class="btn-row" style="margin-top:20px; justify-content: space-between;">
+        <button class="btn btn-outline" onclick="goBack3()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button>
+        <button class="btn btn-primary" onclick="openReportDialog()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF Report
+        </button>
+        <button class="btn btn-outline" onclick="startOver()">New Analysis</button>
+      </div>
     </div>
   </div>
 
@@ -440,6 +544,10 @@ const state = {
   calls: [], selectedCalls: [],
   extracted: { sourceTech: null, targetTech: null, linesOfCode: null, complexityLevel: null, customersDevCount: null, summary: null },
   extractedSnippets: {},
+  blazorEstimatorPrefill: null,
+  salesStrategy: null,
+  salesEvidence: null,
+  azureEstimate: null,
   calcResult: null,
   engineerCount: null,
   engineerCost: null,
@@ -491,12 +599,12 @@ const VELO_DATA = {
 function fmt$(n) { return n>=1e6?`$${(n/1e6).toFixed(1)}M`:n>=1e3?`$${(n/1e3).toFixed(0)}K`:`$${Math.round(n)}`; }
 function fmtK(v) { return v>=1000?`${(v/1000).toFixed(v>=10000?0:1)}M`:`${v}K`; }
 function setStep(n) {
-  [1,2,3].forEach(i => {
+  [1,2,3,4,5].forEach(i => {
     const s = document.getElementById(`step-${i}`);
     s.className = 'step' + (i===n?' active':i<n?' done':'');
-    if (i < 3) document.getElementById(`line-${i}`).className = 'step-line' + (i<n?' done':'');
+    if (i < 5) document.getElementById(`line-${i}`).className = 'step-line' + (i<n?' done':'');
   });
-  [1,2,3].forEach(i => {
+  [1,2,3,4,5].forEach(i => {
     const p = document.getElementById(`page-${i}`);
     p.className = 'page' + (i===n?' active':'');
   });
@@ -539,6 +647,55 @@ function getDemoExtraction() {
     devCountSnippet: 'Our team has about 8 developers',
     summary: 'Large VB6 codebase with high complexity, weak documentation, and a target migration to .NET 8 on Azure.',
     confidence: 98,
+    salesStrategy: {
+      dealMotion: 'rescue-modernization',
+      customerPersonaFocus: 'mixed',
+      primaryValueAngle: 'risk-reduction',
+      commercialApproach: 'fixed-scope-phase1',
+      pricingConfidence: 'high',
+      timelineUrgency: 'immediate',
+      competitiveRisk: 'medium',
+      recommendedActions: [
+        'Schedule a technical deep-dive with the CTO to validate VELO\'s spaghetti-code handling — show a live migration demo on a sample Acme module.',
+        'Prepare a risk-quantification one-pager: translate the $350K+ hidden rework risk into direct business impact for executive sign-off.',
+        'Propose a Phase 1 SOW scoped to 50,000 LOC pilot — fixed price, fixed timeline — to lower procurement friction and prove value fast.',
+        'Identify the 8 developers currently assigned and position VELO as a force multiplier, not a replacement, to reduce internal resistance.',
+        'Align on a signed SOW before end of quarter by tying urgency to the existential risk the Director cited on the third call.'
+      ],
+      discoveryQuestions: [
+        'What is the business impact if the VB6 system goes down today — in dollars per hour?',
+        'Have you attempted any modernization effort before? What caused it to stall?',
+        'Who owns the modernization budget — the CTO, CIO, or a separate program office?',
+        'What compliance or security obligations are tied to the migration timeline?',
+        'How much of the original business logic is documented versus tribal knowledge?',
+        'What does success look like in 12 months for the stakeholders on these calls?'
+      ],
+      objectionsToPreempt: [
+        '"We can do this ourselves with our 8 developers" — Counter: Show the math. DIY timeline vs. VELO timeline. 8 devs doing archaeology vs. building new features.',
+        '"The AI will miss business logic" — Counter: VELO pairs AI translation with GAP engineers who validate every module. Human oversight is built in.',
+        '"We need to see it work first" — Counter: Propose a fixed-price Phase 1 pilot on 50K LOC. Low risk, proof of concept, fast ROI signal.'
+      ],
+      roiNarrative: 'Acme is sitting on an existential risk: 350,000 lines of undocumented VB6 spaghetti with original developers long gone. Every month of delay is a month closer to a catastrophic outage. VELO cuts migration time by up to 60% versus DIY, eliminates the rework roulette, and gives Acme\'s 8 engineers their time back to build competitive features — not decipher 20-year-old code.',
+      closePlan: 'Deliver pilot SOW by end of week. Schedule executive alignment call with CTO + Director for technical validation. Target signed agreement within 30 days to start Phase 1 immediately.',
+      strategySummary: 'This is a rescue-modernization deal driven by existential risk and executive urgency. Lead with risk reduction, use a fixed-scope Phase 1 pilot to clear procurement gates, and move fast — the Director said they needed this "yesterday."',
+      confidence: 91
+    },
+    salesEvidence: {
+      dealMotionSnippet: 'The risk of not modernizing is existential',
+      personaSnippet: 'Sarah (AE), John (Technical), Carlos (SA), Mike (CTO), Lisa (VP Sales), Director',
+      valueAngleSnippet: 'deeply embedded business logic, original developers are long gone',
+      urgencySnippet: 'We needed it yesterday',
+      riskSnippet: 'circular references everywhere, no separation of concerns'
+    },
+    blazorEstimator: {
+      dbMode: 'azure',
+      region: 'East US',
+      app: { sku: 'lin_P2v3', instances: 2 },
+      signalr: { tier: 'standard', units: 1 },
+      azureSql: { enabled: true, tier: '4vc', storageGB: 50, computeModel: 'provisioned' },
+      onPrem: { enabled: false, vpn: { tier: 'vpngw1', egressGBMonth: 50 }, keyVault: { tier: 'standard', secretOpsKMonth: 100 } },
+      monitor: { tier: 'analytics', logIngestionGBMonth: 5 }
+    }
   };
 }
 
@@ -568,7 +725,74 @@ function applyExtraction(ext) {
     complexityLevel: ext.complexitySnippet || null,
     customersDevCount: ext.devCountSnippet || null,
   };
+  state.blazorEstimatorPrefill = ext.blazorEstimator || null;
+  state.salesStrategy = ext.salesStrategy || null;
+  state.salesEvidence = ext.salesEvidence || null;
 }
+
+function buildEstimatorPrefill() {
+  const inferred = state.blazorEstimatorPrefill || {};
+  return {
+    dbMode: inferred.dbMode || 'azure',
+    region: inferred.region || 'East US',
+    app: {
+      sku: inferred.app?.sku || 'lin_P2v3',
+      instances: inferred.app?.instances || 2,
+    },
+    signalr: {
+      tier: inferred.signalr?.tier || 'standard',
+      units: inferred.signalr?.units || 1,
+    },
+    azureSql: {
+      enabled: inferred.azureSql?.enabled !== false,
+      tier: inferred.azureSql?.tier || '4vc',
+      storageGB: inferred.azureSql?.storageGB || 50,
+      computeModel: inferred.azureSql?.computeModel || 'provisioned',
+    },
+    onPrem: {
+      enabled: inferred.onPrem?.enabled === true,
+      vpn: {
+        tier: inferred.onPrem?.vpn?.tier || 'vpngw1',
+        egressGBMonth: inferred.onPrem?.vpn?.egressGBMonth || 50,
+      },
+      keyVault: {
+        tier: inferred.onPrem?.keyVault?.tier || 'standard',
+        secretOpsKMonth: inferred.onPrem?.keyVault?.secretOpsKMonth || 100,
+      }
+    },
+    monitor: {
+      tier: inferred.monitor?.tier || 'analytics',
+      logIngestionGBMonth: inferred.monitor?.logIngestionGBMonth || 5,
+    }
+  };
+}
+
+function encodePrefill(prefill) {
+  const json = JSON.stringify(prefill || {});
+  return btoa(unescape(encodeURIComponent(json)));
+}
+
+function openEstimatorStep() {
+  const e = state.extracted;
+  const missing = [];
+  if (!e.sourceTech) missing.push('Source Technology');
+  if (!e.linesOfCode) missing.push('Lines of Code');
+  if (e.complexityLevel === null) missing.push('Complexity Level');
+  if (missing.length) {
+    showError('extract-status', 'Missing required fields', `Please fill in: ${missing.join(', ')}`);
+    return;
+  }
+
+  const frame = document.getElementById('blazor-estimator-frame');
+  const note = document.getElementById('estimator-note');
+  const prefill = buildEstimatorPrefill();
+  const payload = encodeURIComponent(encodePrefill(prefill));
+  frame.src = `gap_azure_blazor_estimator.html?prefill=${payload}`;
+  note.textContent = `Prefilled from AI inference (${prefill.dbMode === 'onprem' ? 'on-prem' : 'azure'} database mode). Review and adjust before continuing.`;
+  setStep(3);
+}
+
+function goBackFromEstimator() { setStep(2); }
 
 // ── STEP 1: CONNECT GONG ──────────────────────────────────────────────────────
 async function connectGong() {
@@ -837,7 +1061,7 @@ function toggleManual(field) {
   mi.style.display = mi.style.display === 'none' ? 'block' : 'none';
 }
 
-// ── STEP 3: CALC + DASHBOARD ──────────────────────────────────────────────────
+// ── STEP 4: CALC + DASHBOARD ──────────────────────────────────────────────────
 function runCalcAndDash() {
   const e = state.extracted;
   const missing = [];
@@ -855,7 +1079,7 @@ function runCalcAndDash() {
   state.calcResult = r;
   renderDashboard(r, e);
   renderDashboardControls(r);
-  setStep(3);
+  setStep(4);
 }
 
 function clampEngineerCount(v) {
@@ -961,16 +1185,12 @@ function ensureDashboardShell() {
   if (document.getElementById('dash-client')) return true;
 
   top.innerHTML = `
-    <div class="dash-header-band">
-      <div class="dash-client" id="dash-client"></div>
-      <div class="dash-headline">DIY Cost <span class="hl">Reality Check</span></div>
-      <div class="dash-sub" id="dash-sub"></div>
-      <div class="dash-params">
-        <div class="dash-param" id="dash-param-stack"></div>
-        <div class="dash-param" id="dash-param-lines"></div>
-        <div class="dash-param" id="dash-param-complexity"></div>
-        <div class="dash-param" id="dash-param-sim"></div>
-      </div>
+    <div class="dash-client" id="dash-client"></div>
+    <div class="dash-params" id="dash-params-row">
+      <div class="dash-param" id="dash-param-stack"></div>
+      <div class="dash-param" id="dash-param-lines"></div>
+      <div class="dash-param" id="dash-param-complexity"></div>
+      <div class="dash-param" id="dash-param-sim"></div>
     </div>
 
     <div class="breakdown-section" id="dashboard-ai-summary-section">
@@ -1038,14 +1258,7 @@ function ensureDashboardShell() {
         <div class="sum-text" id="sum-velo-text"></div>
         <div class="sum-fn" id="sum-velo-fn"></div>
       </div>
-    </div>
-
-    <div class="footer-note">
-      Calibrated against 35+ years and billions of lines of legacy modernization data from ArtinSoft / Mobilize.Net and GAPVelocity AI<br>
-      <a href="https://www.gapvelocity.ai/" target="_blank">www.gapvelocity.ai</a>
-    </div>
-
-    <div class="footer-bar"></div>`;
+    </div>`;
 
   return true;
 }
@@ -1083,8 +1296,7 @@ function renderDashboard(r, e) {
       <div class="risk-desc">${ri.desc} <strong style="color:var(--gap-gray)">(${(ri.pct*100).toFixed(0)}% of base)</strong></div>
     </div>`).join('');
 
-  document.getElementById('dash-client').textContent = `${client} · Modernization Cost Analysis`;
-  document.getElementById('dash-sub').textContent = `GAP Velocity AI — extracted from ${state.selectedCalls.length} Gong call${state.selectedCalls.length!==1?'s':''} · ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}`;
+  document.getElementById('dash-client').textContent = `${client} · ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}`;
   document.getElementById('dash-param-stack').innerHTML = `<span>${sourceLbl}</span> → <span>${targetLbl}</span>`;
   document.getElementById('dash-param-lines').innerHTML = `<span>${r.loc.toLocaleString()}</span> lines`;
   document.getElementById('dash-param-complexity').innerHTML = `Complexity: <span>${complexLbl}</span>`;
@@ -1139,8 +1351,107 @@ function renderDashboard(r, e) {
 }
 
 function goBack() { setStep(1); }
-function goBack2() { setStep(2); }
+function goBack2() { setStep(3); }
+function goBack3() { setStep(4); }
 function startOver() { location.reload(); }
+
+function goToSalesStrategy() {
+  setStep(5);
+  renderSalesStrategy();
+}
+
+function renderSalesStrategy() {
+  const el = document.getElementById('strategy-content');
+  const ss = state.salesStrategy;
+  const ev = state.salesEvidence;
+  const client = state.clientName || 'Client';
+
+  if (!ss) {
+    el.innerHTML = `
+      <div class="strategy-empty">
+        <strong>No Sales Strategy Available</strong>
+        Sales strategy data was not extracted from the transcripts. Run a new analysis with call transcripts to generate AI-powered strategy recommendations.
+      </div>`;
+    return;
+  }
+
+  const urgencyColor = ss.timelineUrgency === 'immediate' ? 'urgency-high' : ss.timelineUrgency === 'this-quarter' ? 'urgency-medium' : '';
+  const confClass = c => c === 'high' ? 'confidence-high' : c === 'medium' ? 'confidence-medium' : 'confidence-low';
+  const riskColor = ss.competitiveRisk === 'high' ? 'var(--gap-red)' : ss.competitiveRisk === 'medium' ? 'var(--gap-yellow)' : 'var(--gap-green)';
+
+  const dealMotionLabel = (ss.dealMotion || 'unknown').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const personaLabel = (ss.customerPersonaFocus || 'unknown').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const valueLabel = (ss.primaryValueAngle || 'unknown').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const commercialLabel = (ss.commercialApproach || 'unknown').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const urgencyLabel = (ss.timelineUrgency || 'unknown').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+  const actionItems = (ss.recommendedActions || []).map((a, i) => `
+    <div class="action-item">
+      <div class="action-num">${i + 1}</div>
+      <div class="action-text">${a}</div>
+    </div>`).join('');
+
+  const questionItems = (ss.discoveryQuestions || []).map(q => `
+    <div class="question-item">&#x2022; ${q}</div>`).join('');
+
+  const objectionItems = (ss.objectionsToPreempt || []).map(o => `
+    <div class="objection-item">${o}</div>`).join('');
+
+  el.innerHTML = `
+    <div class="strategy-tags" style="margin-bottom:20px">
+      <div class="strategy-tag" style="border-color:var(--gap-light-gray);color:var(--gap-dark);background:var(--gap-bg)">Deal Motion: <span style="color:var(--gap-blue)">${dealMotionLabel}</span></div>
+      <div class="strategy-tag" style="border-color:var(--gap-light-gray);color:var(--gap-dark);background:var(--gap-bg)">Persona: <span style="color:var(--gap-blue)">${personaLabel}</span></div>
+      <div class="strategy-tag" style="border-color:var(--gap-light-gray);color:var(--gap-dark);background:var(--gap-bg)">Value Angle: <span style="color:var(--gap-blue)">${valueLabel}</span></div>
+      <div class="strategy-tag" style="border-color:var(--gap-light-gray);color:var(--gap-dark);background:var(--gap-bg)">Approach: <span style="color:var(--gap-blue)">${commercialLabel}</span></div>
+      <div class="strategy-tag" style="border-color:var(--gap-light-gray);color:var(--gap-dark);background:var(--gap-bg)">Urgency: <span style="color:${ss.timelineUrgency==='immediate'?'var(--gap-red)':ss.timelineUrgency==='this-quarter'?'#b88600':'var(--gap-green)'}">${urgencyLabel}</span></div>
+      <div class="strategy-tag" style="border-color:var(--gap-light-gray);color:var(--gap-dark);background:var(--gap-bg)">Comp Risk: <span style="color:${ss.competitiveRisk==='high'?'var(--gap-red)':ss.competitiveRisk==='medium'?'#b88600':'var(--gap-green)'}">${(ss.competitiveRisk||'').toUpperCase()}</span></div>
+    </div>
+    <div style="font-size:13px;color:var(--gap-gray);line-height:1.7;margin-bottom:20px;padding:12px 16px;background:var(--gap-bg);border-radius:8px;border-left:3px solid var(--gap-blue)">${ss.strategySummary || ''}</div>
+
+    <div class="strategy-grid">
+
+      <div class="strategy-section strategy-section-full">
+        <div class="strategy-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Recommended Actions
+        </div>
+        <div class="action-list">${actionItems || '<div style="color:var(--gap-gray);font-size:13px">No actions extracted.</div>'}</div>
+      </div>
+
+      <div class="strategy-section">
+        <div class="strategy-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Discovery Questions
+        </div>
+        <div class="question-list">${questionItems || '<div style="color:var(--gap-gray);font-size:13px">No questions extracted.</div>'}</div>
+      </div>
+
+      <div class="strategy-section">
+        <div class="strategy-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Objections to Pre-empt
+        </div>
+        <div class="objection-list">${objectionItems || '<div style="color:var(--gap-gray);font-size:13px">No objections extracted.</div>'}</div>
+      </div>
+
+      <div class="strategy-section">
+        <div class="strategy-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          ROI Narrative
+        </div>
+        <div class="roi-narrative">${ss.roiNarrative || '<span style="color:var(--gap-gray)">No narrative extracted.</span>'}</div>
+      </div>
+
+      <div class="strategy-section">
+        <div class="strategy-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Close Plan
+        </div>
+        <div class="close-plan">${ss.closePlan || '<span style="color:var(--gap-gray)">No close plan extracted.</span>'}</div>
+      </div>
+
+    </div>`;
+}
 
 function openReportDialog() {
   if (!window.jspdf) { alert('PDF library is still loading — please try again in a moment.'); return; }
@@ -1438,6 +1749,221 @@ function generateReport(filename) {
   doc.setFontSize(6.5); doc.setFont('helvetica','bold'); tx(B);
   doc.textWithLink('www.gapvelocity.ai', PW/2, y, {align:'center', url:'https://www.gapvelocity.ai/'});
 
+  // ── PAGE 3: AZURE BLAZOR ESTIMATOR ───────────────────────────────────────────
+  doc.addPage();
+  f(CY); doc.rect(0, 0, PW, 1.5, 'F');
+  f(B);  doc.rect(0, 1.5, PW, 6, 'F');
+  doc.setFontSize(6); doc.setFont('helvetica','bold'); tx(BA2);
+  doc.text(`GAP VELOCITY AI  ·  AZURE INFRASTRUCTURE ESTIMATE  ·  ${client.toUpperCase()}`, M, 5.5);
+  tx(BA1);
+  doc.text(`${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}`, PW-M, 5.5, {align:'right'});
+  y = 14;
+
+  const az = state.azureEstimate;
+  const pf = state.blazorEstimatorPrefill || {};
+
+  // Section header
+  sectionLbl('Azure Infrastructure — Monthly Cost Estimate');
+
+  if (az) {
+    // Summary card
+    f(B); doc.rect(M, y, CW, 24, 'F');
+    f(CY); doc.rect(M, y, CW, 2, 'F');
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); tx(BA2);
+    doc.text('ESTIMATED MONTHLY AZURE RUNNING COST', M+4, y+8);
+    doc.setFontSize(24); doc.setFont('helvetica','bold'); tx(WH);
+    doc.text('$' + Math.round(az.total).toLocaleString() + '/mo', M+4, y+19);
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); tx(BA2);
+    doc.text(`DB Mode: ${az.dbMode === 'azure' ? 'Azure SQL' : 'On-Premises (VPN)'}`, M+CW-4, y+19, {align:'right'});
+    y += 28;
+
+    // Cost breakdown rows
+    sectionLbl('Cost Breakdown by Component');
+    const azRows = [
+      { lbl:'App Service',     sub: az.appTier + ' × ' + az.appInstances + ' instance' + (az.appInstances>1?'s':''), cost: az.appCost, accent: B },
+      { lbl:'SignalR Service', sub: az.srTier + ' · ' + az.srUnits + ' unit' + (az.srUnits>1?'s':''),               cost: az.srCost,  accent: BA1 },
+      { lbl: az.dbMode==='azure' ? 'Azure SQL Database' : 'VPN Gateway + Key Vault',
+                               sub: az.dbMode==='azure' ? (az.sel&&az.sel.sql ? az.sel.sql + ' vCores' : '4 vCores') + ' · provisioned' : 'On-prem connectivity', cost: az.dbCost, accent: BA2 },
+      { lbl:'Azure Monitor',   sub: az.monTier + ' · ' + az.monGB + ' GB ingestion/mo',                             cost: az.monCost, accent: GR  },
+    ];
+    const rowH = 16;
+    const totalRowsH = azRows.length * rowH + 10;
+    f(WH); doc.rect(M, y, CW, totalRowsH, 'F');
+    k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, totalRowsH, 'S');
+    let ry2 = y;
+    azRows.forEach((row, i) => {
+      if (i > 0) { k(BD); doc.setLineWidth(0.2); doc.line(M+3, ry2, M+CW-3, ry2); }
+      f(row.accent); doc.rect(M, ry2, 3, rowH, 'F');
+      doc.setFontSize(8);  doc.setFont('helvetica','bold');   tx(DK); doc.text(row.lbl, M+7, ry2+6);
+      doc.setFontSize(6);  doc.setFont('helvetica','normal'); tx(GR); doc.text(row.sub, M+7, ry2+11);
+      doc.setFontSize(9);  doc.setFont('helvetica','bold');   tx(DK); doc.text('$' + Math.round(row.cost).toLocaleString() + '/mo', M+CW-3, ry2+8, {align:'right'});
+      ry2 += rowH;
+    });
+    f(BG); doc.rect(M, ry2, CW, 10, 'F');
+    k(BD); doc.setLineWidth(0.2); doc.rect(M, ry2, CW, 10, 'S');
+    doc.setFontSize(8);  doc.setFont('helvetica','bold'); tx(DK); doc.text('TOTAL MONTHLY', M+4, ry2+7);
+    tx(B); doc.text('$' + Math.round(az.total).toLocaleString() + '/mo', M+CW-3, ry2+7, {align:'right'});
+    y += totalRowsH + 14;
+
+    // Annual projection
+    sectionLbl('Annual Projection');
+    const annH = 18;
+    const annPairs = [
+      {lbl:'Monthly Cost', val:'$' + Math.round(az.total).toLocaleString()},
+      {lbl:'Annual Cost',  val:'$' + Math.round(az.total * 12).toLocaleString()},
+      {lbl:'3-Year Cost',  val:'$' + Math.round(az.total * 36).toLocaleString()},
+      {lbl:'DB Mode',      val: az.dbMode === 'azure' ? 'Azure SQL (PaaS)' : 'On-Prem (VPN)'},
+    ];
+    const aW = (CW - 9) / 4;
+    annPairs.forEach((ap, i) => {
+      const ax = M + i * (aW + 3);
+      f(WH); doc.rect(ax, y, aW, annH, 'F');
+      k(BD); doc.setLineWidth(0.3); doc.rect(ax, y, aW, annH, 'S');
+      doc.setFontSize(6);  doc.setFont('helvetica','bold');   tx(B);  doc.text(ap.lbl.toUpperCase(), ax+3, y+5);
+      doc.setFontSize(11); doc.setFont('helvetica','bold');   tx(DK); doc.text(ap.val, ax+3, y+13);
+    });
+    y += annH + 6;
+  } else {
+    // No estimate captured — show configuration only
+    f(BG); doc.rect(M, y, CW, 14, 'F');
+    k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, 14, 'S');
+    doc.setFontSize(7); doc.setFont('helvetica','italic'); tx(GR);
+    doc.text('Azure cost estimate not captured. Open the Blazor Estimator in the tool and interact with it to enable cost data in reports.', M+4, y+9, {maxWidth: CW-8});
+    y += 18;
+  }
+
+  // Prefill configuration used
+  sectionLbl('Inferred Configuration (AI Prefill)');
+  const cfgRows = [
+    ['App Service SKU',     pf.app ? pf.app.sku : '—'],
+    ['App Instances',       pf.app ? String(pf.app.instances) : '—'],
+    ['SignalR Tier',        pf.signalr ? pf.signalr.tier : '—'],
+    ['SignalR Units',       pf.signalr ? String(pf.signalr.units) : '—'],
+    ['Database Mode',       pf.dbMode || '—'],
+    ['Azure SQL Tier',      pf.azureSql && pf.azureSql.enabled ? pf.azureSql.tier : 'N/A'],
+    ['SQL Storage',         pf.azureSql && pf.azureSql.enabled ? pf.azureSql.storageGB + ' GB' : 'N/A'],
+    ['VPN Gateway',         pf.onPrem && pf.onPrem.enabled ? pf.onPrem.vpn.tier : 'N/A'],
+    ['Monitor Tier',        pf.monitor ? pf.monitor.tier : '—'],
+    ['Log Ingestion',       pf.monitor ? pf.monitor.logIngestionGBMonth + ' GB/mo' : '—'],
+    ['Azure Region',        pf.region || 'East US'],
+  ];
+  const cfgPerRow = 3, cfgW = (CW - (cfgPerRow-1)*3) / cfgPerRow;
+  const cfgH = Math.ceil(cfgRows.length / cfgPerRow) * 14;
+  cfgRows.forEach((cr, i) => {
+    const col = i % cfgPerRow, row = Math.floor(i / cfgPerRow);
+    const cx = M + col * (cfgW + 3), cy2 = y + row * 14;
+    f(WH); doc.rect(cx, cy2, cfgW, 13, 'F');
+    k(BD); doc.setLineWidth(0.3); doc.rect(cx, cy2, cfgW, 13, 'S');
+    doc.setFontSize(6);  doc.setFont('helvetica','bold');   tx(B);  doc.text(cr[0].toUpperCase(), cx+3, cy2+4.5);
+    doc.setFontSize(9);  doc.setFont('helvetica','bold');   tx(DK); doc.text(cr[1], cx+3, cy2+10);
+  });
+  y += cfgH + 6;
+
+  // ── PAGE 4: SALES STRATEGY ────────────────────────────────────────────────────
+  const ss = state.salesStrategy;
+  if (ss) {
+    doc.addPage();
+    f(CY); doc.rect(0, 0, PW, 1.5, 'F');
+    f(B);  doc.rect(0, 1.5, PW, 6, 'F');
+    doc.setFontSize(6); doc.setFont('helvetica','bold'); tx(BA2);
+    doc.text(`GAP VELOCITY AI  ·  SALES STRATEGY  ·  ${client.toUpperCase()}`, M, 5.5);
+    tx(BA1);
+    doc.text(`${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}`, PW-M, 5.5, {align:'right'});
+    y = 14;
+
+    // Strategy header band
+    f(B); doc.rect(M, y, CW, 30, 'F');
+    f(YL); doc.rect(M, y, CW, 1.5, 'F');
+    const dmLabel = (ss.dealMotion||'unknown').replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+    doc.setFontSize(6);  doc.setFont('helvetica','bold');   tx(BA2); doc.text('DEAL MOTION', M+4, y+7);
+    doc.setFontSize(14); doc.setFont('helvetica','bold');   tx(WH);  doc.text(dmLabel, M+4, y+16);
+    doc.setFontSize(6);  doc.setFont('helvetica','normal'); tx(BA2);
+    const summLines = doc.splitTextToSize(ss.strategySummary || '', CW/2 - 8);
+    doc.text(summLines.slice(0,3), M+4, y+22);
+
+    const tags = [
+      ['PERSONA',     (ss.customerPersonaFocus||'').replace(/-/g,' ')],
+      ['VALUE ANGLE', (ss.primaryValueAngle||'').replace(/-/g,' ')],
+      ['URGENCY',     (ss.timelineUrgency||'').replace(/-/g,' ')],
+      ['COMP RISK',   (ss.competitiveRisk||'').toUpperCase()],
+      ['PRICING',     (ss.pricingConfidence||'').toUpperCase()],
+    ];
+    const tagW = (CW/2 - 8) / tags.length;
+    tags.forEach((tag, i) => {
+      const tx2 = M + CW/2 + i * (tagW + 2);
+      f('18C1E5'); doc.roundedRect(tx2, y+5, tagW, 18, 1, 1, 'F');
+      doc.setFontSize(5); doc.setFont('helvetica','bold');   tx(B);  doc.text(tag[0], tx2+tagW/2, y+10, {align:'center'});
+      doc.setFontSize(7); doc.setFont('helvetica','bold');   tx(DK); doc.text(tag[1], tx2+tagW/2, y+19, {align:'center', maxWidth: tagW-2});
+    });
+    y += 34;
+
+    // Recommended Actions
+    sectionLbl('Recommended Actions');
+    (ss.recommendedActions || []).forEach((action, i) => {
+      const actionLines = doc.splitTextToSize(`${i+1}. ${action}`, CW - 12);
+      const aH = actionLines.length * 4.5 + 9;
+      f(WH); doc.rect(M, y, CW, aH, 'F');
+      k(B);  doc.setLineWidth(0.5); doc.rect(M, y, 3, aH, 'F');
+      k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, aH, 'S');
+      doc.setFontSize(7); doc.setFont('helvetica','normal'); tx(DK);
+      doc.text(actionLines, M+7, y+6);
+      y += aH + 3;
+    });
+    y += 4;
+
+    // ROI Narrative + Close Plan side by side
+    sectionLbl('ROI Narrative & Close Plan');
+    const npH2 = (CW-4)/2;
+    const roiLines  = doc.splitTextToSize(ss.roiNarrative  || 'No narrative extracted.', npH2 - 8);
+    const planLines = doc.splitTextToSize(ss.closePlan     || 'No close plan extracted.', npH2 - 8);
+    const blockH = Math.max(roiLines.length, planLines.length) * 4.5 + 16;
+
+    f(WH); doc.rect(M, y, npH2, blockH, 'F');
+    k(BA1); doc.setLineWidth(0.5); doc.rect(M, y, 3, blockH, 'F');
+    k(BD);  doc.setLineWidth(0.3); doc.rect(M, y, npH2, blockH, 'S');
+    doc.setFontSize(6); doc.setFont('helvetica','bold');   tx(B);  doc.text('ROI NARRATIVE', M+7, y+5);
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal'); tx(DK); doc.text(roiLines, M+7, y+11);
+
+    const px2 = M + npH2 + 4;
+    f(WH); doc.rect(px2, y, npH2, blockH, 'F');
+    k(GN); doc.setLineWidth(0.5); doc.rect(px2, y, 3, blockH, 'F');
+    k(BD); doc.setLineWidth(0.3); doc.rect(px2, y, npH2, blockH, 'S');
+    doc.setFontSize(6);   doc.setFont('helvetica','bold');   tx(B);  doc.text('CLOSE PLAN', px2+7, y+5);
+    doc.setFontSize(6.5); doc.setFont('helvetica','normal'); tx(DK); doc.text(planLines, px2+7, y+11);
+    y += blockH + 6;
+
+    // Discovery Questions
+    if ((ss.discoveryQuestions||[]).length) {
+      sectionLbl('Key Discovery Questions');
+      (ss.discoveryQuestions || []).forEach((q, i) => {
+        const qLines = doc.splitTextToSize(`${i+1}. ${q}`, CW - 10);
+        const qH = qLines.length * 4.2 + 7;
+        f(BG); doc.rect(M, y, CW, qH, 'F');
+        k(BA2); doc.setLineWidth(0.4); doc.rect(M, y, 3, qH, 'F');
+        k(BD);  doc.setLineWidth(0.3); doc.rect(M, y, CW, qH, 'S');
+        doc.setFontSize(6.5); doc.setFont('helvetica','normal'); tx(DK);
+        doc.text(qLines, M+7, y+5.5);
+        y += qH + 2;
+      });
+      y += 4;
+    }
+
+    // Objections to Pre-empt
+    if ((ss.objectionsToPreempt||[]).length) {
+      sectionLbl('Objections to Pre-empt');
+      (ss.objectionsToPreempt || []).forEach((obj) => {
+        const oLines = doc.splitTextToSize(obj, CW - 10);
+        const oH = oLines.length * 4.2 + 7;
+        f(WH); doc.rect(M, y, CW, oH, 'F');
+        k(YL); doc.setLineWidth(0.5); doc.rect(M, y, 3, oH, 'F');
+        k(BD); doc.setLineWidth(0.3); doc.rect(M, y, CW, oH, 'S');
+        doc.setFontSize(6.5); doc.setFont('helvetica','normal'); tx(DK);
+        doc.text(oLines, M+7, y+5.5);
+        y += oH + 2;
+      });
+    }
+  }
+
   // ── FOOTER on all pages ───────────────────────────────────────────────────────
   const np = doc.getNumberOfPages();
   for (let i=1; i<=np; i++) {
@@ -1455,6 +1981,13 @@ function generateReport(filename) {
 
   doc.save(`${filename || 'gap-velo-report'}.pdf`);
 }
+
+// ── AZURE ESTIMATOR MESSAGE LISTENER ─────────────────────────────────────────
+window.addEventListener('message', function(ev) {
+  if (ev.data && ev.data.type === 'blazor-estimate') {
+    state.azureEstimate = ev.data.data;
+  }
+});
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (function init() {
