@@ -1,0 +1,158 @@
+{
+  "extraction": {
+    "sourceTech": "aspclassic",
+    "targetTech": ".NET 8 Blazor Server with WebAssembly islands, Azure-hosted containerized workloads",
+    "linesOfCode": 310000,
+    "complexityLevel": 1,
+    "customersDevCount": 7,
+    "sourceTechSnippet": "hybrid monster: ASP Classic VBScript, WebForms code-behind, and ASP.NET MVC",
+    "linesSnippet": "total line count is around 310,000 lines... Classic ASP alone is about 120,000",
+    "complexitySnippet": "weighted average pulls toward conventional; Classic ASP is spaghetti in places",
+    "devCountSnippet": "Seven developers... one is the only person who knows the stored procedure layer deeply",
+    "summary": "Atlas Retail Solutions runs a 310K-line hybrid ASP Classic/WebForms/MVC POS platform. Target is .NET 8 Blazor Server on Azure containers. October audit deadline drives urgency. Key risk: single developer holding stored procedure knowledge. Phased migration recommended starting with MVC-equivalent POS and inventory flows.",
+    "confidence": 82,
+    "blazorEstimator": {
+      "dbMode": "azure",
+      "region": "East US",
+      "app": {
+        "sku": "lin_P2v3",
+        "instances": 2,
+        "os": "linux",
+        "reasoning": "Containerized Linux target explicitly stated; P2v3 fits mid-market POS with real-time inventory widgets"
+      },
+      "signalr": {
+        "tier": "standard",
+        "units": 1,
+        "estimatedConcurrentConnections": 500,
+        "reasoning": "Blazor Server requires SignalR; real-time inventory widgets mentioned; mid-market retailer implies medium-low concurrency"
+      },
+      "azureSql": {
+        "enabled": true,
+        "tier": "4vc",
+        "storageGB": 100,
+        "computeModel": "provisioned",
+        "reasoning": "POS and inventory data with 40+ stored procedures implies moderate DB load; provisioned for predictable retail workloads"
+      },
+      "onPrem": {
+        "enabled": false,
+        "vpn": {
+          "tier": "vpngw1",
+          "egressGBMonth": 50
+        },
+        "keyVault": {
+          "tier": "standard",
+          "secretOpsKMonth": 100
+        },
+        "reasoning": "No on-prem DB or datacenter connectivity mentioned; full cloud migration is the stated goal"
+      },
+      "monitor": {
+        "tier": "analytics",
+        "logIngestionGBMonth": 10,
+        "reasoning": "Security audit requirement and compliance sensitivity warrant analytics-tier monitoring; POS transactions increase log volume"
+      },
+      "drivers": {
+        "haRequired": false,
+        "complianceSensitive": true,
+        "latencySensitive": true,
+        "expectedUserLoad": "medium",
+        "reasoning": "Security audit deadline implies compliance sensitivity; real-time inventory widgets imply latency sensitivity; mid-market retailer = medium load"
+      }
+    },
+    "fieldConfidence": {
+      "dbMode": 60,
+      "region": 20,
+      "app.sku": 65,
+      "app.instances": 50,
+      "signalr.tier": 70,
+      "signalr.units": 40,
+      "azureSql.tier": 55,
+      "azureSql.storageGB": 40,
+      "azureSql.computeModel": 55,
+      "vpn.tier": 30,
+      "vpn.egressGBMonth": 20,
+      "keyVault.tier": 50,
+      "keyVault.secretOpsKMonth": 30,
+      "monitor.tier": 65,
+      "monitor.logIngestionGBMonth": 40
+    },
+    "fieldSource": {
+      "dbMode": "inferred",
+      "region": "default",
+      "app.sku": "inferred",
+      "app.instances": "default",
+      "signalr.tier": "inferred",
+      "signalr.units": "default",
+      "azureSql.tier": "inferred",
+      "azureSql.storageGB": "inferred",
+      "azureSql.computeModel": "inferred",
+      "vpn.tier": "default",
+      "vpn.egressGBMonth": "default",
+      "keyVault.tier": "default",
+      "keyVault.secretOpsKMonth": "default",
+      "monitor.tier": "inferred",
+      "monitor.logIngestionGBMonth": "inferred"
+    },
+    "evidence": {
+      "dbModeSnippet": "Cloud-hosted on Azure... completely off IIS on Windows servers onto containerized workloads",
+      "regionSnippet": null,
+      "appSnippet": "get completely off IIS... onto containerized workloads; .NET 8 Blazor for the UI",
+      "signalrSnippet": "Blazor Server for the core application, with selective WebAssembly islands for real-time inventory widgets",
+      "azureSqlSnippet": "40 stored procedures that implement business logic... no living person fully understands",
+      "onPremSnippet": null,
+      "vpnSnippet": null,
+      "keyVaultSnippet": null,
+      "monitorSnippet": "security audit requirement we can't meet on the old stack",
+      "driversSnippet": "security audit requirement... real-time inventory widgets... mid-market retailers"
+    },
+    "salesStrategy": {
+      "dealMotion": "rescue-modernization",
+      "customerPersonaFocus": "mixed",
+      "primaryValueAngle": "risk-reduction",
+      "commercialApproach": "fixed-scope-phase1",
+      "pricingConfidence": "medium",
+      "timelineUrgency": "immediate",
+      "competitiveRisk": "low",
+      "recommendedActions": [
+        "Deliver Phase 1 SOW scoped to POS and inventory flows on .NET 8 Blazor within 3 months to meet October audit deadline",
+        "Schedule a knowledge-capture session with the senior stored procedure developer before any engagement starts to de-risk key-person dependency",
+        "Produce a written modernization roadmap document (3 phases) that Atlas can present to their enterprise customer auditors as a credible deliverable",
+        "Confirm Azure region preference and whether Atlas has existing Azure subscriptions or needs greenfield provisioning",
+        "Propose a discovery/architecture sprint (2 weeks) to validate the prototype Blazor Server + WASM island architecture before full Phase 1 commitment"
+      ],
+      "discoveryQuestions": [
+        "Which Azure region do your enterprise customers require for data residency or latency compliance?",
+        "What is the current user concurrency at peak — how many simultaneous sessions does the POS platform handle?",
+        "Is the database currently on-premises SQL Server, or already on Azure SQL or another managed service?",
+        "Has the senior stored procedure developer been formally interviewed or is departure still a risk — and has any documentation effort started?",
+        "What does 'credible demo' mean to the auditors — a live environment, a recorded walkthrough, or a written architecture attestation?",
+        "Are there any PCI-DSS, SOC 2, or other compliance frameworks driving the security audit beyond the enterprise customer requirement?",
+        "What is the approved budget range for Phase 1, and who holds budget authority — Patrick, a CFO, or a procurement committee?"
+      ],
+      "objectionsToPreempt": [
+        "Three months is too short for a real migration — address by scoping Phase 1 to only the POS and inventory flows (~30% of codebase) as a demonstrable pilot, not full migration",
+        "We already have an internal team — position GAP Velocity as augmentation and knowledge transfer, not replacement, especially for stored procedure archaeology",
+        "Cost is too high for a phased program — anchor ROI to the revenue at risk from losing the enterprise customer (70% revenue product) and the cost of continued technical debt"
+      ],
+      "roiNarrative": "Atlas risks losing a major enterprise customer — and the 70% revenue product that depends on it — if they cannot demonstrate a modern, auditable architecture by October. GAP Velocity's phased modernization approach delivers a credible Phase 1 in time for the audit while protecting the team from key-person risk and positioning Atlas to hire modern .NET talent at scale.",
+      "closePlan": "Deliver Phase 1 SOW and 3-phase roadmap document by end of week. Schedule executive review with Patrick and Lisa to align on budget and sign-off path. Target SOW signature within 2 weeks to preserve October delivery window.",
+      "strategySummary": "This is a time-pressured rescue modernization with a hard October audit deadline and a single-developer key-person risk. Lead with a fixed-scope Phase 1 SOW covering POS and inventory flows to satisfy the auditor. Anchor the business case on protecting the 70% revenue product. Patrick (VP Eng) and Maria (Architect) are both engaged and technically aligned — move fast to SOW.",
+      "confidence": 78
+    },
+    "salesEvidence": {
+      "dealMotionSnippet": "losing a major enterprise customer at end of year if we can't demonstrate credible roadmap",
+      "personaSnippet": "Patrick Cho VP Engineering and Maria Santos Lead Architect both present across both calls",
+      "valueAngleSnippet": "security audit requirement we can't meet on the old stack... on borrowed time",
+      "urgencySnippet": "customer audit deadline is October... roughly three months to have a credible demo",
+      "riskSnippet": "most senior developer... only person who knows stored procedure layer... also interviewing elsewhere"
+    },
+    "reviewFlags": [
+      "Azure region not mentioned — confirm with Atlas for data residency or latency requirements before finalizing infrastructure estimate",
+      "Database hosting model not confirmed — unclear if SQL Server is on-prem or already cloud; dbMode set to azure based on stated cloud migration goal but needs explicit confirmation",
+      "Concurrent user count never stated — SignalR units and app instances sized conservatively at medium load; validate peak POS session volume",
+      "Storage estimate of 100GB for Azure SQL is inferred from POS/inventory workload — no explicit data volume provided",
+      "HA/zone redundancy not discussed — haRequired set to false but compliance audit may require it; revisit after compliance framework is confirmed",
+      "Key-person risk (senior stored procedure developer) is a project delivery risk that could affect timeline and cost — flag for SOW risk section",
+      "No budget figure mentioned — pricingConfidence set to medium; qualify budget authority and range before submitting SOW"
+    ]
+  }
+}

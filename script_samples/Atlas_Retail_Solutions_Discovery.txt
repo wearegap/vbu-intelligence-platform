@@ -1,0 +1,45 @@
+=== CALL 1: Discovery Call — Atlas Retail Solutions (2026-06-20) ===
+Participants: Lisa (AE), Patrick Cho (VP of Engineering), Maria Santos (Lead Architect)
+
+Lisa: "Patrick, I appreciate you fitting this in. You mentioned in your inbound form that you're dealing with an 'aging web platform.' Tell me more."
+
+Patrick: "Sure. So Atlas builds point-of-sale and inventory management software for mid-market retailers. Our main product — the one that generates 70% of our revenue — is a web application that was originally built in ASP Classic in 2001, then partially migrated to WebForms around 2007, and then kind of... stopped. So right now we have a hybrid monster. Some of it is ASP Classic VBScript, some of it is WebForms with code-behind, and about 15% was rewritten in ASP.NET MVC about six years ago when we brought in a new team."
+
+Lisa: "That sounds like it's accumulated a lot of layers."
+
+Maria: "It's a layer cake of regret. We have pages that call Classic ASP includes from within WebForms, WebForms that write JavaScript into Classic ASP response buffers, and somewhere in the middle there are about 40 stored procedures that implement business logic that no living person fully understands."
+
+Patrick: "The total line count is around 310,000 lines. That includes the Classic ASP, the WebForms, and the MVC layer. The Classic ASP alone is about 120,000 lines."
+
+Lisa: "How many developers are working on this today?"
+
+Patrick: "Seven developers. Four of them are capable in the WebForms and MVC layer. Two have been here long enough to navigate the Classic ASP with some confidence. And one — our most senior developer — is the only person who knows the stored procedure layer deeply. He's been with us 14 years and he's also interviewing elsewhere, which is keeping me up at night."
+
+Lisa: "Where do you want to land?"
+
+Patrick: "We want to be on .NET 8 Blazor for the UI, with a proper API layer underneath. Cloud-hosted on Azure. We'd like to get completely off IIS on Windows servers and onto containerized workloads. The goal is to be able to hire modern .NET developers and not have to spend six months onboarding them into a codebase from 2001."
+
+Lisa: "What's the trigger for moving now?"
+
+Patrick: "Two things. First, we're losing a major enterprise customer at the end of the year if we can't demonstrate a credible roadmap to modern architecture — they have a security audit requirement we can't meet on the old stack. Second, Microsoft formally dropped support for WebForms in the new .NET. We're on borrowed time."
+
+=== CALL 2: Technical Deep Dive — Atlas Retail Solutions (2026-06-27) ===
+Participants: Carlos (SA), Maria Santos (Lead Architect), Patrick Cho (VP of Engineering)
+
+Carlos: "Maria, let's get into the weeds. 310K lines across three different eras — how would you assess the overall complexity?"
+
+Maria: "Conventional, honestly, on average. The MVC layer is clean. The WebForms layer is conventional — not great, not terrible. The Classic ASP layer is... spaghetti in places. But because the ASP Classic is only 120K of the 310K, the weighted average pulls toward conventional. If we were only talking about the Classic ASP, I'd say complex-to-spaghetti."
+
+Carlos: "Is there test coverage?"
+
+Maria: "For the MVC layer — yes, moderate. For WebForms — minimal. For Classic ASP — zero. No tests, minimal documentation, inline comments that are mostly wrong because the code was changed but the comments weren't."
+
+Patrick: "The customer audit deadline is October. That gives us roughly three months to have a credible demo of the new stack in place. I know a full migration of 310K lines isn't a three-month job, but if we can stand up the core inventory and POS flows on .NET 8 Blazor in that window, we can satisfy the auditors."
+
+Carlos: "A phased approach makes a lot of sense here. Phase 1 focused on the MVC-equivalent coverage of the POS and inventory flows, which are likely already reasonably structured. Phase 2 tackles the WebForms layer. Phase 3 is the Classic ASP archaeology. For 310K lines at a conventional complexity baseline targeting .NET 8 Blazor on Azure — let me get you a cost breakdown."
+
+Maria: "One important note: we need the Blazor target specifically because our customers use the app from Chrome, Safari, and the Microsoft Edge WebView runtime. We cannot have a WinForms or desktop client as the output. It has to be a true web app."
+
+Carlos: "Blazor Server or Blazor WebAssembly?"
+
+Maria: "Blazor Server for the core application, with selective WebAssembly islands for the real-time inventory widgets. We've already prototyped the architecture — we just need the code to migrate into it."

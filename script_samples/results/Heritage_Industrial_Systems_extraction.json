@@ -1,0 +1,158 @@
+{
+  "extraction": {
+    "sourceTech": "delphi",
+    "targetTech": ".NET 8 / .NET MAUI / Azure",
+    "linesOfCode": 250000,
+    "complexityLevel": 3,
+    "customersDevCount": 9,
+    "sourceTechSnippet": "Our core ERP was custom-built in Delphi back in 1999",
+    "linesSnippet": "It's about 250,000 lines of code and it touches everything",
+    "complexitySnippet": "architecturally sound core, significant complexity accumulation in integration layers",
+    "devCountSnippet": "Nine developers total on the team, but only two have meaningful Delphi experience",
+    "summary": "Heritage Industrial Systems runs a 250K-line Delphi ERP (1999) covering full manufacturing ops. Two remaining Delphi devs create critical knowledge-concentration risk. Target is .NET 8 / MAUI / Azure. Complexity is high due to COM integrations with shop floor equipment. Azure EA already signed. Urgency is immediate.",
+    "confidence": 88,
+    "blazorEstimator": {
+      "dbMode": "azure",
+      "region": "East US",
+      "app": {
+        "sku": "lin_P3v3",
+        "instances": 2,
+        "os": "linux",
+        "reasoning": "Business-critical ERP with HA needs; complex integrations warrant premium tier"
+      },
+      "signalr": {
+        "tier": "standard",
+        "units": 2,
+        "estimatedConcurrentConnections": 1000,
+        "reasoning": "Field service teams on tablets plus internal users suggest medium concurrent load"
+      },
+      "azureSql": {
+        "enabled": true,
+        "tier": "8vc",
+        "storageGB": 200,
+        "computeModel": "provisioned",
+        "reasoning": "Full ERP workload — production scheduling, inventory, orders, field service — warrants higher vCore tier"
+      },
+      "onPrem": {
+        "enabled": true,
+        "vpn": {
+          "tier": "vpngw1",
+          "egressGBMonth": 100
+        },
+        "keyVault": {
+          "tier": "standard",
+          "secretOpsKMonth": 100
+        },
+        "reasoning": "COM/PLC/SCADA shop floor integrations require on-prem connectivity; VPN needed for equipment interfaces"
+      },
+      "monitor": {
+        "tier": "analytics",
+        "logIngestionGBMonth": 15,
+        "reasoning": "Complex ERP with integration layers and shop floor equipment warrants elevated log ingestion"
+      },
+      "drivers": {
+        "haRequired": true,
+        "complianceSensitive": false,
+        "latencySensitive": true,
+        "expectedUserLoad": "medium",
+        "reasoning": "Production shutdowns risk cited; shop floor latency sensitivity; field service + internal users = medium load"
+      }
+    },
+    "fieldConfidence": {
+      "dbMode": 72,
+      "region": 30,
+      "app.sku": 70,
+      "app.instances": 55,
+      "signalr.tier": 50,
+      "signalr.units": 45,
+      "azureSql.tier": 60,
+      "azureSql.storageGB": 45,
+      "azureSql.computeModel": 60,
+      "vpn.tier": 65,
+      "vpn.egressGBMonth": 40,
+      "keyVault.tier": 50,
+      "keyVault.secretOpsKMonth": 30,
+      "monitor.tier": 65,
+      "monitor.logIngestionGBMonth": 50
+    },
+    "fieldSource": {
+      "dbMode": "inferred",
+      "region": "default",
+      "app.sku": "inferred",
+      "app.instances": "default",
+      "signalr.tier": "inferred",
+      "signalr.units": "inferred",
+      "azureSql.tier": "inferred",
+      "azureSql.storageGB": "inferred",
+      "azureSql.computeModel": "inferred",
+      "vpn.tier": "inferred",
+      "vpn.egressGBMonth": "inferred",
+      "keyVault.tier": "default",
+      "keyVault.secretOpsKMonth": "default",
+      "monitor.tier": "inferred",
+      "monitor.logIngestionGBMonth": "inferred"
+    },
+    "evidence": {
+      "dbModeSnippet": "Azure for the backend. We've already signed an Azure Enterprise Agreement",
+      "regionSnippet": null,
+      "appSnippet": "Azure for the backend... .NET 8 for the server-side services",
+      "signalrSnippet": "field service teams on tablets",
+      "azureSqlSnippet": "Azure for the backend... touches everything — production scheduling, inventory, quality control",
+      "onPremSnippet": "custom COM components that talk to shop floor equipment — PLCs, SCADA systems",
+      "vpnSnippet": "COM components that talk to shop floor equipment — PLCs, SCADA systems",
+      "keyVaultSnippet": null,
+      "monitorSnippet": "integration mess — COM stuff, database drivers, hand-rolled web service clients",
+      "driversSnippet": "those interfaces... preserve exact behaviors or we risk production shutdowns"
+    },
+    "salesStrategy": {
+      "dealMotion": "rescue-modernization",
+      "customerPersonaFocus": "mixed",
+      "primaryValueAngle": "risk-reduction",
+      "commercialApproach": "fixed-scope-phase1",
+      "pricingConfidence": "medium",
+      "timelineUrgency": "immediate",
+      "competitiveRisk": "medium",
+      "recommendedActions": [
+        "Deliver cost model this week as promised by Carlos — anchor on 250K Delphi lines with COM integration complexity",
+        "Propose a Phase 1 Signal Extraction / Modernization Knowledge Map SOW to capture Ben and Tina's implicit logic before attrition risk materializes",
+        "Leverage Azure EA already signed to frame Azure hosting costs as near-zero incremental — accelerate commercial approval",
+        "Schedule a joint session with Ben Torres and Carlos to map COM/PLC integration interfaces and define migration guardrails",
+        "Prepare a risk-quantification slide for Marcus (CIO) showing cost of losing either Delphi developer mid-migration"
+      ],
+      "discoveryQuestions": [
+        "What is the current uptime SLA expectation for the ERP, and is there a formal DR/HA requirement?",
+        "Are the PLCs and SCADA systems on a network segment that can be reached via Azure VPN, or is there an air-gap requirement?",
+        "Has Heritage defined a cutover strategy — big bang, module-by-module, or parallel run?",
+        "What is Ben and Tina's expected tenure — is there a retention plan or departure risk in the next 6 months?",
+        "Are there any compliance or regulatory requirements (ISO, ITAR, SOC 2) that would affect cloud data residency or security controls?",
+        "How many concurrent users does the ERP serve across production, office, and field service roles?",
+        "Is the .NET MAUI tablet client expected to work offline, and does that affect sync architecture?"
+      ],
+      "objectionsToPreempt": [
+        "Risk of production disruption: Address by proposing a non-invasive Signal Extraction phase with zero changes to production system",
+        "Cost uncertainty for 250K lines: Anchor with phased fixed-scope SOW; Phase 1 knowledge map de-risks the full estimate",
+        "Internal team can do it with the .NET developers: Counter with Delphi-to-.NET semantic translation complexity and COM interface risk — not a standard rewrite"
+      ],
+      "roiNarrative": "Every month Heritage delays, knowledge concentration risk compounds. Losing one Delphi developer mid-migration could cost more than the entire modernization program. GAP Velocity AI's signal extraction phase captures that institutional knowledge as a durable artifact — protecting Heritage's ERP investment while unlocking the .NET team already on payroll.",
+      "closePlan": "Deliver cost model by end of week (Carlos committed). Follow up with a Phase 1 SOW for Signal Extraction within 5 business days. Target SOW signature before end of June to align with Q2 close and leverage Azure EA momentum.",
+      "strategySummary": "Heritage is a high-urgency rescue-modernization play driven by Delphi developer attrition risk on a business-critical ERP. The CIO and App Dev Director are both engaged and motivated. Azure EA is already signed. Lead with risk-reduction narrative, anchor on a fixed-scope Phase 1 knowledge map SOW, and close before a developer departure forces their hand.",
+      "confidence": 85
+    },
+    "salesEvidence": {
+      "dealMotionSnippet": "One retired, one moved away — Marcus finally convinced the board to fund a migration",
+      "personaSnippet": "Marcus Webb (CIO) and Janet Hollis (Director of Application Development) both present",
+      "valueAngleSnippet": "Every month we wait is another month of knowledge concentration risk",
+      "urgencySnippet": "We want to start yesterday, honestly",
+      "riskSnippet": "If either of them leaves, we're in a very bad position"
+    },
+    "reviewFlags": [
+      "Azure region not specified — defaulted to East US; confirm with customer given manufacturing/industrial data residency needs",
+      "No explicit user count provided — concurrent connections inferred as medium from field service tablet mention; validate headcount",
+      "COM/PLC/SCADA on-prem connectivity assumed to require VPN — confirm network topology before finalizing onPrem config",
+      "No compliance requirements mentioned — flag for discovery; manufacturing clients may have ITAR, ISO 27001, or SOC 2 obligations",
+      "azureSql.storageGB set to 200 — 25 years of ERP data volume is unknown; validate with Janet or Ben",
+      "MAUI offline capability unknown — may require additional sync/storage architecture not captured in current estimate",
+      "Only 60% of critical business rules documented — knowledge capture gap may extend Phase 1 timeline and cost"
+    ]
+  }
+}

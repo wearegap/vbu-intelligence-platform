@@ -1,0 +1,51 @@
+=== CALL 1: Discovery Call — TechCore Solutions (2026-06-18) ===
+Participants: Andrea (AE), Kevin Marsh (VP Engineering), Rachel Simmons (Project Manager)
+
+Andrea: "Kevin, thanks for making time today. I know you mentioned in our last exchange that you've been dealing with some serious modernization challenges. Can you give me the 30-second version of what you're working with?"
+
+Kevin: "Sure. So, we've been running a PowerBuilder application since the early 2000s. It's our core field service management platform — every technician work order, inventory lookup, billing event flows through it. The system is maybe 180,000 lines of code across about 40 data windows and 15 modules."
+
+Andrea: "And how's the codebase holding up? Is it clean or has it accumulated some technical debt?"
+
+Kevin: "It's complex. I'd say it's well past 'messy' — we have a lot of circular dependencies between the data window layers, business rules buried inside display logic, no real separation of concerns. We've had three different architects try to document it and they all gave up halfway through. I wouldn't call it total spaghetti, but it's solidly in the complex category."
+
+Rachel: "To add some color — every time we try to add a feature, we break two other things. Last quarter we had a critical billing calculation regression that took four weeks to isolate."
+
+Andrea: "How many developers are actively working on this system right now?"
+
+Kevin: "We have six developers on it. Two seniors, three mids, and a junior who's mostly doing UI fixes. The seniors are the only ones who really understand the core logic, which is terrifying from a bus-factor standpoint."
+
+Andrea: "Where do you want to land? What does the target state look like?"
+
+Kevin: "We need to get to .NET 8 with an Angular front-end. Cloud-hosted, ideally on Azure. We want to break it into microservices eventually, but the first milestone is just getting off PowerBuilder. We've been talking about this for two years and we keep stalling because the cost and risk estimates are all over the place."
+
+Andrea: "What's your biggest concern with a migration like this?"
+
+Kevin: "Honestly? Business continuity. We cannot have field technicians going dark. And we've heard horror stories from other companies where the AI translation misses business logic and they spend a year fixing bugs that weren't there before."
+
+Andrea: "That's a legitimate concern. GAP Velocity is built specifically to address that — human engineers review every module AI touches. Let me pull together some numbers and we can go deeper on the technical side."
+
+=== CALL 2: Technical Deep Dive — TechCore Solutions (2026-06-25) ===
+Participants: Carlos (SA), Kevin Marsh (VP Engineering), Dan Fitch (Lead Developer)
+
+Carlos: "Dan, you're the one who's been inside this codebase the longest. Can you walk me through the architecture?"
+
+Dan: "Yeah, so it's classic PowerBuilder. About 180K lines total. We've got a legacy Sybase database behind it that we want to migrate to Azure SQL. The data windows are the worst part — they mix data access, presentation, and business logic all in one layer. We've identified about 35 'golden path' modules that handle 80% of the business value, but even those have undocumented edge cases."
+
+Carlos: "How would you characterize the overall complexity?"
+
+Dan: "Complex. Not spaghetti — we have *some* structure — but the complexity factor is real. A lot of the business logic is embedded in events, there are custom user objects that do weird things to state, and the COM interop layer for printing is a black box nobody wants to touch."
+
+Kevin: "We've tried automated scanners and they identify the surface area, but the behavioral semantics are another story entirely."
+
+Carlos: "What's the developer breakdown again? Six total?"
+
+Kevin: "Six developers total. The two seniors have been here 12 and 9 years respectively. If either of them leaves before we finish this migration, we're in serious trouble."
+
+Carlos: "And the target stack?"
+
+Kevin: "We want .NET 8, Angular for the front-end, Azure SQL for the database. Cloud-native on Azure. We've already started standing up the DevOps pipeline."
+
+Carlos: "Timeline urgency?"
+
+Kevin: "We're in active contract renegotiation with Sybase support. That contract expires in 18 months. After that, we're on our own for database support, which is a hard deadline we cannot miss."

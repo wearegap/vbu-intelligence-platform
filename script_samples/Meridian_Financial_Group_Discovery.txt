@@ -1,0 +1,45 @@
+=== CALL 1: Discovery Call — Meridian Financial Group (2026-05-29) ===
+Participants: Andrea (AE), Sandra Hoffmann (CTO), William Park (IT Director)
+
+Andrea: "Sandra, William — thanks for joining. I understand Meridian has a significant modernization initiative underway. Can you give me the overview?"
+
+Sandra: "Absolutely. We're a mid-size insurance holding company. Our core policy administration system was originally built in VB.NET back in 2008 — we're talking roughly 420,000 lines of code across a fairly large solution. It handles policy issuance, endorsements, claims intake, and premium billing for about three lines of business."
+
+William: "And we've been patching it ever since. Every compliance change, every state regulatory update, every new product — it all goes into the same monolith. At this point the codebase is a patchwork of conventions from six different development teams over 17 years."
+
+Andrea: "How would you characterize the code quality and complexity?"
+
+Sandra: "Conventional to complex, I'd say. It's not unreadable, but it's inconsistent. We have maybe 15 to 20% of the code that's genuinely well-structured — the stuff written by the last team. The rest ranges from mediocre to 'what were they thinking.' There are definitely some modules we'd call spaghetti, particularly around the premium calculation engine."
+
+Andrea: "And developer headcount on this system?"
+
+William: "We have 12 developers, but honestly only about eight of them are productive in the legacy code. The other four were hired in the last two years and they still struggle with the older patterns."
+
+Andrea: "Where do you want to end up?"
+
+Sandra: "We want .NET 8, Azure cloud hosting, and we want the monolith broken into at least three bounded contexts — policy lifecycle, billing, and claims. We've already started domain modeling. We're not asking GAP to architect the future state; we need a partner to accelerate the code translation so our architects can focus on the design, not the archaeology."
+
+Andrea: "What has held you back from starting this?"
+
+Sandra: "Two things. First, cost estimates from traditional shops have ranged from $4M to $11M — a ridiculous spread. Second, we had a board-level concern about IP and model security after a competitor had a data incident. We need to understand your security model before we can bring this to procurement."
+
+=== CALL 2: Executive Alignment — Meridian Financial Group (2026-06-05) ===
+Participants: Andrea (AE), Sandra Hoffmann (CTO), CFO (brief appearance)
+
+Sandra: "The CFO wanted to sit in for 15 minutes. David, do you want to state your concerns for the record?"
+
+CFO: "I'll be blunt. We've been burned before on modernization projects. The last one was budgeted at $2.4M and ended at $6.8M. What's different about this?"
+
+Andrea: "That's exactly the right question. The variable cost model in traditional shops — time and materials on a codebase that's hard to estimate — is where overruns happen. What GAP does is a cost-per-line-of-code model, tiered based on the source technology. For a 420,000-line VB.NET codebase, we have a very consistent pricing band. The estimate doesn't balloon because the unit economics are fixed."
+
+CFO: "And you've done VB.NET at this scale?"
+
+Andrea: "Multiple times. Sandra, I'll send you a reference list from financial services clients specifically."
+
+Sandra: "The 420K lines — that's the number we're confident in. Our technical team ran a code counter last month. Target is .NET 8 on Azure."
+
+CFO: "Good. Sandra, keep me posted. I need to see the cost model before board review in September."
+
+Andrea: "We can have a full cost dashboard ready within a week of receiving your transcript package. We'll quantify DIY versus VELO side-by-side so it's boardroom-ready."
+
+Sandra: "That's exactly what we need. Let's schedule the signal extraction session for next week."

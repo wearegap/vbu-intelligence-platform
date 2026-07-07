@@ -1,0 +1,158 @@
+{
+  "extraction": {
+    "sourceTech": "powerbuilder",
+    "targetTech": ".NET 8 with Angular front-end, Azure SQL, cloud-native on Azure",
+    "linesOfCode": 180000,
+    "complexityLevel": 3,
+    "customersDevCount": 6,
+    "sourceTechSnippet": "running a PowerBuilder application since the early 2000s",
+    "linesSnippet": "maybe 180,000 lines of code across about 40 data windows and 15 modules",
+    "complexitySnippet": "circular dependencies, business rules buried inside display logic, no real separation of concerns",
+    "devCountSnippet": "six developers on it. Two seniors, three mids, and a junior",
+    "summary": "TechCore Solutions runs a 180K-line PowerBuilder field service platform targeting .NET 8/Angular/Azure SQL. High complexity, 6 devs, hard 18-month Sybase support deadline. Key risks: business continuity, bus-factor on two senior devs, and logic fidelity during migration.",
+    "confidence": 88,
+    "blazorEstimator": {
+      "dbMode": "azure",
+      "region": "East US",
+      "app": {
+        "sku": "lin_P2v3",
+        "instances": 2,
+        "os": "linux",
+        "reasoning": "Cloud-native Azure target, field service platform with moderate-high load; P2v3 baseline with 2 instances for HA"
+      },
+      "signalr": {
+        "tier": "standard",
+        "units": 1,
+        "estimatedConcurrentConnections": 500,
+        "reasoning": "Field technicians as primary users; medium concurrent load assumed; standard tier sufficient"
+      },
+      "azureSql": {
+        "enabled": true,
+        "tier": "4vc",
+        "storageGB": 100,
+        "computeModel": "provisioned",
+        "reasoning": "Migrating from Sybase; core transactional platform with billing and inventory; provisioned 4vCore for predictable workload"
+      },
+      "onPrem": {
+        "enabled": false,
+        "vpn": {
+          "tier": "vpngw1",
+          "egressGBMonth": 50
+        },
+        "keyVault": {
+          "tier": "standard",
+          "secretOpsKMonth": 100
+        },
+        "reasoning": "Target is fully cloud-native on Azure; no on-prem DB or hybrid connectivity mentioned"
+      },
+      "monitor": {
+        "tier": "analytics",
+        "logIngestionGBMonth": 10,
+        "reasoning": "Complex migration with billing logic; elevated log ingestion for regression detection and audit trails"
+      },
+      "drivers": {
+        "haRequired": true,
+        "complianceSensitive": false,
+        "latencySensitive": true,
+        "expectedUserLoad": "medium",
+        "reasoning": "Field technicians cannot go dark; HA required. Latency matters for real-time work order lookups. No compliance flags raised."
+      }
+    },
+    "fieldConfidence": {
+      "dbMode": 92,
+      "region": 30,
+      "app.sku": 60,
+      "app.instances": 55,
+      "signalr.tier": 45,
+      "signalr.units": 40,
+      "azureSql.tier": 70,
+      "azureSql.storageGB": 45,
+      "azureSql.computeModel": 65,
+      "vpn.tier": 20,
+      "vpn.egressGBMonth": 20,
+      "keyVault.tier": 40,
+      "keyVault.secretOpsKMonth": 35,
+      "monitor.tier": 60,
+      "monitor.logIngestionGBMonth": 50
+    },
+    "fieldSource": {
+      "dbMode": "explicit",
+      "region": "default",
+      "app.sku": "inferred",
+      "app.instances": "inferred",
+      "signalr.tier": "default",
+      "signalr.units": "default",
+      "azureSql.tier": "inferred",
+      "azureSql.storageGB": "inferred",
+      "azureSql.computeModel": "inferred",
+      "vpn.tier": "default",
+      "vpn.egressGBMonth": "default",
+      "keyVault.tier": "default",
+      "keyVault.secretOpsKMonth": "default",
+      "monitor.tier": "inferred",
+      "monitor.logIngestionGBMonth": "inferred"
+    },
+    "evidence": {
+      "dbModeSnippet": "legacy Sybase database behind it that we want to migrate to Azure SQL",
+      "regionSnippet": null,
+      "appSnippet": "Cloud-native on Azure. We've already started standing up the DevOps pipeline.",
+      "signalrSnippet": null,
+      "azureSqlSnippet": "Azure SQL for the database. Cloud-native on Azure.",
+      "onPremSnippet": null,
+      "vpnSnippet": null,
+      "keyVaultSnippet": null,
+      "monitorSnippet": "billing calculation regression that took four weeks to isolate",
+      "driversSnippet": "We cannot have field technicians going dark."
+    },
+    "salesStrategy": {
+      "dealMotion": "rescue-modernization",
+      "customerPersonaFocus": "mixed",
+      "primaryValueAngle": "risk-reduction",
+      "commercialApproach": "fixed-scope-phase1",
+      "pricingConfidence": "medium",
+      "timelineUrgency": "this-year",
+      "competitiveRisk": "medium",
+      "recommendedActions": [
+        "Deliver a scoped Phase 1 SOW focused on the 35 'golden path' modules to demonstrate logic fidelity and reduce perceived risk",
+        "Quantify the Sybase support expiry risk in a one-page executive brief to create urgency and justify budget approval",
+        "Propose a bus-factor mitigation plan — knowledge capture sprint before migration begins — to address Kevin's senior dev dependency concern",
+        "Schedule a live demo of GAP Velocity's human-review workflow to directly counter the 'AI misses business logic' objection",
+        "Identify whether procurement or finance approval is needed and map the internal sign-off path with Rachel as the PM champion"
+      ],
+      "discoveryQuestions": [
+        "What is the current annual cost of Sybase licensing and support, and what happens operationally on day one after expiry?",
+        "Have you received competing proposals, and what did they propose for handling the data window business logic extraction?",
+        "What does your internal budget approval process look like, and who has final sign-off authority?",
+        "Are there any compliance, audit, or data residency requirements for the field service or billing data?",
+        "What does success look like at the 6-month mark — is it a parallel-run milestone or full cutover of specific modules?",
+        "How many concurrent field technicians are typically active during peak hours?",
+        "Has the team evaluated any interim risk mitigation if the migration extends beyond the 18-month Sybase deadline?"
+      ],
+      "objectionsToPreempt": [
+        "AI will miss business logic: Counter with GAP Velocity's human-engineer review layer and reference the 35 golden-path module approach as a controlled validation scope",
+        "Cost and risk estimates are all over the place: Address with a fixed-scope Phase 1 SOW with defined deliverables, acceptance criteria, and a capped price",
+        "We've been stalling for two years: Anchor to the hard 18-month Sybase deadline as the forcing function that makes inaction more expensive than action"
+      ],
+      "roiNarrative": "TechCore faces a hard 18-month deadline before losing Sybase support on a mission-critical platform. GAP Velocity's human-supervised AI modernization reduces the risk of logic regression — the exact failure mode that stalled prior attempts — while delivering a phased path to .NET 8 and Azure SQL that protects field technician uptime and eliminates the single-vendor dependency before it becomes a crisis.",
+      "closePlan": "Deliver Phase 1 SOW covering the 35 golden-path modules within 5 business days. Schedule a 45-minute SOW review with Kevin, Rachel, and the budget approver. Target signed agreement within 3 weeks to allow migration kickoff before Q3 end, preserving 15+ months of runway before Sybase expiry.",
+      "strategySummary": "TechCore is a rescue-modernization deal with a hard deadline (Sybase expiry in 18 months), a complex 180K-line PowerBuilder codebase, and a risk-averse VP Engineering burned by prior failed attempts. Lead with risk reduction and a fixed-scope Phase 1 on the 35 golden-path modules. Use the Sybase deadline as the commercial forcing function and Rachel as the internal champion to accelerate approvals.",
+      "confidence": 82
+    },
+    "salesEvidence": {
+      "dealMotionSnippet": "we keep stalling because the cost and risk estimates are all over the place",
+      "personaSnippet": "Kevin Marsh (VP Engineering), Rachel Simmons (Project Manager) both active across both calls",
+      "valueAngleSnippet": "horror stories where AI translation misses business logic and they spend a year fixing bugs",
+      "urgencySnippet": "Sybase support contract expires in 18 months. That's a hard deadline we cannot miss.",
+      "riskSnippet": "If either of them leaves before we finish this migration, we're in serious trouble."
+    },
+    "reviewFlags": [
+      "Azure region not specified — defaulted to East US; confirm with customer for latency and data residency requirements",
+      "Concurrent user count not stated — SignalR sizing and app instances are estimated; request field technician headcount",
+      "No compliance or data sensitivity requirements discussed — confirm whether billing data has PCI or regulatory implications",
+      "Storage estimate of 100GB for Azure SQL is inferred from Sybase migration scope; request current DB size",
+      "No competing vendor mentioned explicitly — competitive risk rated medium but should be validated in next call",
+      "COM interop printing layer flagged as black box — may require separate scoping effort outside standard modernization estimate",
+      "Budget approval path and deal size not confirmed — Rachel's procurement role and Kevin's authority level need clarification"
+    ]
+  }
+}

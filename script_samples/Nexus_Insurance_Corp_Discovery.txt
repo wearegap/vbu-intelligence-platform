@@ -1,0 +1,43 @@
+=== CALL 1: Discovery Call — Nexus Insurance Corp (2026-06-10) ===
+Participants: Lisa (AE), Tom Vasquez (VP Technology), Priya Nair (Senior Developer)
+
+Lisa: "Tom, thanks for reaching out. You mentioned in your email that you have a 'unique legacy situation' — I'd love to hear more about that."
+
+Tom: "Ha, 'unique' is a charitable way to put it. So, we have a Clarion application. That's C-L-A-R-I-O-N, in case your team isn't familiar. It's a RAD tool from the early 90s that was popular in small insurance shops. Our entire claims adjudication and policy renewal system runs on it."
+
+Lisa: "Clarion — yes, we've worked with that. How large is the codebase?"
+
+Tom: "Roughly 95,000 lines of code. Which sounds small compared to what some companies deal with, but Clarion lines are not like normal lines. The language does a lot with a little, and what it does is often very hard to reason about. Priya, you want to weigh in?"
+
+Priya: "Yeah, so Clarion is... it's procedural in a way that makes C look modern. The code we inherited is essentially spaghetti. There's no real encapsulation — everything talks to everything. Global variables everywhere, GOTOs in the control flow, and the entire database access layer is hand-rolled with no abstraction. I've been here four years and there are still parts of this codebase I'm genuinely afraid to touch."
+
+Lisa: "How many developers do you have working on it?"
+
+Tom: "Four developers total — and one of them is only part-time on Clarion because we're already starting to build out some new features in Node.js in anticipation of eventually getting off this thing. So realistically, three full-time equivalent people maintaining 95K lines of spaghetti Clarion code."
+
+Lisa: "Target state?"
+
+Tom: "We want out. Full stop. Target is a modern React front-end with a Node.js backend, hosted on AWS. We're not married to Azure — we already have AWS infrastructure for our newer systems. The goal is to get the business logic out of Clarion, get it into a testable, maintainable codebase, and get it running on infrastructure we can actually observe."
+
+Lisa: "What's the timeline pressure?"
+
+Tom: "Our Clarion vendor support is effectively nonexistent at this point. We're paying for a support contract that hasn't been renewed in two years and we can barely get someone on the phone. If we have a critical bug in the compiler behavior, we're on our own. That's not an acceptable risk for a claims system."
+
+=== CALL 2: Technical Qualification — Nexus Insurance Corp (2026-06-17) ===
+Participants: Carlos (SA), Priya Nair (Senior Developer), Tom Vasquez (VP Technology)
+
+Carlos: "Priya, let's go deeper on the codebase characteristics. When you say spaghetti complexity — can you give me some concrete examples?"
+
+Priya: "Sure. The claims intake flow alone has 23 different conditional branches that all eventually converge on a single state update. The logic was written over 15 years by at least six different developers, none of whom documented anything. We have what I call 'magic number hell' — numeric constants with no names, no comments, and no one alive who knows what they represent."
+
+Carlos: "Is there any documentation? Test coverage?"
+
+Priya: "Zero automated tests. There's a Word document from 2012 that describes the database schema, but even that's out of date. Documentation is tribal knowledge and a few handwritten notes from the developer who retired in 2019."
+
+Tom: "The business logic in that system processes about $40 million in claims per year. We cannot afford to have the migration get it wrong."
+
+Carlos: "That's exactly the scenario where VELO's human oversight layer matters most. Our engineers are domain-focused — they don't just validate that the code ran, they validate that the business outcomes match."
+
+Tom: "That's the key differentiator we're looking for. We've talked to two other vendors and both of them wanted to essentially rewrite from scratch using AI as a code generator. We don't want a rewrite — we want a verified translation. The 95K lines of Clarion represents 25 years of institutional knowledge we cannot afford to lose."
+
+Carlos: "Understood completely. For Clarion specifically, our tooling has a specialized extraction pass for the data access patterns, which is typically where the hardest logic lives. I'll get the cost model pulled together based on 95K lines, spaghetti complexity, with a React / Node.js target."

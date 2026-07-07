@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAP Velocity AI — Gong Intelligence Platform</title>
+<title>GAP Velocity AI — VBU PreSales Intelligence Platform</title>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.0/mammoth.browser.min.js" defer></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -91,6 +93,7 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 .call-item.selected { border-color: var(--gap-blue); background: #f0f7fb; }
 .call-item input[type="checkbox"] { accent-color: var(--gap-blue); width: 16px; height: 16px; flex-shrink: 0; }
 .call-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gap-green); flex-shrink: 0; }
+.call-dot.uploaded { background: var(--gap-yellow); }
 .call-info { flex: 1; min-width: 0; }
 .call-name { font-size: 13px; font-weight: 700; color: var(--gap-dark); }
 .call-meta { font-size: 11px; color: var(--gap-gray); margin-top: 2px; }
@@ -255,6 +258,9 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 .progress-bar-wrap { width: 120px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; flex-shrink: 0; }
 .progress-bar { height: 4px; border-radius: 2px; background: var(--gap-cyan); transition: width 0.4s; }
 
+.upload-note { font-size: 11px; color: var(--gap-gray); }
+.upload-status { font-size: 11px; color: var(--gap-gray); margin-top: 8px; }
+
 /* ── DASHBOARD CONTROLS ── */
 .dash-control-panel { padding: 18px 20px; margin-bottom: 12px; }
 .dash-control-title { font-size: 10px; font-weight: 700; color: var(--gap-blue); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
@@ -269,7 +275,7 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
   border-radius: 0;
   overflow: hidden;
   background: transparent;
-  margin: 0 -28px;
+  margin: 0 20px;
 }
 .estimator-frame {
   width: 100%;
@@ -360,11 +366,10 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
       </div>
       <div>
         <div class="header-eyebrow">GAP Velocity AI</div>
-        <div class="header-title">Gong <span class="hl">Intelligence</span> Platform</div>
-        <div class="header-sub">Extract modernization signals from client calls · Run cost model · Deliver GAP-branded insights</div>
+        <div class="header-title">VBU <span class="hl">Intelligence</span> Platform</div>
+        <div class="header-sub">Extract modernization signals from client calls · Run cost model · Deliver strategic sales insights</div>
       </div>
     </div>
-    <div class="header-badge">Powered by Claude AI</div>
   </div>
 </div>
 
@@ -411,9 +416,13 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           Fetch Calls from Gong
         </button>
+        <button class="btn btn-outline" type="button" onclick="document.getElementById('script-upload-input').click()">Upload Call Scripts</button>
+        <input id="script-upload-input" type="file" accept=".txt,.md,.json,.pdf,.docx" multiple style="display:none" onchange="uploadScripts(event)">
         <span style="font-size:11px;color:var(--gap-gray)">or</span>
         <button class="btn btn-outline" onclick="loadDemo()">Load Demo Data</button>
       </div>
+      <div class="upload-note" style="margin-top:8px">Import transcript files from local calls (.txt, .md, .json, .pdf, .docx)</div>
+      <div class="upload-status" id="upload-status">No script files uploaded yet.</div>
     </div>
 
     <div id="calls-panel" style="display:none">
@@ -632,6 +641,168 @@ function loadDemo() {
   state.selectedCalls = [];
   showCallList();
   updateSelectedCount();
+}
+
+function estimateDurationFromTranscript(text) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(3, Math.round(words / 140));
+  return `${minutes} min`;
+}
+
+function getUploadedCallDate(file) {
+  if (file && file.lastModified) {
+    const d = new Date(file.lastModified);
+    if (!Number.isNaN(d.getTime())) {
+      return d.toISOString().slice(0, 10);
+    }
+  }
+  return new Date().toISOString().slice(0, 10);
+}
+
+function parseUploadedTranscript(raw) {
+  if (!raw) return '';
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (typeof parsed === 'string') return parsed;
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map(item => {
+          if (typeof item === 'string') return item;
+          if (item && typeof item.text === 'string') return item.text;
+          if (item && typeof item.content === 'string') return item.content;
+          return '';
+        })
+        .filter(Boolean)
+        .join('\n');
+    }
+    if (parsed && typeof parsed === 'object') {
+      if (typeof parsed.transcript === 'string') return parsed.transcript;
+      if (typeof parsed.text === 'string') return parsed.text;
+      if (typeof parsed.content === 'string') return parsed.content;
+    }
+  } catch (_) {
+    return trimmed;
+  }
+
+  return trimmed;
+}
+
+async function extractTranscriptFromPdf(file) {
+  if (!window.pdfjsLib || !window.pdfjsLib.getDocument) {
+    throw new Error('PDF parser failed to load. Refresh and try again.');
+  }
+
+  const workerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  if (window.pdfjsLib.GlobalWorkerOptions) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+  }
+
+  const data = await file.arrayBuffer();
+  const loadingTask = window.pdfjsLib.getDocument({ data });
+  const pdf = await loadingTask.promise;
+
+  const pages = [];
+  for (let i = 1; i <= pdf.numPages; i += 1) {
+    const page = await pdf.getPage(i);
+    const textContent = await page.getTextContent();
+    const pageText = (textContent.items || [])
+      .map(item => item.str || '')
+      .filter(Boolean)
+      .join(' ');
+    if (pageText) pages.push(pageText);
+  }
+
+  return pages.join('\n\n').trim();
+}
+
+async function extractTranscriptFromDocx(file) {
+  if (!window.mammoth || !window.mammoth.extractRawText) {
+    throw new Error('DOCX parser failed to load. Refresh and try again.');
+  }
+
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await window.mammoth.extractRawText({ arrayBuffer });
+  return String(result.value || '').trim();
+}
+
+async function extractTranscriptFromFile(file) {
+  const name = String(file.name || '').toLowerCase();
+  if (name.endsWith('.pdf')) return extractTranscriptFromPdf(file);
+  if (name.endsWith('.docx')) return extractTranscriptFromDocx(file);
+
+  const raw = await file.text();
+  return parseUploadedTranscript(raw);
+}
+
+async function uploadScripts(event) {
+  clearError('step1-error');
+  state.isDemo = false;
+
+  const files = Array.from(event.target.files || []);
+  const status = document.getElementById('upload-status');
+  if (!files.length) {
+    status.textContent = 'No files selected.';
+    return;
+  }
+
+  const existingTitles = new Set(state.calls.map(c => String(c.title || '').trim().toLowerCase()));
+  const uploadedCalls = [];
+  let skipped = 0;
+
+  for (const file of files) {
+    try {
+      const transcript = await extractTranscriptFromFile(file);
+      if (!transcript.trim()) {
+        skipped += 1;
+        continue;
+      }
+
+      const title = file.name.replace(/\.[^.]+$/, '');
+      const normalizedTitle = title.trim().toLowerCase();
+      if (existingTitles.has(normalizedTitle)) {
+        skipped += 1;
+        continue;
+      }
+      existingTitles.add(normalizedTitle);
+
+      uploadedCalls.push({
+        id: `up-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        title,
+        date: getUploadedCallDate(file),
+        duration: estimateDurationFromTranscript(transcript),
+        participants: 'Uploaded script',
+        transcript,
+        source: 'upload'
+      });
+    } catch (_) {
+      skipped += 1;
+    }
+  }
+
+  if (!uploadedCalls.length) {
+    status.textContent = 'No valid scripts were imported. Check file format/content and try again.';
+    if (event.target) event.target.value = '';
+    return;
+  }
+
+  state.calls = [...uploadedCalls, ...state.calls];
+  state.selectedCalls = [];
+  showCallList();
+
+  const callsPanel = document.getElementById('calls-panel');
+  callsPanel.style.display = 'block';
+  const callsStatus = document.getElementById('calls-status');
+  callsStatus.style.display = 'flex';
+  callsStatus.innerHTML = `
+    <div class="status-icon done" style="background:rgba(67,182,134,0.2);color:var(--gap-green)">✓</div>
+    <div><div class="status-msg" style="color:var(--gap-green)">Imported ${uploadedCalls.length} script call${uploadedCalls.length !== 1 ? 's' : ''}</div><div class="status-sub">Select uploaded or Gong calls to analyze</div></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:100%;background:var(--gap-green)"></div></div>`;
+
+  status.textContent = `${uploadedCalls.length} script file${uploadedCalls.length !== 1 ? 's' : ''} imported${skipped ? `, ${skipped} skipped` : ''}.`;
+  if (event.target) event.target.value = '';
 }
 
 function getDemoExtraction() {
@@ -866,7 +1037,7 @@ function showCallList() {
   list.innerHTML = state.calls.map(c => `
     <div class="call-item" id="ci-${c.id}" onclick="toggleCall('${c.id}')">
       <input type="checkbox" id="cb-${c.id}" onchange="toggleCall('${c.id}')" onclick="event.stopPropagation()">
-      <div class="call-dot"></div>
+      <div class="call-dot ${c.source === 'upload' ? 'uploaded' : ''}"></div>
       <div class="call-info">
         <div class="call-name">${c.title}</div>
         <div class="call-meta">${c.date} · ${c.participants}</div>

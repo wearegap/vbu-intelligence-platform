@@ -1,0 +1,158 @@
+{
+  "extraction": {
+    "sourceTech": "clarion",
+    "targetTech": "React / Node.js on AWS",
+    "linesOfCode": 95000,
+    "complexityLevel": 3,
+    "customersDevCount": 3,
+    "sourceTechSnippet": "We have a Clarion application... Our entire claims adjudication and policy renewal system runs on it.",
+    "linesSnippet": "Roughly 95,000 lines of code.",
+    "complexitySnippet": "GOTOs in the control flow, global variables everywhere, zero automated tests, 23 conditional branches.",
+    "devCountSnippet": "Realistically, three full-time equivalent people maintaining 95K lines of spaghetti Clarion code.",
+    "summary": "Nexus Insurance Corp runs a 95K-line Clarion claims and policy system with zero tests, no documentation, and lapsed vendor support. They want a verified translation to React/Node.js on AWS. $40M annual claims volume makes accuracy critical. Three devs maintain it. High urgency due to unsupported compiler risk.",
+    "confidence": 82,
+    "blazorEstimator": {
+      "dbMode": "onprem",
+      "region": "East US",
+      "app": {
+        "sku": "lin_P2v3",
+        "instances": 2,
+        "os": "linux",
+        "reasoning": "Target is AWS/Node.js, not Azure App Service; defaulting to lin_P2v3 as estimator baseline for scoping purposes."
+      },
+      "signalr": {
+        "tier": "standard",
+        "units": 1,
+        "estimatedConcurrentConnections": 200,
+        "reasoning": "Insurance internal claims system; user load likely low-medium, internal staff only."
+      },
+      "azureSql": {
+        "enabled": false,
+        "tier": "4vc",
+        "storageGB": 50,
+        "computeModel": "provisioned",
+        "reasoning": "No Azure SQL mentioned; customer targets AWS. Disabled but default retained for estimator shape."
+      },
+      "onPrem": {
+        "enabled": true,
+        "vpn": {
+          "tier": "vpngw1",
+          "egressGBMonth": 50
+        },
+        "keyVault": {
+          "tier": "standard",
+          "secretOpsKMonth": 100
+        },
+        "reasoning": "Existing Clarion system is on-prem with hand-rolled DB access layer; migration will require on-prem connectivity during transition phase."
+      },
+      "monitor": {
+        "tier": "analytics",
+        "logIngestionGBMonth": 10,
+        "reasoning": "Claims system processing $40M/year requires robust observability; slightly elevated log ingestion assumed."
+      },
+      "drivers": {
+        "haRequired": true,
+        "complianceSensitive": true,
+        "latencySensitive": false,
+        "expectedUserLoad": "low",
+        "reasoning": "Claims adjudication is business-critical ($40M/year); insurance domain implies compliance sensitivity. Internal user base likely small."
+      }
+    },
+    "fieldConfidence": {
+      "dbMode": 70,
+      "region": 20,
+      "app.sku": 30,
+      "app.instances": 30,
+      "signalr.tier": 30,
+      "signalr.units": 25,
+      "azureSql.tier": 20,
+      "azureSql.storageGB": 20,
+      "azureSql.computeModel": 20,
+      "vpn.tier": 50,
+      "vpn.egressGBMonth": 30,
+      "keyVault.tier": 40,
+      "keyVault.secretOpsKMonth": 25,
+      "monitor.tier": 55,
+      "monitor.logIngestionGBMonth": 40
+    },
+    "fieldSource": {
+      "dbMode": "inferred",
+      "region": "default",
+      "app.sku": "default",
+      "app.instances": "default",
+      "signalr.tier": "default",
+      "signalr.units": "default",
+      "azureSql.tier": "default",
+      "azureSql.storageGB": "default",
+      "azureSql.computeModel": "default",
+      "vpn.tier": "inferred",
+      "vpn.egressGBMonth": "default",
+      "keyVault.tier": "inferred",
+      "keyVault.secretOpsKMonth": "default",
+      "monitor.tier": "inferred",
+      "monitor.logIngestionGBMonth": "inferred"
+    },
+    "evidence": {
+      "dbModeSnippet": "database access layer is hand-rolled with no abstraction",
+      "regionSnippet": null,
+      "appSnippet": "Target is a modern React front-end with a Node.js backend, hosted on AWS.",
+      "signalrSnippet": null,
+      "azureSqlSnippet": null,
+      "onPremSnippet": "entire claims adjudication and policy renewal system runs on it",
+      "vpnSnippet": "hand-rolled DB access layer; migration transition from on-prem Clarion",
+      "keyVaultSnippet": "insurance claims system; compliance sensitivity inferred",
+      "monitorSnippet": "infrastructure we can actually observe",
+      "driversSnippet": "processes about $40 million in claims per year. We cannot afford to have the migration get it wrong."
+    },
+    "salesStrategy": {
+      "dealMotion": "rescue-modernization",
+      "customerPersonaFocus": "mixed",
+      "primaryValueAngle": "risk-reduction",
+      "commercialApproach": "fixed-scope-phase1",
+      "pricingConfidence": "medium",
+      "timelineUrgency": "this-quarter",
+      "competitiveRisk": "high",
+      "recommendedActions": [
+        "Deliver a written VELO Clarion extraction methodology brief to Tom and Priya within 48 hours, emphasizing verified translation vs. AI rewrite to directly counter the two competing vendors.",
+        "Schedule a technical deep-dive with Priya focused on the claims intake flow (23-branch logic) to demonstrate VELO's domain-validation approach on a real code sample.",
+        "Prepare a risk-framed business case for Tom quantifying the cost of a mis-migration against $40M annual claims volume to justify investment and urgency.",
+        "Propose a fixed-scope Phase 1 SOW covering discovery, codebase extraction, and a pilot translation of the claims intake module to build confidence before full commitment.",
+        "Identify whether Tom has budget authority or requires procurement/CFO sign-off, and tailor the commercial packaging accordingly."
+      ],
+      "discoveryQuestions": [
+        "What does your AWS infrastructure look like today — are there existing CI/CD pipelines and environments we can target for the translated application?",
+        "Who owns the acceptance criteria for the migration — is there a business owner or compliance officer who must sign off on claims logic correctness?",
+        "Have you experienced any production incidents or near-misses due to the Clarion system in the past 12 months?",
+        "What is your internal timeline expectation — is there a hard deadline tied to a renewal, audit, or executive commitment?",
+        "What does the database look like — is it a proprietary Clarion TPS file, SQL Server, or something else?",
+        "Are there any regulatory or state insurance compliance requirements (e.g., SOC 2, state DOI audits) that the new system must satisfy?",
+        "What happened with the two prior vendor conversations — what specifically made their rewrite approach unacceptable?"
+      ],
+      "objectionsToPreempt": [
+        "We already have AWS infrastructure, not Azure — address by clarifying VELO delivers target-agnostic modernization; the estimator is for scoping, not locking in Azure.",
+        "AI-assisted translation might still get the business logic wrong — address by leading with VELO's human domain-validation layer and offering a paid pilot on the claims intake module as proof.",
+        "95K lines sounds small, so why does this cost so much — address by reframing Clarion complexity: GOTOs, global state, zero tests, and 25 years of undocumented logic make this high-risk, not small."
+      ],
+      "roiNarrative": "Nexus processes $40M in claims annually on an unsupported, undocumented Clarion system with zero test coverage. A single mis-migration or production outage could trigger regulatory exposure and claims processing failure. VELO's verified translation approach preserves 25 years of institutional logic while eliminating compiler risk, delivering a testable, observable Node.js system on infrastructure Nexus already controls.",
+      "closePlan": "Deliver Clarion methodology brief this week. Run a technical deep-dive with Priya on the claims intake module within 10 days. Present a fixed-scope Phase 1 SOW (discovery + pilot translation) to Tom by end of June with a clear go/no-go milestone before full program commitment.",
+      "strategySummary": "This is a rescue-modernization deal driven by unsupported legacy risk on a business-critical claims system. The customer has already rejected AI-rewrite vendors and is actively seeking verified translation. Competitive risk is high but differentiation is clear. Lead with risk quantification, demonstrate domain-validation capability on real Clarion code, and close a fixed-scope Phase 1 to establish trust before full program.",
+      "confidence": 78
+    },
+    "salesEvidence": {
+      "dealMotionSnippet": "We've talked to two other vendors... We don't want a rewrite — we want a verified translation.",
+      "personaSnippet": "Tom Vasquez (VP Technology) and Priya Nair (Senior Developer) both active; Tom owns risk, Priya owns technical credibility.",
+      "valueAngleSnippet": "processes about $40 million in claims per year. We cannot afford to have the migration get it wrong.",
+      "urgencySnippet": "Clarion vendor support is effectively nonexistent... If we have a critical bug in the compiler behavior, we're on our own.",
+      "riskSnippet": "Two other vendors wanted to rewrite from scratch using AI as a code generator."
+    },
+    "reviewFlags": [
+      "Customer targets AWS, not Azure — all Azure estimator values are defaults for scoping only; confirm if Azure is in scope at all.",
+      "Region not mentioned — East US default applied; confirm customer's AWS region preference and whether any Azure components are planned.",
+      "Database technology not identified — Clarion TPS files vs. SQL backend unknown; critical for migration scoping and on-prem VPN sizing.",
+      "No user count or concurrent session data provided — SignalR and app instance sizing are pure defaults.",
+      "Compliance requirements (SOC 2, state DOI) not confirmed — KeyVault tier may need upgrade to premium if HSM is required.",
+      "Budget and procurement process not discussed — commercial approach and timeline urgency may need revision after discovery.",
+      "Three devs cited as FTE but one is part-time on Clarion — actual capacity for parallel migration work may be lower than assumed."
+    ]
+  }
+}

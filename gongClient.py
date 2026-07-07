@@ -5,6 +5,7 @@ Handles all interactions with the Gong REST API v2.
 
 import base64
 from datetime import date
+import logging
 import os
 from typing import Optional
 import urllib.request
@@ -16,14 +17,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
 GONG_BASE_URL = "https://api.gong.io/v2"
+logger = logging.getLogger(__name__)
 
 
 def _load_env_file() -> None:
     """Load simple KEY=VALUE pairs from a local .env file if present."""
     env_path = os.path.join(os.path.dirname(__file__), ".env")
     if not os.path.exists(env_path):
+        logger.info("No .env file found at %s; using process environment variables.", env_path)
         return
 
+    loaded_count = 0
     with open(env_path, "r", encoding="utf-8") as f:
         for raw_line in f:
             line = raw_line.strip()
@@ -34,7 +38,11 @@ def _load_env_file() -> None:
             if not key:
                 continue
             value = value.strip().strip('"').strip("'")
+            if key not in os.environ:
+                loaded_count += 1
             os.environ.setdefault(key, value)
+
+    logger.info("Loaded %d variable(s) from .env.", loaded_count)
 
 
 _load_env_file()
@@ -87,6 +95,8 @@ class GongClient:
             query = urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
             url = f"{url}?{query}"
 
+        logger.info("Gong API request: %s %s", method, path)
+
         req = urllib.request.Request(url, method=method)
         req.add_header("Authorization", self._auth_header)
         req.add_header("Content-Type", "application/json")
@@ -103,8 +113,10 @@ class GongClient:
                 detail = json.loads(err_body)
             except json.JSONDecodeError:
                 detail = err_body
+            logger.error("Gong API HTTP error on %s %s: %s %s", method, path, exc.code, exc.reason)
             raise GongAPIError(exc.code, exc.reason, detail) from exc
         except urllib.error.URLError as exc:
+            logger.error("Gong API connection error on %s %s: %s", method, path, exc.reason)
             raise GongConnectionError(str(exc.reason)) from exc
 
     # ── Public API methods ────────────────────────────────────────────────────
@@ -275,6 +287,7 @@ class GongClient:
             legacy = self._request("GET", f"/calls/{call_id}/transcript")
             return legacy.get("transcript") or []
         except GongAPIError:
+            logger.warning("Transcript unavailable for call_id=%s via both transcript endpoints.", call_id)
             return []
 
     def list_account_names(
@@ -501,12 +514,15 @@ def _make_http_handler():
 
         def do_GET(self):
             if self.path == "/health":
+                logger.info("Health check requested.")
                 self._write_json(200, {"ok": True, "service": "gong-bridge"})
                 return
+            logger.warning("Unhandled GET path requested: %s", self.path)
             self._write_json(404, {"error": "Not Found"})
 
         def do_POST(self):
             if self.path != "/api/gong/calls-with-transcripts":
+                logger.warning("Unhandled POST path requested: %s", self.path)
                 self._write_json(404, {"error": "Not Found"})
                 return
 
@@ -515,6 +531,7 @@ def _make_http_handler():
                 raw = self.rfile.read(length).decode("utf-8") if length > 0 else "{}"
                 payload = json.loads(raw)
             except json.JSONDecodeError:
+                logger.warning("Invalid JSON payload received on %s", self.path)
                 self._write_json(400, {"error": "Invalid JSON payload"})
                 return
 
@@ -526,6 +543,7 @@ def _make_http_handler():
             limit = int(payload.get("limit") or 10)
 
             if not access_key or not access_secret:
+                logger.error("Missing Gong credentials in environment.")
                 self._write_json(
                     500,
                     {
@@ -543,6 +561,14 @@ def _make_http_handler():
                     to_date=to_date,
                     limit=limit,
                 )
+                logger.info(
+                    "Returning %d call(s) for account=%s range=%s..%s limit=%d",
+                    len(calls),
+                    account_name or "*",
+                    from_date or "*",
+                    to_date or "*",
+                    limit,
+                )
 
                 calls_payload = [
                     {
@@ -557,6 +583,7 @@ def _make_http_handler():
                 ]
                 self._write_json(200, {"calls": calls_payload})
             except GongAPIError as exc:
+                logger.error("Bridge failed due to Gong API error: %s", exc)
                 self._write_json(
                     502,
                     {
@@ -566,8 +593,10 @@ def _make_http_handler():
                     },
                 )
             except GongConnectionError as exc:
+                logger.error("Bridge failed due to Gong connection error: %s", exc)
                 self._write_json(502, {"error": "Connection error", "detail": str(exc)})
             except Exception as exc:  # pragma: no cover
+                logger.exception("Unexpected bridge error.")
                 self._write_json(500, {"error": "Internal server error", "detail": str(exc)})
 
         def log_message(self, format: str, *args):  # pragma: no cover
@@ -580,9 +609,9 @@ def run_bridge_server(host: str = "127.0.0.1", port: int = 8765):
     """Run a local HTTP server that proxies Gong API requests for the HTML app."""
     handler = _make_http_handler()
     server = ThreadingHTTPServer((host, port), handler)
-    print(f"Gong bridge running at http://{host}:{port}")
-    print("POST /api/gong/calls-with-transcripts")
-    print("GET  /health")
+    logger.info("Gong bridge running at http://%s:%d", host, port)
+    logger.info("POST /api/gong/calls-with-transcripts")
+    logger.info("GET /health")
     server.serve_forever()
 
 
@@ -598,6 +627,11 @@ def _main():
     Date format: YYYY-MM-DD
     """
     import sys
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
 
     if len(sys.argv) >= 2 and sys.argv[1].lower() == "serve":
         port = int(sys.argv[2]) if len(sys.argv) > 2 else 8765

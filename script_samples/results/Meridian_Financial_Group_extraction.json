@@ -1,0 +1,158 @@
+{
+  "extraction": {
+    "sourceTech": "vbnet",
+    "targetTech": ".NET 8 on Azure, microservices (policy lifecycle, billing, claims bounded contexts)",
+    "linesOfCode": 420000,
+    "complexityLevel": 2,
+    "customersDevCount": 12,
+    "sourceTechSnippet": "core policy administration system was originally built in VB.NET back in 2008",
+    "linesSnippet": "420,000 lines of code across a fairly large solution",
+    "complexitySnippet": "spaghetti, particularly around the premium calculation engine; patchwork of conventions from six different teams",
+    "devCountSnippet": "We have 12 developers, but honestly only about eight of them are productive in the legacy code",
+    "summary": "Meridian Financial Group seeks to modernize a 420K-line VB.NET insurance policy administration monolith to .NET 8 on Azure, decomposed into three bounded contexts. CFO has budget authority with a September board deadline. Security model and fixed-cost pricing are the two primary procurement gates.",
+    "confidence": 88,
+    "blazorEstimator": {
+      "dbMode": "azure",
+      "region": "East US",
+      "app": {
+        "sku": "lin_P2v3",
+        "instances": 2,
+        "os": "linux",
+        "reasoning": "Mid-size insurance workload targeting Azure; P2v3 appropriate for production policy admin system with moderate load"
+      },
+      "signalr": {
+        "tier": "standard",
+        "units": 1,
+        "estimatedConcurrentConnections": 500,
+        "reasoning": "Internal insurance platform; moderate concurrent user base expected across three business lines"
+      },
+      "azureSql": {
+        "enabled": true,
+        "tier": "4vc",
+        "storageGB": 100,
+        "computeModel": "provisioned",
+        "reasoning": "Policy, billing, and claims data for insurance holding company; provisioned compute for predictable transactional workload"
+      },
+      "onPrem": {
+        "enabled": false,
+        "vpn": {
+          "tier": "vpngw1",
+          "egressGBMonth": 50
+        },
+        "keyVault": {
+          "tier": "standard",
+          "secretOpsKMonth": 100
+        },
+        "reasoning": "No on-prem DB or datacenter connectivity mentioned; full Azure cloud hosting is the stated target"
+      },
+      "monitor": {
+        "tier": "analytics",
+        "logIngestionGBMonth": 10,
+        "reasoning": "Insurance regulatory compliance and multi-team codebase warrants full analytics tier; higher ingestion for audit trails"
+      },
+      "drivers": {
+        "haRequired": false,
+        "complianceSensitive": true,
+        "latencySensitive": false,
+        "expectedUserLoad": "medium",
+        "reasoning": "State regulatory compliance updates are a core driver; insurance holding company with three lines of business implies medium user load"
+      }
+    },
+    "fieldConfidence": {
+      "dbMode": 72,
+      "region": 30,
+      "app.sku": 60,
+      "app.instances": 50,
+      "signalr.tier": 40,
+      "signalr.units": 40,
+      "azureSql.tier": 55,
+      "azureSql.storageGB": 45,
+      "azureSql.computeModel": 55,
+      "vpn.tier": 30,
+      "vpn.egressGBMonth": 30,
+      "keyVault.tier": 50,
+      "keyVault.secretOpsKMonth": 35,
+      "monitor.tier": 65,
+      "monitor.logIngestionGBMonth": 45
+    },
+    "fieldSource": {
+      "dbMode": "inferred",
+      "region": "default",
+      "app.sku": "inferred",
+      "app.instances": "default",
+      "signalr.tier": "default",
+      "signalr.units": "default",
+      "azureSql.tier": "inferred",
+      "azureSql.storageGB": "inferred",
+      "azureSql.computeModel": "inferred",
+      "vpn.tier": "default",
+      "vpn.egressGBMonth": "default",
+      "keyVault.tier": "inferred",
+      "keyVault.secretOpsKMonth": "default",
+      "monitor.tier": "inferred",
+      "monitor.logIngestionGBMonth": "inferred"
+    },
+    "evidence": {
+      "dbModeSnippet": "Target is .NET 8 on Azure; no on-prem DB mentioned",
+      "regionSnippet": null,
+      "appSnippet": "Azure cloud hosting; monolith broken into at least three bounded contexts",
+      "signalrSnippet": null,
+      "azureSqlSnippet": "Azure cloud hosting target; policy issuance, billing, claims data workloads",
+      "onPremSnippet": null,
+      "vpnSnippet": null,
+      "keyVaultSnippet": "board-level concern about IP and model security after a competitor had a data incident",
+      "monitorSnippet": "every compliance change, every state regulatory update goes into the same monolith",
+      "driversSnippet": "every compliance change, every state regulatory update; three lines of business"
+    },
+    "salesStrategy": {
+      "dealMotion": "executive-business-case",
+      "customerPersonaFocus": "mixed",
+      "primaryValueAngle": "risk-reduction",
+      "commercialApproach": "fixed-scope-phase1",
+      "pricingConfidence": "medium",
+      "timelineUrgency": "this-quarter",
+      "competitiveRisk": "medium",
+      "recommendedActions": [
+        "Deliver boardroom-ready cost dashboard (DIY vs VELO) within one week of receiving transcript package as committed",
+        "Prepare and send financial services VB.NET reference list to Sandra to address CFO's prior-burn concern",
+        "Schedule signal extraction session next week to lock in scope and begin formal estimate",
+        "Produce a one-page security model brief addressing IP protection and model data isolation to clear procurement gate",
+        "Align proposal timeline to September board review — ensure cost model and SOW are in Sandra's hands by mid-August"
+      ],
+      "discoveryQuestions": [
+        "What Azure region or data residency requirements does Meridian have for regulated insurance data?",
+        "Is there an existing Azure tenant or will this be a greenfield cloud environment?",
+        "What is the current database platform and will it migrate to Azure SQL or remain on-prem during transition?",
+        "Are there concurrent user volume or SLA uptime requirements for the policy administration system?",
+        "What does the procurement approval process look like between Sandra's sign-off and board review in September?",
+        "Has a phased migration approach (e.g., billing first, then claims) been considered or is a parallel cutover expected?",
+        "Are there active regulatory audits or compliance deadlines that create a hard go-live constraint?"
+      ],
+      "objectionsToPreempt": [
+        "'We've been burned on cost overruns before' — address with fixed per-line pricing model and reference the CFO's own $2.4M-to-$6.8M example as the T&M risk GAP eliminates",
+        "'We need to understand your security model before procurement' — proactively deliver a written security brief covering model isolation, IP handling, and data residency before the next meeting",
+        "'Other vendors quoted $4M to $11M — why is your range different?' — show the unit economics model and narrow the band with the code counter data already in hand"
+      ],
+      "roiNarrative": "Meridian has a confirmed 420K-line VB.NET codebase, a code count already run, and a September board deadline. GAP's fixed per-line pricing eliminates the estimation risk that turned Meridian's last $2.4M project into a $6.8M overrun — delivering a predictable cost model the CFO can defend to the board.",
+      "closePlan": "Complete signal extraction session next week → deliver cost dashboard and security brief within 7 days → present boardroom-ready DIY vs VELO comparison to Sandra by mid-July → obtain CFO sign-off on cost model by August → submit SOW for procurement before September board review.",
+      "strategySummary": "This is an executive-driven deal with a hard September board deadline and a CFO who has been burned before. The win condition is a fixed-cost, boardroom-ready proposal that neutralizes prior overrun risk and clears the security/IP procurement gate. Move fast on the cost dashboard and security brief — both are explicitly requested and are the two gates between discovery and procurement.",
+      "confidence": 82
+    },
+    "salesEvidence": {
+      "dealMotionSnippet": "I need to see the cost model before board review in September",
+      "personaSnippet": "CFO wanted to sit in; Sandra keep me posted; William IT Director on call",
+      "valueAngleSnippet": "The last one was budgeted at $2.4M and ended at $6.8M. What's different about this?",
+      "urgencySnippet": "I need to see the cost model before board review in September",
+      "riskSnippet": "board-level concern about IP and model security after a competitor had a data incident"
+    },
+    "reviewFlags": [
+      "Azure region not specified — defaulted to East US; confirm data residency requirements for regulated insurance data",
+      "Database platform not mentioned — assumed Azure SQL migration; confirm whether existing DB is on-prem and requires VPN during transition",
+      "No concurrent user count provided — SignalR and app instance sizing based on medium-load inference only",
+      "HA/uptime SLA not discussed — haRequired set to false conservatively; insurance production systems may require zone redundancy",
+      "KeyVault tier set to standard despite security sensitivity — consider premium if HSM is required for compliance",
+      "onPrem.enabled set to false but no explicit confirmation; if legacy DB stays on-prem during phased migration, VPN config will be needed",
+      "12 developers noted but only 8 productive in legacy — dev count ambiguity may affect parallel migration capacity planning"
+    ]
+  }
+}

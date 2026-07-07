@@ -1,0 +1,45 @@
+=== CALL 1: Discovery Call — Heritage Industrial Systems (2026-06-03) ===
+Participants: Andrea (AE), Marcus Webb (CIO), Janet Hollis (Director of Application Development)
+
+Andrea: "Marcus, thanks for the introduction. I know Heritage has been evaluating modernization partners for a while — what's the current state?"
+
+Marcus: "So we're a manufacturer — industrial control and monitoring equipment. Our core ERP was custom-built in Delphi back in 1999 and has been extended ever since. It's about 250,000 lines of code and it touches everything — production scheduling, inventory, quality control, customer order management, field service."
+
+Janet: "It's the crown jewel and the anchor around our neck at the same time. The system works — it's remarkably stable for something this old — but the developer pool for Delphi is basically extinct. We had three Delphi developers 18 months ago. One retired, one moved to a different industry, and Marcus finally convinced the board to fund a migration."
+
+Andrea: "So you're down to how many developers currently?"
+
+Janet: "Nine developers total on the team, but only two of them have any meaningful Delphi experience. The rest are .NET and React developers we've been hiring for the future state. They're basically sitting on their hands waiting for the migration to start."
+
+Andrea: "250,000 lines — how would you characterize the complexity?"
+
+Marcus: "Complex. It's not spaghetti, but it's absolutely complex. The codebase was well-architected initially — you can see the original design intent — but it's been layered over and patched for 25 years. There are clean sections and there are sections where the original architect clearly ran out of time and just made things work."
+
+Janet: "We did a code quality assessment last year with an external firm. Their summary was 'architecturally sound core, significant complexity accumulation in integration layers.' Which is a polite way of saying the integrations are a mess."
+
+Andrea: "Target platform?"
+
+Marcus: "We want to land on .NET MAUI for the desktop client — we have field service teams on tablets — and Azure for the backend. We've already signed an Azure Enterprise Agreement, so there's incentive to consolidate there. .NET 8 for the server-side services."
+
+Andrea: "Timeline?"
+
+Janet: "We want to start yesterday, honestly. The two Delphi developers are our single biggest bottleneck — every month we wait is another month of knowledge concentration risk. If either of them leaves, we're in a very bad position."
+
+=== CALL 2: Technical Review — Heritage Industrial Systems (2026-06-12) ===
+Participants: Carlos (SA), Janet Hollis (Director of Application Development), Ben Torres (Senior Delphi Developer)
+
+Carlos: "Ben, you're the domain expert here. When you look at the migration challenge, what scares you most?"
+
+Ben: "The integration layer. We have custom COM components that talk to our shop floor equipment — PLCs, SCADA systems. Those interfaces are documented in comments that were written in 2003 and haven't been updated since. Any translation has to preserve those exact behaviors or we risk production shutdowns."
+
+Carlos: "Understood. How are the 250,000 lines distributed across modules?"
+
+Ben: "Roughly 40% is core ERP logic — order management, inventory, production. That's the most mature and relatively clean code. About 30% is the UI layer — lots of Delphi form-based screens. And the remaining 30% is the integration mess — the COM stuff, the database drivers, some hand-rolled web service clients from 2009."
+
+Carlos: "And the two Delphi-experienced developers — are they documented? Is there a knowledge capture effort underway?"
+
+Janet: "We started one. We have about 60% of the critical business rules documented. The rest is still in Ben and Tina's heads."
+
+Ben: "I'll be honest — part of why we're interested in VELO is that the AI translation process forces you to surface the implicit logic. The AI has to understand what the code does to translate it. That documentation side-effect is almost as valuable as the migration itself."
+
+Carlos: "That's a great insight and it's exactly right. The signal extraction phase gives you an artifact — a modernization knowledge map — regardless of whether you proceed. For 250K lines of Delphi with complex complexity and .NET MAUI / Azure as the target, I can have a cost model ready this week."
