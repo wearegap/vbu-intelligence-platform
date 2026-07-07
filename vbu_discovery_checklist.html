@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GAP Velocity AI - VBU Discovery Checklist</title>
+<style>
+  :root {
+    --gap-blue: #006489;
+    --gap-charcoal: #453F3E;
+    --gap-warm-gray: #777373;
+    --gap-light-gray: #D1D1D1;
+    --gap-yellow: #FEBD12;
+    --gap-steel-blue: #5497AE;
+    --gap-soft-blue: #A5CAD6;
+    --gap-cyan: #18C1E5;
+    --gap-green: #43B686;
+    --gap-white: #FFFFFF;
+    --font-main: 'Proxima Nova', 'Lato', Verdana, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-main);
+    background: #F5F6F7;
+    color: var(--gap-charcoal);
+  }
+
+  .header {
+    background: var(--gap-blue);
+    color: var(--gap-white);
+    padding: 32px 40px 28px;
+  }
+
+  .header .icon {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gap-yellow);
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+  }
+
+  .header p {
+    margin: 0;
+    font-weight: 300;
+    font-size: 14px;
+    color: var(--gap-soft-blue);
+  }
+
+  .header .tag {
+    margin-top: 14px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gap-white);
+    opacity: 0.75;
+  }
+
+  .progress-wrap {
+    max-width: 900px;
+    margin: -18px auto 0;
+    padding: 0 40px;
+  }
+
+  .progress-card {
+    background: var(--gap-white);
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .progress-label {
+    font-size: 13px;
+    color: var(--gap-warm-gray);
+    white-space: nowrap;
+    min-width: 120px;
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    height: 10px;
+    background: var(--gap-light-gray);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gap-steel-blue), var(--gap-blue));
+    border-radius: 6px;
+    transition: width 0.25s ease;
+  }
+
+  .progress-count {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gap-blue);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 26px auto 60px;
+    padding: 0 40px;
+  }
+
+  .section {
+    background: var(--gap-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    border-left: 5px solid var(--gap-blue);
+    background: var(--gap-white);
+  }
+
+  .section-header:hover { background: #FAFBFC; }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title .num {
+    background: var(--gap-blue);
+    color: var(--gap-white);
+    font-size: 12px;
+    font-weight: 700;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-title h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gap-charcoal);
+  }
+
+  .section-sub {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--gap-warm-gray);
+    margin-top: 2px;
+  }
+
+  .section-meta {
+    font-size: 12px;
+    color: var(--gap-warm-gray);
+    white-space: nowrap;
+    margin-right: 10px;
+  }
+
+  .chevron {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--gap-steel-blue);
+    border-bottom: 2px solid var(--gap-steel-blue);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+
+  .section.collapsed .chevron { transform: rotate(-45deg); }
+
+  .section-body {
+    padding: 4px 20px 16px 20px;
+    border-top: 1px solid var(--gap-light-gray);
+  }
+
+  .section.collapsed .section-body { display: none; }
+
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #EFEFEF;
+  }
+
+  .item:last-child { border-bottom: none; }
+
+  .item input[type="checkbox"] {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--gap-blue);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .item-text {
+    flex: 1;
+  }
+
+  .item-text label {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--gap-charcoal);
+    cursor: pointer;
+  }
+
+  .item.checked .item-text label {
+    color: var(--gap-warm-gray);
+    text-decoration: line-through;
+  }
+
+  .item-note {
+    display: block;
+    font-size: 11.5px;
+    color: var(--gap-steel-blue);
+    font-style: italic;
+    margin-top: 3px;
+  }
+
+  .item.checked .item-note { color: var(--gap-light-gray); }
+
+  .notes-input {
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px 8px;
+    font-size: 12.5px;
+    font-family: var(--font-main);
+    border: 1px solid var(--gap-light-gray);
+    border-radius: 4px;
+    color: var(--gap-charcoal);
+    resize: vertical;
+    min-height: 28px;
+  }
+
+  .notes-input:focus {
+    outline: none;
+    border-color: var(--gap-steel-blue);
+  }
+
+  .checklist-strip {
+    background: var(--gap-blue);
+    color: var(--gap-white);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 18px;
+  }
+
+  .checklist-strip h2 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .checklist-strip .section-sub { color: var(--gap-soft-blue); }
+
+  .reset-bar {
+    text-align: right;
+    margin-bottom: 10px;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--gap-warm-gray);
+    color: var(--gap-warm-gray);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: var(--font-main);
+  }
+
+  .reset-btn:hover {
+    border-color: var(--gap-blue);
+    color: var(--gap-blue);
+  }
+
+  .footer-stripe {
+    height: 6px;
+    display: flex;
+  }
+  .footer-stripe span { flex: 1; }
+  .footer-stripe .y { background: var(--gap-yellow); }
+  .footer-stripe .c { background: var(--gap-cyan); }
+  .footer-stripe .g { background: var(--gap-green); }
+
+  .footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--gap-warm-gray);
+    padding: 16px 0 30px;
+  }
+
+  @media print {
+    .reset-bar, .progress-wrap { display: none; }
+    .section.collapsed .section-body { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span class="icon"></span>GAP Velocity AI - VBU Discovery Checklist</h1>
+  <p>VBU Intelligence Pipeline &mdash; Discovery / Technical Qualification Call Tracker</p>
+  <div class="tag">Consult &middot; Design &middot; Build &middot; Modernize</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-card">
+    <div class="progress-label">Call Progress</div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-count" id="progressCount">0 / 0</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="reset-bar">
+    <button class="reset-btn" onclick="resetAll()">Reset Checklist</button>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" data-section="1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">1</span>
+        <div>
+          <h2>Call And Account Context</h2>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/4</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What is the exact account/client name as it should appear in the report?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What date range should we include for analyzed calls/transcripts?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Which specific calls should be included in the analysis (titles/dates/participants)?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Who attended this call (name, title, role in deal)?</label></div></div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" data-section="2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">2</span>
+        <div><h2>Core Modernization Inputs (Required)</h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/6</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What is your primary legacy/source technology stack today? (VB6, VB.NET, Access, PowerBuilder, WebForms, WinForms, Clarion, Silverlight, ASP Classic, Informix, Delphi, other)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What is your target platform/target architecture? (example: .NET 8 on Azure)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Approximately how many total lines of code are in scope for modernization?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>How would you rate current code complexity? (Clean, Conventional, Complex, Spaghetti)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>How many customer-side developers are currently assigned to modernization?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>In one or two sentences, how would you summarize the current state and migration goal?</label></div></div>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" data-section="3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">3</span>
+        <div><h2>Hosting &amp; Reliability Needs<span class="section-sub">Architecture And Hosting Decision — Estimator</span></h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/4</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Where does the customer want their data/database to live — fully in the cloud, kept on their own servers, or a mix of both?</label><span class="item-note">maps to: Azure / on-premises / hybrid</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Is there a specific city, country, or region where the customer needs their systems hosted? If no preference, we'll default to East US.</label><span class="item-note">maps to: Azure region</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>How much downtime, if any, can the customer tolerate — around the clock, or standard business-hours reliability?</label><span class="item-note">maps to: availability/SLA expectations</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Are there any legal, regulatory, or internal policy rules about where the customer's data must physically be stored?</label><span class="item-note">maps to: data residency/compliance constraints</span></div></div>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" data-section="4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">4</span>
+        <div><h2>Application Hosting Capacity<span class="section-sub">App Service Inputs</span></h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/3</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>How much computing "horsepower" does the customer expect to need day-to-day — light, moderate, or heavy?</label><span class="item-note">maps to: App Service plan SKU</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Roughly how many copies of the application should run at the same time to handle normal traffic?</label><span class="item-note">maps to: App Service instance count</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Does the customer expect busy periods (month-end, seasonal spikes, promotions, launches)? If so, when and how much?</label><span class="item-note">maps to: peak traffic sizing</span></div></div>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" data-section="5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">5</span>
+        <div><h2>Real-Time / Live Update Needs<span class="section-sub">SignalR Inputs</span></h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/3</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Does the application need real-time features (live notifications, chat, live dashboards)? How business-critical — nice-to-have, standard, or mission-critical?</label><span class="item-note">maps to: SignalR tier</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Roughly how many users would use those real-time features at once when the system first launches?</label><span class="item-note">maps to: SignalR units</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>On a typical day, about how many people are connected to the system at once?</label><span class="item-note">maps to: concurrent user/connection profile</span></div></div>
+    </div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" data-section="6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">6</span>
+        <div><h2>Database Needs<span class="section-sub">Ask based on where their data lives</span></h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/9</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label><strong>If fully cloud-hosted:</strong> Will the customer's database live entirely in the cloud for this estimate? (yes/no)</label><span class="item-note">maps to: Azure SQL enabled</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>How demanding is the database workload — light, moderate, or heavy?</label><span class="item-note">maps to: Azure SQL tier/vCore size</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Roughly how much data (GB) does the customer expect to store at go-live?</label><span class="item-note">maps to: SQL storage</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Should the database run at a fixed, always-on size, or scale automatically (and pause) based on usage?</label><span class="item-note">maps to: Provisioned vs. Serverless</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label><strong>If on-site or hybrid:</strong> Does the customer need their cloud system to connect back to on-site servers? (yes/no)</label><span class="item-note">maps to: hybrid/on-prem connectivity enabled</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>How much traffic and reliability does that on-site connection need — basic, standard, or high-performance?</label><span class="item-note">maps to: VPN Gateway tier</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Roughly how much data goes from the cloud back to their own servers each month (GB)?</label><span class="item-note">maps to: outbound egress to on-prem</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Do they need standard-level or premium-level security for storing passwords, keys, and credentials?</label><span class="item-note">maps to: Key Vault tier</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Roughly how often will the system access those stored credentials — rarely, occasionally, or frequently?</label><span class="item-note">maps to: Key Vault secret operations volume</span></div></div>
+    </div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" data-section="7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">7</span>
+        <div><h2>Monitoring &amp; Visibility Needs<span class="section-sub">Monitoring Inputs</span></h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/3</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Does the customer want basic health/uptime monitoring, or deeper analytics into system performance?</label><span class="item-note">maps to: Azure Monitor/App Insights tier</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Roughly how much activity/log data will the system generate each month — a little, moderate, or a lot?</label><span class="item-note">maps to: monthly log ingestion volume</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Are there requirements to keep historical monitoring data long-term (audits, compliance)?</label><span class="item-note">maps to: retention/observability requirements</span></div></div>
+    </div>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section" data-section="8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">8</span>
+        <div><h2>DIY Cost Comparison Inputs<span class="section-sub">Cost Dashboard Assumptions</span></h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/3</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>If the customer built/maintained this themselves, how many engineers would they need to dedicate to it?</label><span class="item-note">maps to: DIY engineer count</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What's the fully-loaded annual cost per engineer for this customer (salary + benefits + overhead)?</label><span class="item-note">maps to: annual fully loaded cost per engineer</span></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Would a range (best case, likely, worst case) for staffing and cost be more useful than a single number?</label><span class="item-note">maps to: sensitivity ranges</span></div></div>
+    </div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section" data-section="9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">9</span>
+        <div><h2>Sales Strategy And Qualification Inputs</h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/11</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What is the business impact if this legacy system fails or is delayed? (dollars/hour or business KPI impact)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>How urgent is the migration timeline? (Immediate, This quarter, This year, No fixed date)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What is driving the deal most? (risk reduction, speed, cost, compliance, innovation)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Who is the economic buyer and who signs the final approval?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Who is the technical champion and day-to-day owner?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What internal blockers do you expect? (procurement, security review, architecture review, resourcing, change resistance)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Which objections are most likely from stakeholders?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Have you attempted modernization before? If yes, what stalled it?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What does success look like in 6-12 months?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What concrete next step can we commit to now? (deep dive, pilot scope, SOW draft, exec review)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>What timeline should we target for pilot approval and full project start?</label></div></div>
+    </div>
+  </div>
+
+  <!-- Section 10 -->
+  <div class="section" data-section="10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">10</span>
+        <div><h2>Evidence Capture Prompts<span class="section-sub">For transcript-backed strategy</span></h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/4</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Can you share direct quotes that indicate urgency?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Can you share direct quotes that describe risk and complexity?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Can you share direct quotes that reveal buyer persona and decision dynamics?</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Can you share direct quotes that support ROI/value messaging?</label></div></div>
+    </div>
+  </div>
+
+  <!-- Section 11 - Completion checklist as a highlighted strip -->
+  <div class="checklist-strip">
+    <h2>Before Ending The Call</h2>
+    <span class="section-sub">Final completion checklist</span>
+  </div>
+  <div class="section" data-section="11">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-title">
+        <span class="num">11</span>
+        <div><h2>Completion Checklist</h2></div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <span class="section-meta" data-count>0/10</span>
+        <span class="chevron"></span>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Source technology captured</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Target platform captured</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Lines of code captured</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Complexity level captured</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Customer dev count captured</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>DB mode selected (fully cloud or on-prem/hybrid)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Estimator sizing captured (App, Real-Time, DB/Hybrid, Monitoring)</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>DIY staffing/cost assumptions captured</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Buyer/champion/blockers/urgency captured</label></div></div>
+      <div class="item"><input type="checkbox"><div class="item-text"><label>Next action and timeline agreed</label></div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-stripe"><span class="y"></span><span class="c"></span><span class="g"></span></div>
+<div class="footer-note">Growth Acceleration Partners &mdash; we are GAP &nbsp;|&nbsp; Internal Use: GAP Velocity AI - VBU</div>
+
+<script>
+  function updateProgress() {
+    const allBoxes = document.querySelectorAll('.item input[type="checkbox"]');
+    const checked = document.querySelectorAll('.item input[type="checkbox"]:checked');
+    const total = allBoxes.length;
+    const done = checked.length;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressCount').textContent = done + ' / ' + total;
+
+    document.querySelectorAll('.section').forEach(section => {
+      const boxes = section.querySelectorAll('.item input[type="checkbox"]');
+      if (!boxes.length) return;
+      const checkedInSection = section.querySelectorAll('.item input[type="checkbox"]:checked').length;
+      const meta = section.querySelector('[data-count]');
+      if (meta) meta.textContent = checkedInSection + '/' + boxes.length;
+    });
+  }
+
+  document.querySelectorAll('.item input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.item').classList.toggle('checked', cb.checked);
+      updateProgress();
+    });
+  });
+
+  function toggleSection(headerEl) {
+    headerEl.closest('.section').classList.toggle('collapsed');
+  }
+
+  function resetAll() {
+    if (!confirm('Reset all checked items?')) return;
+    document.querySelectorAll('.item input[type="checkbox"]').forEach(cb => {
+      cb.checked = false;
+      cb.closest('.item').classList.remove('checked');
+    });
+    updateProgress();
+  }
+
+  updateProgress();
+</script>
+
+</body>
+</html>
