@@ -81,6 +81,7 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-outline { background: transparent; color: var(--gap-blue); border-color: var(--gap-blue); }
 .btn-outline:hover { background: var(--gap-blue); color: var(--gap-white); }
+.btn-outline:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 .btn-green { background: var(--gap-green); color: var(--gap-white); border-color: var(--gap-green); }
 .btn-green:hover { background: #359e72; border-color: #359e72; }
 .btn-row { display: flex; gap: 12px; align-items: center; margin-top: 20px; }
@@ -412,11 +413,11 @@ body { background: var(--gap-bg); color: var(--gap-dark); font-family: var(--fon
       </div>
       <div id="step1-error"></div>
       <div class="btn-row">
-        <button class="btn btn-primary" onclick="connectGong()">
+        <button class="btn btn-primary" onclick="connectGong()" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           Fetch Calls from Gong
         </button>
-        <button class="btn btn-outline" type="button" onclick="document.getElementById('script-upload-input').click()">Upload Call Scripts</button>
+        <button class="btn btn-outline" type="button" onclick="document.getElementById('script-upload-input').click()" disabled>Upload Call Scripts</button>
         <input id="script-upload-input" type="file" accept=".txt,.md,.json,.pdf,.docx" multiple style="display:none" onchange="uploadScripts(event)">
         <span style="font-size:11px;color:var(--gap-gray)">or</span>
         <button class="btn btn-outline" onclick="loadDemo()">Load Demo Data</button>
